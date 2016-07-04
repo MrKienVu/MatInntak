@@ -22,46 +22,80 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { decrement, increment } from './actions';
 
+const textColor = "#FFFFFF"
+const lightTextColor = "#777777"
+const buttonColor = "rgb(33, 115, 161)"
+const inputFieldColor = "rgb(246, 246, 246)"
+const buttonWidth = 200
+
 class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          My first value is: {this.props.firstValue}
-        </Text>
-        <Text style={styles.instructions} onPress={this.props.increment}>
-          Press here to increment.
-        </Text>
-        <Text style={styles.welcome}>
-          My second value is: {this.props.secondValue}
-        </Text>
-        <Text style={styles.instructions} onPress={this.props.decrement}>
-          Press here to decrement.
-        </Text>
-        <Text style={styles.instructions}>
-          iOS:{'\n'} Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
-        <Text style={styles.instructions}>
-          Android:{'\n'} shake or press menu button for dev menu
-        </Text>
-
+        <LargeHeading text="Matinntak" />
+        <SmallHeading text="Skriv inn fødselsnummer" />
+        <InputField placeholder="11 siffer" />
+        <Button text="Start matregistrering" />
+        <SeparatorText text="eller" />
+        <Button text="Registrer behov" />
+        <Button text="Registrer ny pasient" explanation="(kun for sykepleier)" />
       </View>
     );
   }
 }
+
+const LargeHeading = ({text}) => (
+  <Text style={{color: textColor, fontSize: 25, marginBottom: 50, fontWeight: 'bold'}}>
+    {text}
+  </Text>
+);
+
+const SmallHeading = ({text}) => (
+  <Text style={{color: textColor, fontSize: 18, marginBottom: 20, fontWeight: 'bold'}}>
+    {text}
+  </Text>
+);
+
+const SeparatorText = ({text}) => (
+  <Text style={{color: textColor, marginBottom: 20, fontStyle: 'italic'}}>
+    {text}
+  </Text>
+);
+
+const InputField = ({placeholder}) => (
+  <View>
+    <TextInput placeholder={placeholder} style={{width: buttonWidth, height: 30, backgroundColor: inputFieldColor, borderRadius: 5, fontSize: 11, padding: 10, marginBottom: 20}}/>
+  </View>
+);
+
+const Button = ({text, explanation}) => (
+  <View style={{marginBottom: 20}}>
+  <Text style={{color: textColor, backgroundColor: buttonColor, paddingLeft: 20,
+                paddingTop: 5, paddingRight: 20, paddingBottom: 5,
+                borderRadius: 5, overflow: 'hidden', width: buttonWidth, textAlign: 'center'}}>
+    {text}
+  </Text>
+  {
+    explanation &&
+    <Text style={{color: lightTextColor, textAlign: 'center', marginTop: 3}}>
+      {explanation}
+    </Text>
+  }
+  </View>
+);
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#17364B',
   },
   welcome: {
     fontSize: 20,
