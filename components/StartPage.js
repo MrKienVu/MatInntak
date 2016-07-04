@@ -26,7 +26,7 @@ import {
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { decrement, increment } from './actions';
+import { decrement, increment } from '../actions';
 
 const textColor = "#FFFFFF"
 const lightTextColor = "#777777"
@@ -34,7 +34,7 @@ const buttonColor = "rgb(33, 115, 161)"
 const inputFieldColor = "rgb(246, 246, 246)"
 const buttonWidth = 200
 
-class App extends Component {
+class StartPage extends Component {
   render() {
     return (
       <View style={styles.container}>
@@ -57,27 +57,29 @@ const LargeHeading = ({text}) => (
 );
 
 const SmallHeading = ({text}) => (
-  <Text style={{color: textColor, fontSize: 18, marginBottom: 20, fontWeight: 'bold'}}>
+  <Text style={{color: textColor, fontSize: 17, marginBottom: 15, fontWeight: 'bold'}}>
     {text}
   </Text>
 );
 
 const SeparatorText = ({text}) => (
-  <Text style={{color: textColor, marginBottom: 20, fontStyle: 'italic'}}>
+  <Text style={{color: textColor, marginBottom: 15, fontStyle: 'italic'}}>
     {text}
   </Text>
 );
 
 const InputField = ({placeholder}) => (
   <View>
-    <TextInput placeholder={placeholder} style={{width: buttonWidth, height: 30, backgroundColor: inputFieldColor, borderRadius: 5, fontSize: 11, padding: 10, marginBottom: 20}}/>
+    <TextInput placeholder={placeholder}
+               style={{width: buttonWidth, height: 40, backgroundColor: inputFieldColor,
+                       borderRadius: 5, fontSize: 13, padding: 10, marginBottom: 15}}/>
   </View>
 );
 
 const Button = ({text, explanation}) => (
-  <View style={{marginBottom: 20}}>
+  <View style={{marginBottom: 15}}>
   <Text style={{color: textColor, backgroundColor: buttonColor, paddingLeft: 20,
-                paddingTop: 5, paddingRight: 20, paddingBottom: 5,
+                paddingTop: 8, paddingRight: 20, paddingBottom: 8,
                 borderRadius: 5, overflow: 'hidden', width: buttonWidth, textAlign: 'center'}}>
     {text}
   </Text>
@@ -119,6 +121,6 @@ const ConnectedApp = connect(
     increment: () => dispatch(increment(0)),
     decrement: () => dispatch(decrement(1)),
   }),
-)(App);
+)(StartPage);
 
 export default ConnectedApp;

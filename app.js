@@ -21,12 +21,15 @@
 import React from 'react';
 import { Provider } from 'react-redux'
 
-import App from './components';
+import StartPage from './components/StartPage';
+import RegistrationPage from './components/RegistrationPage';
 import store from './store';
+
+const DefaultPage = RegistrationPage;
 
 const ReduxApp = () => (
   <Provider store={store}>
-    <App />
+    <DefaultPage />
   </Provider>
 );
 
