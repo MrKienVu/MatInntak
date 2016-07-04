@@ -5,8 +5,8 @@ Egenskap: Oppstart av applikasjon
 
 Scenario: Uregistrert pasient
   Gitt at pasienten ikke har brukt applikasjonen tidligere
-  Når knappen for Registrer ny pasient trykkes på
-  Så skal skjermbildet for pasientregistrering vises
+  Når knappen "Registrer ny pasient" trykkes på
+  Så skal skjermbildet "Pasientregistrering" vises
 
 # Scenario: Registrert pasient u/behov
 #   Gitt at pasienten har brukt applikasjonen tidligere

@@ -18,17 +18,16 @@
  *
  */
 
-import { combineReducers } from 'redux';
-import type { Action } from './actions';
-
-function routing(state = { name: 'StartPage' }, action: Action) {
-  if (action.type === 'GO_TO_PAGE') {
-    return { name: action.name };
-  }
-
-  return state;
+export const colors = {
+  darkBlue: "#18374c",
+  deepBlue: "#2173a1",
+  divider: "#ECECEC",
+  inputFieldBorder: "#D8D8D8",
+  inputFieldBackground:"#F8F8F8",
+  red: 'red',
+  white: "#FFFFFF",
 }
 
-const app = combineReducers({routing});
-
-export default app;
+export const fontSize = {
+  small: 25,
+}

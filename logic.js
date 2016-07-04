@@ -18,17 +18,18 @@
  *
  */
 
-import { combineReducers } from 'redux';
-import type { Action } from './actions';
+export type BMI = number;
+export type Gram = number;
+export type Kcal = number;
+export type Kilograms = number;
+export type Meter = number;
+export type Ml = number;
 
-function routing(state = { name: 'StartPage' }, action: Action) {
-  if (action.type === 'GO_TO_PAGE') {
-    return { name: action.name };
-  }
+export const computeBMI: (weight:Kilograms, height:Meter) => BMI = (weight, height) =>
+                           height > 0 ? weight / Math.pow(height, 2) : NaN;
 
-  return state;
-}
+export const computeKcal: (weight:Kilograms) => Kcal = (weight) => weight*30;
 
-const app = combineReducers({routing});
+export const computeProtein: (weight:Kilograms) => Gram = (weight) => weight;
 
-export default app;
+export const computeFluid: (weight:Kilograms) => Ml = (weight) => weight*30;

@@ -19,22 +19,17 @@
  */
 
 
-export type DecrementAction = {
-  type: 'DECREMENT',
-  decrIndex: number,
-};
-
-export type IncrementAction = {
-  type: 'INCREMENT',
-  incrIndex: number,
-};
-
-export type Action = IncrementAction | DecrementAction;
-
-export function increment(index: number): IncrementAction {
-  return { type: 'INCREMENT', incrIndex: index }
+export type GoToPageAction = {
+  type: 'GO_TO_PAGE',
+  name: string,
 }
 
-export function decrement(index: number): DecrementAction {
-  return { type: 'DECREMENT', decrIndex: index }
+export type Action = GoToPageAction;
+
+export function registerPatient(): GoToPageAction {
+  return { type: 'GO_TO_PAGE', name: 'RegisterPatient' }
+}
+
+export function showFrontPage(): GoToPageAction {
+  return { type: 'GO_TO_PAGE', name: 'StartPage' }
 }

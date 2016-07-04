@@ -19,14 +19,28 @@
  */
 
 import React from 'react';
-import { Provider } from 'react-redux'
+import { connect, Provider } from 'react-redux'
 
-import App from './components';
+import StartPage from './components/StartPage';
+import RegistrationPage from './components/RegistrationPage';
 import store from './store';
+
+const pages = { 'StartPage':StartPage, 'RegisterPatient':RegistrationPage };
+
+const Page = (props) => {
+  const DisplayPage = pages[props.pageName];
+  return <DisplayPage />
+}
+
+const ConnectedPage = connect(
+  (state) => ({
+    pageName: state.routing.name,
+  }),
+)(Page);
 
 const ReduxApp = () => (
   <Provider store={store}>
-    <App />
+    <ConnectedPage />
   </Provider>
 );
 

@@ -3,3 +3,6 @@ ios/build/
 node_modules/
 ios/screenshot*
 ios/Products/*
+ios/matinntak.xcodeproj/project.xcworkspace/xcuserdata/*
+ios/matinntak.xcodeproj/xcuserdata/
+.irb-history
