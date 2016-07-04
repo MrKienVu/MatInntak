@@ -1,0 +1,22 @@
+dependencies: \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Views/RCTTabBar.m \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Views/RCTTabBar.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Base/RCTEventDispatcher.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Base/RCTBridge.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Base/RCTBridgeDelegate.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Base/RCTBridgeModule.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Base/RCTDefines.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Base/RCTFrameUpdate.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Base/RCTInvalidating.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Base/RCTJavaScriptExecutor.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Base/RCTLog.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Base/RCTAssert.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Views/RCTTabBarItem.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Views/RCTComponent.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Base/RCTUtils.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Views/RCTView.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Views/RCTBorderStyle.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Views/RCTPointerEvents.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Views/RCTViewControllerProtocol.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Views/RCTWrapperViewController.h \
+  /Users/kjetsva/Projects/matinntak/node_modules/react-native/React/Views/UIView+React.h
