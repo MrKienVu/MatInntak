@@ -28,18 +28,18 @@ import {
 import { connect } from 'react-redux';
 import { decrement, increment } from '../actions';
 
-const textColor = "#FFFFFF"
-const lightTextColor = "#777777"
-const buttonColor = "rgb(33, 115, 161)"
-const inputFieldColor = "rgb(246, 246, 246)"
+const textColor = '#FFFFFF';
+const lightTextColor = '#777777';
+const buttonColor = 'rgb(33, 115, 161)';
+const inputFieldColor = 'rgb(246, 246, 246)';
 
-const itemWidth = 350
-const itemHeight = 40
-const itemSpaceBetween = 32
-const fontSmall = 26
-const fontMedium = 32
-const fontLarge = 48
-const cornerRadius = 10
+const itemWidth = 350;
+const itemHeight = 40;
+const itemSpaceBetween = 32;
+const fontSmall = 26;
+const fontMedium = 32;
+const fontLarge = 48;
+const cornerRadius = 10;
 
 class StartPage extends Component {
   render() {
@@ -118,7 +118,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#17364B',
   },
 });
-
 
 const ConnectedApp = connect(
   state => ({

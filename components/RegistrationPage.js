@@ -33,6 +33,7 @@ const lightTextColor = "#777777"
 const buttonColor = "rgb(33, 115, 161)"
 const inputFieldColor = "rgb(246, 246, 246)"
 const buttonWidth = 250
+const fontSmall = 26;
 
 class RegistrationPage extends Component {
   render() {
@@ -61,10 +62,9 @@ class Personalia extends Component {
       <Section>
         <Header text="Personalia" />
         <Question name="Navn">
-          {
-            ["Fornavn", "Mellomnavn", "Etternavn"].map(
-              name => <InputField key={name} placeholder={name} />)
-          }
+          <InputField placeholder="Fornavn" />
+          <InputField placeholder="Mellomnavn" optional={true} />
+          <InputField placeholder="Etternavn" />
         </Question>
         <Question name="Kjønn">
           <Choice choices={["Kvinne", "Mann"]} />
@@ -132,10 +132,10 @@ class Screening extends Component {
       <Section>
       <Header text="Screening" />
       <Question name="Score screening">
-        <InputField />
+        <InputField optional={true} />
       </Question>
       <Question name="Ernæringsmessig risiko">
-        <Choice choices={["Moderat", "Gøy"]} />
+        <Choice choices={["Moderat", "Gøy"]} optional={true} />
       </Question>
       </Section>
     );
@@ -149,7 +149,7 @@ class SpecialDiet extends Component {
       <Header text="Spesialkost" />
       <Question>
         <Choice choices={["Nei", "Ja"]} />
-        <InputField placeholder="Spesifiser type spesialkost" />
+        <InputField placeholder="Spesifiser type spesialkost" optional={true} />
       </Question>
       </Section>
     );
@@ -162,7 +162,7 @@ class Preferences extends Component {
       <Section>
       <Header text="Spesielle preferanser" />
       <Question>
-        <InputField />
+        <InputField optional={true} />
       </Question>
       </Section>
     );
@@ -246,20 +246,30 @@ const FrontPageLink = () => (
 
 const Divider = () => <View style={{marginTop: 30, height: 6, backgroundColor: "rgb(235, 235, 235)"}}/>;
 
-const Choice = ({choices}) => (
-  <View>
+const Choice = ({choices, optional}) => (
+  <View style={{flexDirection: 'row'}}>
     <SegmentedControlIOS values={choices}
-      style={{height: 30, marginBottom: 10, padding: 20}}
+      style={{flex: 1, height: 30, marginBottom: 10, padding: 20}}
       tintColor= '#17364B'/>
+      <Required optional={optional} />
   </View>
 );
 
-const InputField = ({placeholder, small}) => (
-  <View>
+const Required = ({optional}) => (
+  <View style={{marginHorizontal: 8, width: 10}}>
+    {!optional &&
+      <Text style={{color: 'red', fontSize: fontSmall}}>*</Text>
+    }
+  </View>
+);
+
+const InputField = ({placeholder, small, optional}) => (
+  <View style={{flexDirection: 'row'}}>
     <TextInput placeholder={placeholder || ""}
-               style={{width: small ? 120 : null, height: 60, backgroundColor: inputFieldColor,
+               style={{flex: 1, width: small ? 120 : null, height: 60, backgroundColor: inputFieldColor,
                       borderRadius: 8, fontSize: 25, padding: 10, marginBottom: 15,
                      borderColor: "rgb(215, 215, 215)", borderWidth: 3}}/>
+    <Required optional={optional} />
   </View>
 );
 
