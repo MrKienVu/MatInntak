@@ -27,23 +27,39 @@ import {
   View,
 } from 'react-native';
 
-const backgroundColor = "#FFFFFF"
-const textColor = "#FFFFFF"
-const lightTextColor = "#777777"
 const buttonColor = "rgb(33, 115, 161)"
 const inputFieldColor = "rgb(246, 246, 246)"
 const buttonWidth = 250
 const fontSmall = 26;
 
 class RegistrationPage extends Component {
+  state:{weight: ?number, height: ?number};
+  constructor() {
+    super()
+    this.state = {weight: null, height: null}
+  }
+
+  setWeight:(weight:number) => void = (weight) => {
+    this.setState({weight});
+    console.log(this.state);
+  }
+
+  setHeight:(height:number) => void = (height) => {
+    this.setState({height});
+    console.log(this.state);
+  }
+
+
   render() {
     return (
       <View style={{flex: 1}}>
         <NavigationBar />
         <ScrollView style={{paddingTop: 20}}>
           <Personalia /><Divider />
-          <Anthropometry /><Divider />
-          <Needs/><Divider />
+          <Anthropometry weight={this.state.weight} height={this.state.height}
+                         setWeight={this.setWeight}
+                         setHeight={this.setHeight} /><Divider />
+          <Needs weight={this.state.weight} height={this.state.height} /><Divider />
           <Screening/><Divider />
           <SpecialDiet/><Divider />
           <Preferences/>
@@ -88,16 +104,16 @@ class Anthropometry extends Component {
         <View style={{flexDirection: 'row'}}>
           <View style={{flex: 1}}>
             <Question name="Høyde">
-              <InputField small={true}/>
+              <InputField onChange={(value) => this.props.setHeight(value)} small={true}/>
             </Question>
           </View>
           <View style={{flex: 1}}>
           <Question name="Vekt">
-            <InputField small={true}/>
+            <InputField onChange={(value) => this.props.setWeight(value)} small={true}/>
           </Question>
           </View>
           <View style={{flex: 1}}>
-          <Calculation name="KMI" />
+          <Calculation name="KMI" value={this.props.weight / Math.pow(this.props.height, 2)}/>
           </View>
         </View>
         </Section>
@@ -202,12 +218,12 @@ const Question = ({name, children, style}) => (
   </View>
 );
 
-const Calculation = ({name}) => (
+const Calculation = ({name, value}) => (
   <View>
     <Text style={{fontSize: 25, marginBottom: 20}}>
       {name}:
     </Text>
-    <Text style={{fontSize: 25}}>-</Text>
+    <Text style={{fontSize: 25}}>{value}</Text>
 
   </View>
 );
@@ -263,9 +279,9 @@ const Required = ({optional}) => (
   </View>
 );
 
-const InputField = ({placeholder, small, optional}) => (
+const InputField = ({placeholder, small, optional, onChange}) => (
   <View style={{flexDirection: 'row'}}>
-    <TextInput placeholder={placeholder || ""}
+    <TextInput onChange={(event) => onChange(event.nativeEvent.text)} placeholder={placeholder || ""}
                style={{flex: 1, width: small ? 120 : null, height: 60, backgroundColor: inputFieldColor,
                       borderRadius: 8, fontSize: 25, padding: 10, marginBottom: 15,
                      borderColor: "rgb(215, 215, 215)", borderWidth: 3}}/>
