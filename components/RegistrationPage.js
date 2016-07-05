@@ -99,6 +99,14 @@ class Personalia extends Component {
   }
 }
 
+function roundTwoDecimals(decimal:number) {
+  return Math.round(100 * decimal) / 100;
+}
+
+function dashOrValue(numberOrNaN:number) {
+  return isNaN(numberOrNaN) ? '-' : numberOrNaN;
+}
+
 class Anthropometry extends Component {
   render() {
     return (
@@ -116,7 +124,7 @@ class Anthropometry extends Component {
           </Question>
           </View>
           <View style={{flex: 1}}>
-          <Calculation name="KMI" value={computeBMI(this.props.weight, this.props.height)}/>
+          <Calculation name="KMI" value={dashOrValue(roundTwoDecimals(computeBMI(this.props.weight, this.props.height)))}/>
           </View>
         </View>
         </Section>
@@ -284,11 +292,13 @@ const Required = ({optional}) => (
 
 const InputField = ({placeholder, small, optional, onChange}) => (
   <View style={{flexDirection: 'row'}}>
-    <TextInput onChange={(event) => onChange(event.nativeEvent.text)} placeholder={placeholder || ""}
-               style={{flex: 1, width: small ? 120 : null, height: 60, backgroundColor: inputFieldColor,
-                      borderRadius: 8, fontSize: 25, padding: 10, marginBottom: 15,
-                     borderColor: "rgb(215, 215, 215)", borderWidth: 3}}/>
-    <Required optional={optional} />
+    <View style={{flex: 1, flexDirection: 'row'}}>
+      <TextInput onChange={(event) => onChange(event.nativeEvent.text)} placeholder={placeholder || ""}
+                 style={{width: small ? 140 : 685, height: 60, backgroundColor: inputFieldColor,
+                        borderRadius: 8, fontSize: 25, padding: 10, marginBottom: 15,
+                       borderColor: "rgb(215, 215, 215)", borderWidth: 3}}/>
+      <Required optional={optional} />
+    </View>
   </View>
 );
 

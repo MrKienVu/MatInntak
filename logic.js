@@ -19,4 +19,4 @@
  */
 
 export const computeBMI = (weight:number, height:number) =>
-                    Math.round(100 * (weight / Math.pow(height, 2))) / 100;
+                           height > 0 ? weight / Math.pow(height, 2) : NaN
