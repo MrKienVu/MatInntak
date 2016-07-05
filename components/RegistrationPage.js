@@ -26,6 +26,9 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import {
+  computeBMI,
+} from '../logic'
 
 const buttonColor = "rgb(33, 115, 161)"
 const inputFieldColor = "rgb(246, 246, 246)"
@@ -113,7 +116,7 @@ class Anthropometry extends Component {
           </Question>
           </View>
           <View style={{flex: 1}}>
-          <Calculation name="KMI" value={this.props.weight / Math.pow(this.props.height, 2)}/>
+          <Calculation name="KMI" value={computeBMI(this.props.weight, this.props.height)}/>
           </View>
         </View>
         </Section>
