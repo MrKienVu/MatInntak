@@ -26,9 +26,9 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import {
-  computeBMI,
-} from '../logic'
+import { connect } from 'react-redux';
+import { computeBMI } from '../logic'
+import { showFrontPage } from '../actions'
 
 const buttonColor = "rgb(33, 115, 161)"
 const inputFieldColor = "rgb(246, 246, 246)"
@@ -52,11 +52,11 @@ class RegistrationPage extends Component {
     console.log(this.state);
   }
 
-
   render() {
+    console.log(this.props);
     return (
       <View style={{flex: 1}}>
-        <NavigationBar />
+        <NavigationBar showFrontPage={this.props.showFrontPage} />
         <ScrollView style={{paddingTop: 20}}>
           <Personalia /><Divider />
           <Anthropometry weight={this.state.weight} height={this.state.height}
@@ -74,6 +74,13 @@ class RegistrationPage extends Component {
     );
   }
 }
+
+const ConnectedPage = connect(
+  (state) => ({}),
+  (dispatch) => ({
+    showFrontPage: () => dispatch(showFrontPage()),
+  }),
+)(RegistrationPage);
 
 class Personalia extends Component {
   render() {
@@ -239,7 +246,7 @@ const Calculation = ({name, value}) => (
   </View>
 );
 
-const NavigationBar = () => (
+const NavigationBar = ({showFrontPage}) => (
   <View style={{backgroundColor: "#17364B", paddingTop: 50, paddingBottom: 30, paddingLeft: 20, paddingRight: 20}}>
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
       <View style={{flex: 1}}>
@@ -249,7 +256,7 @@ const NavigationBar = () => (
 
       </View>
       <View style={{flex: 1}}>
-        <FrontPageLink />
+        <FrontPageLink showFrontPage={showFrontPage} />
       </View>
     </View>
 
@@ -265,8 +272,8 @@ const BackLink = () => (
   </Text>
 );
 
-const FrontPageLink = () => (
-  <Text style={{color: 'white', fontSize: 25, textAlign: 'center'}}>
+const FrontPageLink = ({showFrontPage}) => (
+  <Text onPress={showFrontPage} style={{color: 'white', fontSize: 25, textAlign: 'center'}}>
   Til forsiden
   </Text>
 );
@@ -302,7 +309,4 @@ const InputField = ({placeholder, small, optional, onChange}) => (
   </View>
 );
 
-
-
-
-export default RegistrationPage;
+export default ConnectedPage;

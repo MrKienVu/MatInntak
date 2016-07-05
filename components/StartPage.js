@@ -26,7 +26,7 @@ import {
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { decrement, increment } from '../actions';
+import { registerPatient } from '../actions';
 
 const textColor = '#FFFFFF';
 const lightTextColor = '#777777';
@@ -51,7 +51,7 @@ class StartPage extends Component {
         <Button text="Start matregistrering" />
         <SeparatorText text="eller" />
         <Button text="Registrer behov" />
-        <Button text="Registrer ny pasient" explanation="(kun for sykepleier)" />
+        <Button text="Registrer ny pasient" onPress={this.props.registerPatient} explanation="(kun for sykepleier)" />
       </View>
     );
   }
@@ -89,7 +89,7 @@ const InputField = ({placeholder}) => (
   </View>
 );
 
-const Button = ({text, explanation}) => (
+const Button = ({text, explanation, onPress}) => (
   <View style={{marginBottom: itemSpaceBetween}}>
   <Text style={{backgroundColor: buttonColor,
                 borderRadius: cornerRadius,
@@ -98,7 +98,8 @@ const Button = ({text, explanation}) => (
                 overflow: 'hidden',
                 paddingVertical: 12,
                 textAlign: 'center',
-                width: itemWidth}}>
+                width: itemWidth}}
+         onPress={onPress}>
     {text}
   </Text>
   {
@@ -121,12 +122,10 @@ const styles = StyleSheet.create({
 
 const ConnectedApp = connect(
   state => ({
-    firstValue: state.firstReducer.value,
-    secondValue: state.secondReducer.value,
+    routing: state.routing,
   }),
   (dispatch) => ({
-    increment: () => dispatch(increment(0)),
-    decrement: () => dispatch(decrement(1)),
+    registerPatient: () => dispatch(registerPatient()),
   }),
 )(StartPage);
 

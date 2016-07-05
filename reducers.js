@@ -21,22 +21,14 @@
 import { combineReducers } from 'redux';
 import type { Action } from './actions';
 
-function firstReducer(state = { value: 0 }, action: Action) {
-  if (action.type === 'INCREMENT' && action.incrIndex === 0) {
-    return {...state, value: state.value + 2 };
+function routing(state = { name: 'StartPage' }, action: Action) {
+  if (action.type === 'GO_TO_PAGE') {
+    return { name: action.name };
   }
 
   return state;
 }
 
-function secondReducer(state = { value: 0 }, action: Action) {
-  if (action.type === 'DECREMENT' && action.decrIndex === 1) {
-    return {...state, value: state.value - 1 };
-  }
-
-  return state;
-}
-
-const app = combineReducers({firstReducer, secondReducer});
+const app = combineReducers({routing});
 
 export default app;
