@@ -33,6 +33,14 @@ import {
   computeKcal,
   computeProtein,
 } from '../logic';
+import type {
+  Kilograms,
+  Kcal,
+  Meter,
+  Gram,
+  Ml,
+  BMI,
+} from '../logic';
 import { showFrontPage } from '../actions';
 
 const buttonColor = "rgb(33, 115, 161)"
@@ -41,7 +49,7 @@ const buttonWidth = 250
 const fontSmall = 26;
 
 class RegistrationPage extends Component {
-  state:{weight: ?number, height: ?number};
+  state:{weight: ?Kilograms, height: ?Meter};
   constructor() {
     super()
     this.state = {weight: null, height: null}
@@ -50,12 +58,12 @@ class RegistrationPage extends Component {
   setWeight:(weight:number) => void = (weight) => {
     this.setState({weight});
     console.log(this.state);
-  }
+  };
 
   setHeight:(height:number) => void = (height) => {
     this.setState({height});
     console.log(this.state);
-  }
+  };
 
   render() {
     console.log(this.props);
@@ -67,7 +75,7 @@ class RegistrationPage extends Component {
           <Anthropometry weight={this.state.weight} height={this.state.height}
                          setWeight={this.setWeight}
                          setHeight={this.setHeight} /><Divider />
-          <Needs weight={this.state.weight} height={this.state.height} /><Divider />
+          <Needs weight={this.state.weight} /><Divider />
           <Screening/><Divider />
           <SpecialDiet/><Divider />
           <Preferences/>
@@ -115,15 +123,21 @@ function roundTwoDecimals(decimal:number) {
   return Math.round(100 * decimal) / 100;
 }
 
-function dashOrValue(numberOrNaN:number) {
-  return isNaN(numberOrNaN) ? '-' : dashOrPositiveValue(numberOrNaN);
+function positiveComputedValue(value:?number, compute: (input:number) => number) {
+  return value != null && positiveValue(compute(value));
 }
 
-function dashOrPositiveValue(value:number) {
-  return value > 0 ? value : '-';
+function positiveValue(value:number) {
+  return value > 0 && value;
 }
 
 class Anthropometry extends Component {
+  props: {
+    height: ?Meter,
+    weight: ?Kilograms,
+    setWeight: (weight:Kilograms) => void,
+    setHeight: (height:Meter) => void,
+  };
   render() {
     return (
       <Section>
@@ -140,7 +154,8 @@ class Anthropometry extends Component {
           </Question>
           </View>
           <View style={{flex: 1}}>
-          <Calculation name="KMI" value={dashOrValue(roundTwoDecimals(computeBMI(this.props.weight, this.props.height)))}/>
+          <Calculation name="KMI" value={ this.props.weight && this.props.height ?
+            positiveValue(roundTwoDecimals(computeBMI(this.props.weight, this.props.height))) : '-'}/>
           </View>
         </View>
         </Section>
@@ -149,20 +164,27 @@ class Anthropometry extends Component {
 }
 
 class Needs extends Component {
+  props: { weight:?Kilograms };
   render() {
+    const energyNeed: Kcal | boolean = positiveComputedValue(this.props.weight, computeKcal);
+    const proteinNeed: Gram | boolean = positiveComputedValue(this.props.weight, computeProtein);
+    const fluidNeed: Ml | boolean = positiveComputedValue(this.props.weight, computeFluid);
+
+    const needs = [
+      ["Energi", energyNeed],
+      ["Protein", proteinNeed],
+      ["Væske", fluidNeed],
+    ];
+
     return (
       <Section>
       <Header text="Behov" />
-      <View style={{flexDirection: 'row'}}>
-        <View style={{flex: 1}}>
-          <Calculation name="Energi" value={ dashOrPositiveValue(computeKcal(this.props.weight)) }/>
-        </View>
-        <View style={{flex: 1}}>
-          <Calculation name="Protein" value={ dashOrPositiveValue(computeProtein(this.props.weight)) }/>
-        </View>
-        <View style={{flex: 1}}>
-          <Calculation name="Væske" value={ dashOrPositiveValue(computeFluid(this.props.weight)) }/>
-        </View>
+      <View style={{flexDirection: 'row'}}>{
+          needs.map(need => (
+            <View key={need[0]} style={{flex: 1}}>
+              <Calculation name={need[0]} value={need[1]}/>
+            </View>
+          ))}
       </View>
       </Section>
     );
@@ -245,12 +267,12 @@ const Question = ({name, children, style}) => (
   </View>
 );
 
-const Calculation = ({name, value}) => (
+const Calculation = (props: {name: string, value: ?any}) => (
   <View>
     <Text style={{fontSize: 25, marginBottom: 20}}>
-      {name}:
+      {props.name}:
     </Text>
-    <Text style={{fontSize: 25}}>{value}</Text>
+    <Text style={{fontSize: 25}}>{props.value || '-'}</Text>
 
   </View>
 );

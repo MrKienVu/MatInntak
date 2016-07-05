@@ -18,11 +18,18 @@
  *
  */
 
-export const computeBMI = (weight:number, height:number) =>
+export type BMI = number;
+export type Gram = number;
+export type Kcal = number;
+export type Kilograms = number;
+export type Meter = number;
+export type Ml = number;
+
+export const computeBMI: (weight:Kilograms, height:Meter) => BMI = (weight, height) =>
                            height > 0 ? weight / Math.pow(height, 2) : NaN;
 
-export const computeKcal = (weight:number) => weight*30;
+export const computeKcal: (weight:Kilograms) => Kcal = (weight) => weight*30;
 
-export const computeProtein = (weight:number) => weight;
+export const computeProtein: (weight:Kilograms) => Gram = (weight) => weight;
 
-export const computeFluid = (weight:number) => weight*30;
+export const computeFluid: (weight:Kilograms) => Ml = (weight) => weight*30;
