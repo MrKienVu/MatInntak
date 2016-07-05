@@ -27,8 +27,13 @@ import {
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { computeBMI } from '../logic'
-import { showFrontPage } from '../actions'
+import {
+  computeBMI,
+  computeFluid,
+  computeKcal,
+  computeProtein,
+} from '../logic';
+import { showFrontPage } from '../actions';
 
 const buttonColor = "rgb(33, 115, 161)"
 const inputFieldColor = "rgb(246, 246, 246)"
@@ -111,7 +116,11 @@ function roundTwoDecimals(decimal:number) {
 }
 
 function dashOrValue(numberOrNaN:number) {
-  return isNaN(numberOrNaN) ? '-' : numberOrNaN;
+  return isNaN(numberOrNaN) ? '-' : dashOrPositiveValue(numberOrNaN);
+}
+
+function dashOrPositiveValue(value:number) {
+  return value > 0 ? value : '-';
 }
 
 class Anthropometry extends Component {
@@ -146,13 +155,13 @@ class Needs extends Component {
       <Header text="Behov" />
       <View style={{flexDirection: 'row'}}>
         <View style={{flex: 1}}>
-          <Calculation name="Energi" />
+          <Calculation name="Energi" value={ dashOrPositiveValue(computeKcal(this.props.weight)) }/>
         </View>
         <View style={{flex: 1}}>
-          <Calculation name="Protein" />
+          <Calculation name="Protein" value={ dashOrPositiveValue(computeProtein(this.props.weight)) }/>
         </View>
         <View style={{flex: 1}}>
-          <Calculation name="Væske" />
+          <Calculation name="Væske" value={ dashOrPositiveValue(computeFluid(this.props.weight)) }/>
         </View>
       </View>
       </Section>

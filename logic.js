@@ -19,4 +19,10 @@
  */
 
 export const computeBMI = (weight:number, height:number) =>
-                           height > 0 ? weight / Math.pow(height, 2) : NaN
+                           height > 0 ? weight / Math.pow(height, 2) : NaN;
+
+export const computeKcal = (weight:number) => weight*30;
+
+export const computeProtein = (weight:number) => weight;
+
+export const computeFluid = (weight:number) => weight*30;
