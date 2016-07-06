@@ -61,7 +61,7 @@ class RegistrationPage extends Component {
     return (
       <View style={{flex: 1}}>
         <NavigationBar currentPage="Pasientregistrering" showFrontPage={this.props.showFrontPage} goBack={this.props.showFrontPage} />
-        <ScrollView style={{paddingTop: 20}}>
+        <ScrollView accessibilityLabel="Registreringsskjema" style={{paddingTop: 20}}>
           <Personalia /><Divider />
           <Anthropometry weight={this.state.weight} height={this.state.height}
                          setWeight={this.setWeight}
@@ -86,24 +86,28 @@ const ConnectedPage = connect(
   }),
 )(RegistrationPage);
 
+function doNothing(value: number) {
+  return;
+}
+
 class Personalia extends Component {
   render() {
     return (
       <Section>
         <Header text="Personalia" />
         <Question name="Navn">
-          <InputField placeholder="Fornavn" />
-          <InputField placeholder="Mellomnavn" optional={true} />
-          <InputField placeholder="Etternavn" />
+          <InputField placeholder="Fornavn" onChange={doNothing}/>
+          <InputField placeholder="Mellomnavn" optional={true} onChange={doNothing}/>
+          <InputField placeholder="Etternavn" onChange={doNothing} />
         </Question>
         <Question name="Kjønn">
-          <Choice choices={["Kvinne", "Mann"]} />
+          <Choice label="Kjønn" choices={["Kvinne", "Mann"]} />
         </Question>
         <Question name="Alder">
-          <InputField small={true}/>
+          <InputField label="Alder" small={true} onChange={doNothing} numeric={true}/>
         </Question>
         <Question name="Fødselsnummer">
-          <InputField />
+          <InputField onChange={doNothing} numeric={true} label="Fødselsnummer"/>
         </Question>
       </Section>
     );
@@ -136,12 +140,12 @@ const Anthropometry = (props: {
       <View style={{flexDirection: 'row'}}>
         <View style={{flex: 1}}>
           <Question name="Høyde">
-            <InputField onChange={(value) => props.setHeight(value)} small={true}/>
+            <InputField label="Høyde" onChange={(value) => props.setHeight(value)} small={true} numeric={true} />
           </Question>
         </View>
         <View style={{flex: 1}}>
         <Question name="Vekt">
-          <InputField onChange={(value) => props.setWeight(value)} small={true}/>
+          <InputField label="Vekt" onChange={(value) => props.setWeight(value)} small={true} numeric={true} />
         </Question>
         </View>
         <View style={{flex: 1}}>
@@ -181,10 +185,10 @@ const Screening = () => (
   <Section>
   <Header text="Screening" />
   <Question name="Score screening">
-    <InputField optional={true} />
+    <InputField optional={true} onChange={doNothing} />
   </Question>
   <Question name="Ernæringsmessig risiko">
-    <Choice choices={["Moderat", "Gøy"]} optional={true} />
+    <Choice label="Ernæringsmessig risiko" choices={["Moderat", "Gøy"]} optional={true} />
   </Question>
   </Section>
 );
@@ -194,8 +198,8 @@ const SpecialDiet = () => (
   <Section>
   <Header text="Spesialkost" />
   <Question>
-    <Choice choices={["Nei", "Ja"]} />
-    <InputField placeholder="Spesifiser type spesialkost" optional={true} />
+    <Choice label="Spesialkost" choices={["Nei", "Ja"]} />
+    <InputField placeholder="Spesifiser type spesialkost" optional={true} onChange={doNothing}/>
   </Question>
   </Section>
 );
@@ -205,7 +209,7 @@ const Preferences = () => (
   <Section>
   <Header text="Spesielle preferanser" />
   <Question>
-    <InputField optional={true} />
+    <InputField optional={true} onChange={doNothing}/>
   </Question>
   </Section>
 );
@@ -234,7 +238,7 @@ const Button = ({text}) => (
 )
 
 const Question = ({name, children, style}) => (
-  <View>
+  <View accessibilityLabel={name}>
   {name &&
     <Text style={[{fontSize: fontSize.small, marginBottom: 20}, style]}>
       {name}:
@@ -256,12 +260,14 @@ const Calculation = (props: {name: string, value: ?any}) => (
 
 const Divider = () => <View style={{marginTop: 30, height: 6, backgroundColor: colors.divider}}/>;
 
-const Choice = ({choices, optional}) => (
+const Choice = ({label, choices, optional}) => (
   <View style={{flexDirection: 'row'}}>
-    <SegmentedControlIOS values={choices}
+    <SegmentedControlIOS
+      values={choices}
       style={{flex: 1, height: 30, marginBottom: 10, padding: 20}}
-      tintColor= { colors.darkBlue } />
-      <Required optional={optional} />
+      tintColor= { colors.darkBlue }
+      accessibilityLabel={label} />
+    <Required optional={optional} />
   </View>
 );
 
@@ -273,14 +279,17 @@ const Required = ({optional}) => (
   </View>
 );
 
-const InputField = ({placeholder, small, optional, onChange}) => (
+const InputField = (props: { optional?: boolean, small?: boolean, numeric?: boolean, label?: string, placeholder?: string, onChange: (value: number) => void}) => (
   <View style={{flexDirection: 'row'}}>
     <View style={{flex: 1, flexDirection: 'row'}}>
-      <TextInput onChange={(event) => onChange(event.nativeEvent.text)} placeholder={placeholder || ""}
-                 style={{width: small ? 140 : 685, height: 60, backgroundColor: colors.inputFieldBackground,
+      <TextInput onChange={(event) => props.onChange(event.nativeEvent.text)} placeholder={props.placeholder || ""}
+                 style={{width: props.small ? 140 : 685, height: 60, backgroundColor: colors.inputFieldBackground,
                         borderRadius: 8, fontSize: fontSize.small, padding: 10, marginBottom: 15,
-                       borderColor: colors.inputFieldBorder, borderWidth: 3}}/>
-      <Required optional={optional} />
+                       borderColor: colors.inputFieldBorder, borderWidth: 3}}
+                 keyboardType={props.numeric ? 'number-pad' : 'default'}
+                 accessibilityLabel={props.label || props.placeholder }
+                       />
+      <Required optional={props.optional} />
     </View>
   </View>
 );
