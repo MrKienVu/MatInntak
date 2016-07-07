@@ -22,10 +22,11 @@ import React from 'react';
 import { connect, Provider } from 'react-redux'
 
 import StartPage from './components/StartPage';
-import RegistrationPage from './components/RegistrationPage';
+import NeedsRegistrationPage from './components/NeedsRegistrationPage'
+import PatientRegistrationPage from './components/PatientRegistrationPage';
 import store from './store';
 
-const pages = { 'StartPage':StartPage, 'RegisterPatient':RegistrationPage };
+const pages = { 'StartPage': StartPage, 'RegisterPatient': PatientRegistrationPage, 'RegisterNeeds': NeedsRegistrationPage };
 
 const Page = (props) => {
   const DisplayPage = pages[props.pageName];
