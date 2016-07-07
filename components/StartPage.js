@@ -77,7 +77,9 @@ const SeparatorText = ({text}) => (
 
 const InputField = ({placeholder}) => (
   <View>
-    <TextInput placeholder={placeholder}
+    <TextInput accessibilityLabel='Fødselsnummer'
+               keyboardType={'number-pad'}
+               placeholder={placeholder}
                style={{backgroundColor: inputFieldColor,
                        borderRadius: cornerRadius,
                        fontSize: fontSmall,

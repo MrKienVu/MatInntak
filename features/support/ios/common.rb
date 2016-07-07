@@ -22,6 +22,14 @@ def elementExists(label)
   return !query("* marked:'#{label}'").empty?
 end
 
+def type_on_keyboard(text)
+  unless keyboard_visible? then
+    wait_for_keyboard
+  end
+  keyboard_enter_text(text)
+  tap_keyboard_action_key
+end
+
 def scrollUntilElementIsVisible(label)
   wait_for do
     swipe :up, force:(:strong)
