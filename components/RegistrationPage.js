@@ -253,7 +253,10 @@ const Calculation = (props: {name: string, value: ?any}) => (
     <Text style={{fontSize: fontSize.small, marginBottom: 20}}>
       {props.name}:
     </Text>
-    <Text style={{fontSize: fontSize.small}}>{props.value || '-'}</Text>
+    <View accessibilityLabel={props.name}>
+      <Text style={{fontSize: fontSize.small}}>
+      {props.value || '-'}</Text>
+    </View>
 
   </View>
 );

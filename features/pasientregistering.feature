@@ -17,6 +17,11 @@ Og tekstfeltene fylles ut med:
 Og tallfeltene fylles ut med:
   | Høyde         | 2           |
   | Vekt          | 80          |
+Så vises de beregnede verdiene:
+  | KMI           | 20          |
+  | Energi        | 2400        |
+  | Protein       | 80          |
+  | Væske         | 2400        |
 Og "Nei" velges i flervalgsfeltet "Spesialkost"
 Og knappen "Registrer" trykkes på
 # Så skal skjermbildet Feberregistrering vises

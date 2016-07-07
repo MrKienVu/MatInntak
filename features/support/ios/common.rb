@@ -10,6 +10,10 @@ def inputFieldExists(label)
   return !query("RCTTextField marked:'#{label}'").empty?
 end
 
+def textViewExists(label)
+  return !query("RCTView marked:'#{label}'").empty?
+end
+
 def choiceFieldExists(label)
   return !query("RCTSegmentedControl marked:'#{label}'").empty?
 end
@@ -29,6 +33,13 @@ def scrollUntilInputFieldIsVisible(label)
   wait_for do
     swipe :up, force:(:strong)
     inputFieldExists(label)
+  end
+end
+
+def scrollUntilTextIsVisible(label)
+  wait_for do
+    swipe :up, force:(:strong)
+    textViewExists(label)
   end
 end
 
