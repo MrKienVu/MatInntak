@@ -20,21 +20,30 @@
 
 import React from 'react';
 import {
+  SegmentedControlIOS,
   Text,
   TextInput,
   View,
 } from 'react-native';
 import { colors, fontSize } from '../style';
 
-export const Button = (props: {text: string}) => (
+export const Button = ({text, onPress}: {text: string, onPress: () => void}) => (
   <View style={{marginBottom: 15}}>
   <Text style={{marginTop: 60, fontSize: fontSize.small, color: colors.white, backgroundColor: colors.deepBlue, paddingLeft: 20,
                 paddingTop: 16, paddingRight: 20, paddingBottom: 16, fontStyle: 'italic',
-                borderRadius: 5, overflow: 'hidden', width: 250, textAlign: 'center'}}>
-    {props.text}
+                borderRadius: 5, overflow: 'hidden', width: 250, textAlign: 'center'}}
+        onPress={onPress}>
+    {text}
   </Text>
   </View>
 );
+
+export const RegisterButton = ({onPress}: {onPress: () => void}) => (
+  <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+    <Button text="Registrer" onPress={ onPress}  />
+  </View>
+);
+
 
 export const Divider = () => <View style={{marginTop: 30, height: 6, backgroundColor: colors.divider}}/>;
 
@@ -82,4 +91,27 @@ export const Question = (props: {name?: string, children?: any, style?: any}) =>
   }
   {props.children}
   </View>
+);
+
+
+export const Choice = ({label, choices, optional}: { label: string, choices: Array<string>, optional?: boolean }) => (
+  <View style={{flexDirection: 'row'}}>
+    <SegmentedControlIOS
+      values={choices}
+      style={{flex: 1, height: 30, marginBottom: 10, padding: 20}}
+      tintColor= { colors.darkBlue }
+      accessibilityLabel={label} />
+    <Required optional={optional} />
+  </View>
+);
+
+
+export const YesNoQuestionWithTextField = ({ label, textFieldCaption} : { label: string, textFieldCaption: string }) => (
+  <Section>
+    <Header text={label} />
+    <Question>
+      <Choice label={label} choices={["Nei", "Ja"]} />
+      <InputField placeholder={textFieldCaption} optional={true} onChange={() => { return; }}/>
+    </Question>
+  </Section>
 );

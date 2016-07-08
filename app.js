@@ -22,20 +22,27 @@ import React from 'react';
 import { connect, Provider } from 'react-redux'
 
 import StartPage from './components/StartPage';
+import FeverRegistrationPage from './components/FeverRegistrationPage'
 import NeedsRegistrationPage from './components/NeedsRegistrationPage'
 import PatientRegistrationPage from './components/PatientRegistrationPage';
+import type { PageName } from './actions';
 import store from './store';
 
-const pages = { 'StartPage': StartPage, 'RegisterPatient': PatientRegistrationPage, 'RegisterNeeds': NeedsRegistrationPage };
+const getPage: (name: PageName) => ?React.Component<*,*,*> = (name) => {
+  if (name === 'StartPage') return StartPage;
+  if (name === 'RegisterPatient') return PatientRegistrationPage;
+  if (name === 'RegisterNeeds') return NeedsRegistrationPage;
+  if (name === 'FeverRegistrationPage') return FeverRegistrationPage;
+};
 
 const Page = (props) => {
-  const DisplayPage = pages[props.pageName];
+  const DisplayPage = getPage(props.pageName);
   return <DisplayPage />
 }
 
 const ConnectedPage = connect(
   (state) => ({
-    pageName: state.routing.name,
+    pageName: state.routing.pageStack[state.routing.pageStack.length - 1],
   }),
 )(Page);
 

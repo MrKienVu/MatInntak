@@ -20,7 +20,6 @@
 
 import React, { Component } from 'react';
 import {
-  SegmentedControlIOS,
   ScrollView,
   View,
 } from 'react-native';
@@ -30,17 +29,21 @@ import type {
   Meter,
 } from '../logic';
 import NavigationBar from './NavigationBar'
-import { showFrontPage } from '../actions';
-import { colors } from '../style';
+import {
+  resetApp,
+  showFeverRegistrationPage,
+  showPreviousPage,
+} from '../actions';
 import NeedsRegistration from './NeedsRegistration';
 import {
-  Button,
+  Choice,
   Divider,
   Header,
   InputField,
   Question,
-  Required,
+  RegisterButton,
   Section,
+  YesNoQuestionWithTextField,
 } from './common'
 
 class RegistrationPage extends Component {
@@ -58,16 +61,14 @@ class RegistrationPage extends Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        <NavigationBar currentPage="Pasientregistrering" showFrontPage={this.props.showFrontPage} goBack={this.props.showFrontPage} />
+        <NavigationBar currentPage="Pasientregistrering" showFrontPage={this.props.resetApp} goBack={this.props.showPreviousPage} />
         <ScrollView accessibilityLabel="Registreringsskjema" style={{paddingTop: 20}}>
           <Personalia /><Divider />
           <NeedsRegistration height={this.state.height} weight={this.state.weight} setWeight={this.setWeight} setHeight={this.setHeight} /><Divider />
           <Screening/><Divider />
           <SpecialDiet/><Divider />
           <Preferences/>
-          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-            <Button text="Registrer" />
-          </View>
+          <RegisterButton onPress={ this.props.showFeverRegistrationPage } />
         </ScrollView>
       </View>
     );
@@ -77,7 +78,9 @@ class RegistrationPage extends Component {
 const ConnectedPage = connect(
   () => ({}),
   (dispatch) => ({
-    showFrontPage: () => dispatch(showFrontPage()),
+    resetApp: () => dispatch(resetApp()),
+    showFeverRegistrationPage: () => dispatch(showFeverRegistrationPage()),
+    showPreviousPage: () => dispatch(showPreviousPage()),
   }),
 )(RegistrationPage);
 
@@ -123,13 +126,7 @@ const Screening = () => (
 
 
 const SpecialDiet = () => (
-  <Section>
-  <Header text="Spesialkost" />
-  <Question>
-    <Choice label="Spesialkost" choices={["Nei", "Ja"]} />
-    <InputField placeholder="Spesifiser type spesialkost" optional={true} onChange={doNothing}/>
-  </Question>
-  </Section>
+  <YesNoQuestionWithTextField label="Spesialkost"  textFieldCaption="Spesifiser type spesialkost" />
 );
 
 const Preferences = () => (
@@ -139,19 +136,6 @@ const Preferences = () => (
     <InputField optional={true} onChange={doNothing}/>
   </Question>
   </Section>
-);
-
-
-
-const Choice = ({label, choices, optional}) => (
-  <View style={{flexDirection: 'row'}}>
-    <SegmentedControlIOS
-      values={choices}
-      style={{flex: 1, height: 30, marginBottom: 10, padding: 20}}
-      tintColor= { colors.darkBlue }
-      accessibilityLabel={label} />
-    <Required optional={optional} />
-  </View>
 );
 
 export default ConnectedPage;

@@ -21,9 +21,19 @@
 import { combineReducers } from 'redux';
 import type { Action } from './actions';
 
-function routing(state = { name: 'StartPage' }, action: Action) {
-  if (action.type === 'GO_TO_PAGE') {
-    return { name: action.name };
+const initialRouting = { pageStack: ['StartPage'] };
+
+function routing(state = initialRouting, action: Action) {
+  if (action.type === 'GO_TO_PAGE' && (state.pageStack.length === 0 || action.name !== state[state.pageStack.length - 1])) {
+    return { pageStack: [...state.pageStack, action.name] };
+  }
+
+  if (action.type === 'GO_TO_PREVIOUS_PAGE') {
+    return { pageStack: state.pageStack.slice(0, state.pageStack.length - 1) };
+  }
+
+  if (action.type === 'RESET_APP') {
+    return initialRouting;
   }
 
   return state;

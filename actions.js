@@ -21,10 +21,19 @@
 
 export type GoToPageAction = {
   type: 'GO_TO_PAGE',
-  name: string,
+  name: PageName,
+}
+
+export type GoToPreviousPageAction = {
+  type: 'GO_TO_PREVIOUS_PAGE',
+}
+
+export type ResetAppAction = {
+  type: 'RESET_APP',
 }
 
 export type Action = GoToPageAction;
+export type PageName = 'RegisterNeeds' | 'RegisterPatient' | 'StartPage' | 'FeverRegistrationPage';
 
 export function registerNeeds(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterNeeds' }
@@ -34,6 +43,14 @@ export function registerPatient(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterPatient' }
 }
 
-export function showFrontPage(): GoToPageAction {
-  return { type: 'GO_TO_PAGE', name: 'StartPage' }
+export function resetApp(): ResetAppAction {
+  return { type: 'RESET_APP' }
+}
+
+export function showFeverRegistrationPage() {
+  return { type: 'GO_TO_PAGE', name: 'FeverRegistrationPage'}
+}
+
+export function showPreviousPage() {
+  return { type: 'GO_TO_PREVIOUS_PAGE' }
 }
