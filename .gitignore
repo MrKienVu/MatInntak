@@ -1,5 +1,5 @@
 ios/build/
-*.DS_Store
+.DS_Store
 node_modules/
 ios/screenshot*
 ios/Products/*
