@@ -26,6 +26,10 @@ export type GoToPageAction = {
 
 export type Action = GoToPageAction;
 
+export function registerNeeds(): GoToPageAction {
+  return { type: 'GO_TO_PAGE', name: 'RegisterNeeds' }
+}
+
 export function registerPatient(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterPatient' }
 }

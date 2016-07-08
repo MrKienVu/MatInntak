@@ -1,13 +1,3 @@
-
-
-def type_on_keyboard(text)
-  unless keyboard_visible? then
-    wait_for_keyboard
-  end
-  keyboard_enter_text(text)
-  tap_keyboard_action_key
-end
-
 Når(/^tekstfeltene fylles ut med:$/) do |table|
   table.raw.each { |row|
     label = row[0]
