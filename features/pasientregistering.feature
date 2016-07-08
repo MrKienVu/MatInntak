@@ -24,4 +24,4 @@ Så vises de beregnede verdiene:
   | Væske         | 2400        |
 Og "Nei" velges i flervalgsfeltet "Spesialkost"
 Og knappen "Registrer" trykkes på
-# Så skal skjermbildet Feberregistrering vises
+Så skal skjermbildet "Feberregistrering" vises
