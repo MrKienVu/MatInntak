@@ -33,7 +33,7 @@ export type ResetAppAction = {
 }
 
 export type Action = GoToPageAction;
-export type PageName = 'RegisterNeeds' | 'RegisterPatient' | 'StartPage' | 'RegisterFever' | 'RegisterFood';
+export type PageName = 'RegisterNeeds' | 'RegisterPatient' | 'StartPage' | 'RegisterFever' | 'RegisterFood' | 'RegisterLiquid';
 
 export function registerNeeds(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterNeeds' }
@@ -53,4 +53,12 @@ export function showFeverRegistrationPage() {
 
 export function showPreviousPage() {
   return { type: 'GO_TO_PREVIOUS_PAGE' }
+}
+
+export function registerFood(): GoToPageAction {
+  return { type: 'GO_TO_PAGE', name: 'RegisterFood' }
+}
+
+export function registerLiquid(): GoToPageAction {
+  return { type: 'GO_TO_PAGE', name: 'RegisterLiquid' }
 }

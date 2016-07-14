@@ -27,9 +27,11 @@ export const colors = {
   inputFieldBorder: "#D8D8D8",
   inputFieldBackground:"#F8F8F8",
   red: 'red',
+  transparent: 'rgba(0,0,0,0)',
   white: "#FFFFFF",
 }
 
 export const fontSize = {
   small: 25,
+  large: 38,
 }
