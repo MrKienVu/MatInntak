@@ -24,9 +24,10 @@ import {
   View,
 } from 'react-native';
 import { colors, fontSize } from '../style';
+import type Color from '../style';
 
-const NavigationBar = (props: {currentPage: string, showFrontPage: () => void, goBack: () => void}) => (
-  <View style={{backgroundColor: colors.darkBlue, paddingTop: 50, paddingBottom: 30, paddingLeft: 20, paddingRight: 20}}>
+const NavigationBar = (props: {currentPage: string, showFrontPage: () => void, goBack: () => void, color?: Color}) => (
+  <View style={{backgroundColor: props.color ? props.color : colors.darkBlue, paddingTop: 50, paddingBottom: 30, paddingLeft: 20, paddingRight: 20}}>
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
       <View style={{flex: 1}}>
         <Link text="Tilbake" performNavigation={props.goBack}/>

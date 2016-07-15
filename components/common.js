@@ -22,19 +22,38 @@ import React from 'react';
 import {
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { colors, fontSize } from '../style';
 
-export const Button = (props: {text: string}) => (
-  <View style={{marginBottom: 15}}>
-  <Text style={{marginTop: 60, fontSize: fontSize.small, color: colors.white, backgroundColor: colors.deepBlue, paddingLeft: 20,
-                paddingTop: 16, paddingRight: 20, paddingBottom: 16, fontStyle: 'italic',
-                borderRadius: 5, overflow: 'hidden', width: 250, textAlign: 'center'}}>
-    {props.text}
-  </Text>
+export const Button = (props: {text: string, small?: boolean}) => (
+  <View style={{
+    marginTop: 60,
+    marginBottom: 15,
+    paddingHorizontal: 20,
+  }}>
+    <EmbeddedButton text={props.text} small={props.small} />
   </View>
 );
+
+export const EmbeddedButton = (props: {text: string, small?: boolean}) => (
+  <Text style={{
+    backgroundColor: colors.deepBlue,
+    borderRadius: 8,
+    color: colors.white,
+    fontSize: fontSize.small,
+    fontStyle: 'italic',
+    overflow: 'hidden',
+    paddingVertical: 15,
+    textAlign: 'center',
+    width: props.small ? 150 : 250,
+  }}>
+    {props.text}
+  </Text>
+);
+
+
 
 export const Divider = () => <View style={{marginTop: 30, height: 6, backgroundColor: colors.divider}}/>;
 
@@ -56,6 +75,32 @@ export const InputField = (props: { optional?: boolean, small?: boolean, numeric
                        />
       <Required optional={props.optional} />
     </View>
+  </View>
+);
+
+export const SearchBar = (props: {placeholder?: string}) => (
+  <View style={{
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginHorizontal: 35,
+    marginVertical: 30,
+  }}>
+    <TextInput
+      placeholder={props.placeholder || ""}
+      style={{
+        backgroundColor: colors.inputFieldBackground,
+        borderColor: colors.deepBlue,
+        borderRadius: 5,
+        borderWidth: 3,
+        fontSize: fontSize.small,
+        height: 60,
+        paddingLeft: 30,
+        width: 510,
+      }}/>
+    <TouchableOpacity>
+      <EmbeddedButton text="Søk" small={true}/>
+    </TouchableOpacity>
   </View>
 );
 
