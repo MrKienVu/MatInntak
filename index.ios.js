@@ -19,6 +19,6 @@
  */
 
 import { AppRegistry } from 'react-native';
-import app from './app';
+import { registerApp } from './app';
 
-AppRegistry.registerComponent('matinntak', () => app);
+registerApp();

@@ -19,6 +19,7 @@
  */
 
 import React from 'react';
+import { AppRegistry } from 'react-native';
 import { connect, Provider } from 'react-redux'
 
 import StartPage from './components/StartPage';
@@ -45,4 +46,6 @@ const ReduxApp = () => (
   </Provider>
 );
 
-export default ReduxApp;
+export const registerApp = () => {
+  AppRegistry.registerComponent('matinntak', () => ReduxApp);
+};
