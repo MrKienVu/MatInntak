@@ -4,7 +4,7 @@ import {
   computeFluid,
   computeKcal,
   computeProtein,
-} from '../logic';
+} from '../logic/needs';
 
 describe('A person`s bmi', () => {
   it('is 18.52 for a person of height 1.80m and weight 60kg', () => {

@@ -28,7 +28,7 @@ import {
   computeFluid,
   computeKcal,
   computeProtein,
-} from '../logic';
+} from '../logic/needs';
 import type {
   BMI,
   Gram,
@@ -36,7 +36,7 @@ import type {
   Kcal,
   Meter,
   Ml,
-} from '../logic';
+} from '../logic/needs';
 import {
   Divider,
   Header,
