@@ -65,7 +65,7 @@
 .*/node_modules/joi/.*\.json
 .*/node_modules/isemail/.*\.json
 .*/node_modules/tr46/.*\.json
-
+.*/node_modules/npm/.*\.json
 
 [include]
 
