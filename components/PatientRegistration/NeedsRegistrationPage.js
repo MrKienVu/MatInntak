@@ -27,7 +27,7 @@ import { connect } from 'react-redux';
 import type {
   Kilograms,
   Meter,
-} from '../logic/needs';
+} from '../../logic/needs';
 import NavigationBar from '../NavigationBar'
 import { showFrontPage } from '../../actions';
 import { colors, fontSize } from '../../style';

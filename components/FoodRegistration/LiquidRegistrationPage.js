@@ -29,7 +29,7 @@ import { showFrontPage } from '../../actions';
 import { SearchBar, GridLayout, GridItem } from './common';
 import { colors } from '../../style';
 
-type Liquid = {name: string, image: string}
+type Liquid = {name: string, image: number}
 const liquids: Array<Liquid> = [
   { name: 'Kaffe', image: require('../../img/dinner.png') },
   { name: 'Te', image: require('../../img/dinner.png') },

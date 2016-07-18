@@ -24,7 +24,7 @@ import {
   View,
 } from 'react-native';
 import { colors, fontSize } from '../style';
-import type Color from '../style';
+import type { Color } from '../style';
 
 const NavigationBar = (props: {currentPage: string, showFrontPage: () => void, goBack: () => void, color?: Color}) => (
   <View style={{backgroundColor: props.color || colors.darkBlue, paddingTop: 50, paddingBottom: 30, paddingLeft: 20, paddingRight: 20}}>
