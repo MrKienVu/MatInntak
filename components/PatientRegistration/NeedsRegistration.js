@@ -28,7 +28,7 @@ import {
   computeFluid,
   computeKcal,
   computeProtein,
-} from '../logic/needs';
+} from '../../logic/needs';
 import type {
   BMI,
   Gram,
@@ -36,7 +36,7 @@ import type {
   Kcal,
   Meter,
   Ml,
-} from '../logic/needs';
+} from '../../logic/needs';
 import {
   Divider,
   Header,
@@ -44,7 +44,7 @@ import {
   Question,
   Section,
 } from './common'
-import { fontSize } from '../style'
+import { fontSize } from '../../style'
 
 function roundTwoDecimals(decimal:number) {
   return Math.round(100 * decimal) / 100;

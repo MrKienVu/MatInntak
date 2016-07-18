@@ -20,29 +20,27 @@
 
 import React, { Component } from 'react';
 import {
-  Image,
   View,
-  Text,
   ScrollView,
 } from 'react-native';
 import { connect } from 'react-redux';
-//import type { Ml } from '../logic';
-import NavigationBar from './NavigationBar'
-import { showFrontPage } from '../actions';
-import { SearchBar } from './common';
-import { colors } from '../style';
+import NavigationBar from '../NavigationBar'
+import { showFrontPage } from '../../actions';
+import { SearchBar, GridLayout, GridItem } from './common';
+import { colors } from '../../style';
 
-const liquids = [
-  ['Kaffe', require('../img/dinner.png')],
-  ['Te', require('../img/dinner.png')],
-  ['Melk', require('../img/dinner.png')],
-  ['Juice', require('../img/dinner.png')],
-  ['Saft', require('../img/dinner.png')],
-  ['Vann', require('../img/dinner.png')],
-  ['Brus', require('../img/dinner.png')],
+type Liquid = {name: string, image: string}
+const liquids: Array<Liquid> = [
+  { name: 'Kaffe', image: require('../../img/dinner.png') },
+  { name: 'Te', image: require('../../img/dinner.png') },
+  { name: 'Melk', image: require('../../img/dinner.png') },
+  { name: 'Juice', image: require('../../img/dinner.png') },
+  { name: 'Saft', image: require('../../img/dinner.png') },
+  { name: 'Vann', image: require('../../img/dinner.png') },
+  { name: 'Brus', image: require('../../img/dinner.png') },
 ];
 
-class RegistrationLiquid extends Component {
+class LiquidRegistrationPage extends Component {
   render() {
     return (
       <View style={{
@@ -57,7 +55,7 @@ class RegistrationLiquid extends Component {
         <SearchBar placeholder="Søk etter matprodukter"/>
         <GridLayout>{
           liquids.map(liquid => (
-            <GridItem key={liquid[0]} small={true} label={liquid[0]} icon={liquid[1]} />
+            <GridItem key={liquid.name} small={true} label={liquid.name} icon={liquid.image} />
           ))}
         </GridLayout>
         </ScrollView>
@@ -66,42 +64,11 @@ class RegistrationLiquid extends Component {
   }
 }
 
-const GridLayout = (props: {children?: any}) => (
-  <View style={{
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  }}>
-    {props.children}
-  </View>
-);
-
-const GridItem = (props: {label?: string, icon?: any, small?: boolean}) => (
-  <View style={{
-    alignItems: 'center',
-    backgroundColor: 'white',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    width: props.small ? 250 : 378,
-    height: 200,
-    marginRight: 6,
-    marginBottom: 6,
-  }}>
-    <Image source={props.icon ? props.icon : require('../img/dinner.png')} />
-    <Text style={{
-      color: colors.deepBlue,
-      fontSize: 22,
-      marginTop: 20,
-    }}>
-      {props.label ? props.label : "placeholder"}
-    </Text>
-  </View>
-);
-
 const ConnectedPage = connect(
   () => ({}),
   (dispatch) => ({
     showFrontPage: () => dispatch(showFrontPage()),
   }),
-)(RegistrationLiquid);
+)(LiquidRegistrationPage);
 
 export default ConnectedPage;

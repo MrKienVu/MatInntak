@@ -22,38 +22,31 @@ import React from 'react';
 import {
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import { colors, fontSize } from '../style';
+import { colors, fontSize } from '../../style';
 
-export const Button = (props: {text: string, small?: boolean}) => (
+export const Button = (props: {text: string}) => (
   <View style={{
-    marginTop: 60,
-    marginBottom: 15,
-    paddingHorizontal: 20,
+    marginBottom: 45,
   }}>
-    <EmbeddedButton text={props.text} small={props.small} />
-  </View>
-);
-
-export const EmbeddedButton = (props: {text: string, small?: boolean}) => (
   <Text style={{
     backgroundColor: colors.deepBlue,
-    borderRadius: 8,
-    color: colors.white,
+    borderRadius: 5,
     fontSize: fontSize.small,
     fontStyle: 'italic',
+    color: colors.white,
+    marginTop: 60,
     overflow: 'hidden',
-    paddingVertical: 15,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     textAlign: 'center',
-    width: props.small ? 150 : 250,
+    width: 250,
   }}>
     {props.text}
   </Text>
+  </View>
 );
-
-
 
 export const Divider = () => <View style={{marginTop: 30, height: 6, backgroundColor: colors.divider}}/>;
 
@@ -63,44 +56,27 @@ export const Header = (props: {text: string}) => (
   </Text>
 );
 
-export const InputField = (props: { optional?: boolean, small?: boolean, numeric?: boolean, label?: string, placeholder?: string, onChange: (value: number) => void}) => (
+export const InputField = (props: { optional?: boolean, small?: boolean, numeric?: boolean,
+                           label?: string, placeholder?: string, onChange: (value: number) => void}) => (
   <View style={{flexDirection: 'row'}}>
     <View style={{flex: 1, flexDirection: 'row'}}>
-      <TextInput onChange={(event) => props.onChange(event.nativeEvent.text)} placeholder={props.placeholder || ""}
-                 style={{width: props.small ? 140 : 685, height: 60, backgroundColor: colors.inputFieldBackground,
-                        borderRadius: 8, fontSize: fontSize.small, padding: 10, marginBottom: 15,
-                       borderColor: colors.inputFieldBorder, borderWidth: 3}}
+      <TextInput onChange={(event) => props.onChange(event.nativeEvent.text)}
+                 placeholder={props.placeholder || ""}
                  keyboardType={props.numeric ? 'number-pad' : 'default'}
                  accessibilityLabel={props.label || props.placeholder }
-                       />
+                 style={{
+                   backgroundColor: colors.inputFieldBackground,
+                   borderColor: colors.inputFieldBorder,
+                   borderRadius: 8,
+                   borderWidth: 3,
+                   fontSize: fontSize.small,
+                   height: 60,
+                   marginBottom: 15,
+                   padding: 10,
+                   width: props.small ? 140 : 685,
+                  }}/>
       <Required optional={props.optional} />
     </View>
-  </View>
-);
-
-export const SearchBar = (props: {placeholder?: string}) => (
-  <View style={{
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    marginHorizontal: 35,
-    marginVertical: 30,
-  }}>
-    <TextInput
-      placeholder={props.placeholder || ""}
-      style={{
-        backgroundColor: colors.inputFieldBackground,
-        borderColor: colors.deepBlue,
-        borderRadius: 5,
-        borderWidth: 3,
-        fontSize: fontSize.small,
-        height: 60,
-        paddingLeft: 30,
-        width: 510,
-      }}/>
-    <TouchableOpacity>
-      <EmbeddedButton text="Søk" small={true}/>
-    </TouchableOpacity>
   </View>
 );
 

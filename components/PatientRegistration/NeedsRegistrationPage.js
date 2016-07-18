@@ -28,9 +28,9 @@ import type {
   Kilograms,
   Meter,
 } from '../logic/needs';
-import NavigationBar from './NavigationBar'
-import { showFrontPage } from '../actions';
-import { colors, fontSize } from '../style';
+import NavigationBar from '../NavigationBar'
+import { showFrontPage } from '../../actions';
+import { colors, fontSize } from '../../style';
 import NeedsRegistration from './NeedsRegistration'
 
 class RegistrationNeeds extends Component {
