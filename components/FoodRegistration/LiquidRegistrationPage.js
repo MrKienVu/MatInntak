@@ -25,7 +25,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import NavigationBar from '../NavigationBar'
-import { showFrontPage } from '../../actions';
+import { resetApp } from '../../actions';
 import { SearchBar, GridLayout, GridItem } from './common';
 import { colors } from '../../style';
 
@@ -67,7 +67,7 @@ class LiquidRegistrationPage extends Component {
 const ConnectedPage = connect(
   () => ({}),
   (dispatch) => ({
-    showFrontPage: () => dispatch(showFrontPage()),
+    showFrontPage: () => dispatch(resetApp()),
   }),
 )(LiquidRegistrationPage);
 

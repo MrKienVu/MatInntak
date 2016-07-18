@@ -23,6 +23,7 @@ import { AppRegistry } from 'react-native';
 import { connect, Provider } from 'react-redux'
 
 import StartPage from './components/StartPage';
+import FeverRegistrationPage from './components/PatientRegistration/FeverRegistrationPage'
 import NeedsRegistrationPage from './components/PatientRegistration/NeedsRegistrationPage'
 import PatientRegistrationPage from './components/PatientRegistration/PatientRegistrationPage';
 import LiquidRegistrationPage from './components/FoodRegistration/LiquidRegistrationPage';
@@ -33,6 +34,7 @@ const pages = {
   'RegisterPatient': PatientRegistrationPage,
   'RegisterNeeds': NeedsRegistrationPage,
   'StartPage': StartPage,
+  'RegisterFever': FeverRegistrationPage,
 };
 
 const Page = (props) => {
@@ -42,7 +44,7 @@ const Page = (props) => {
 
 const ConnectedPage = connect(
   (state) => ({
-    pageName: state.routing.name,
+    pageName: state.routing.pageStack[state.routing.pageStack.length - 1],
   }),
 )(Page);
 

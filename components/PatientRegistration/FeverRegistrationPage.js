@@ -23,47 +23,45 @@ import {
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
-import type {
-  Kilograms,
-  Meter,
-} from '../../logic/needs';
 import NavigationBar from '../NavigationBar'
-import { resetApp, showFeverRegistrationPage, showPreviousPage } from '../../actions';
-import NeedsRegistration from './NeedsRegistration';
-import { Divider, RegisterButton } from '../common';
+import { resetApp, showPreviousPage } from '../../actions';
+import { Divider, RegisterButton, YesNoQuestionWithTextField } from '../common';
 
-class NeedsRegistrationPage extends Component {
-  state:{weight: ?Kilograms, height: ?Meter};
+type Celcius = number;
+
+class FeverRegistrationPage extends Component {
+  state: { degrees: ?Celcius };
   constructor() {
     super()
-    this.state = {weight: null, height: null}
+    this.state = { degrees: null }
   }
-  setWeight:(weight:number) => void = (weight) => {
-    this.setState({weight});
-  };
-  setHeight:(height:number) => void = (height) => {
-    this.setState({height});
+  setFever: (degrees: Celcius) => void = (degrees) => {
+    this.setState({degrees});
   };
   render() {
     return (
       <View style={{flex: 1}}>
-        <NavigationBar currentPage="Registrer behov" showFrontPage={this.props.resetApp} goBack={this.props.showPreviousPage} />
+        <NavigationBar currentPage="Registrer feber" showFrontPage={this.props.showFrontPage} goBack={this.props.showPreviousPage} />
         <View style={{paddingTop: 20}}>
-          <NeedsRegistration height={this.state.height} weight={this.state.weight} setHeight={this.setHeight} setWeight={this.setWeight} /><Divider />
+          <FeverRegistration degrees={this.state.degrees} setFever={this.setFever} /><Divider />
+          <RegisterButton onPress={()=> {return;}} />
         </View>
-        <RegisterButton onPress={ this.props.showFeverRegistrationPage } />
       </View>
     );
   }
 }
 
+const FeverRegistration = () => (
+  <YesNoQuestionWithTextField label="Feber" textFieldCaption="Spesifiser antall grader" />
+);
+
+
 const ConnectedPage = connect(
   () => ({}),
   (dispatch) => ({
-    resetApp: () => dispatch(resetApp()),
-    showFeverRegistrationPage: () => dispatch(showFeverRegistrationPage()),
+    showFrontPage: () => dispatch(resetApp()),
     showPreviousPage: () => dispatch(showPreviousPage()),
   }),
-)(NeedsRegistrationPage);
+)(FeverRegistrationPage);
 
 export default ConnectedPage;
