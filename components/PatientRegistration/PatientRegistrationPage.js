@@ -44,7 +44,7 @@ import {
   Section,
   Question,
   YesNoQuestionWithTextField,
-} from '../common';
+} from './common';
 
 class RegistrationPage extends Component {
   state:{weight: ?Kilograms, height: ?Meter};

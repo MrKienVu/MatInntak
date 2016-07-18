@@ -20,30 +20,34 @@
 
 import React from 'react';
 import {
+  SegmentedControlIOS,
   Text,
   TextInput,
   View,
 } from 'react-native';
 import { colors, fontSize } from '../../style';
 
-export const Button = (props: {text: string}) => (
+export const RegisterButton = ({onPress}: {onPress: () => void}) => (
   <View style={{
-    marginBottom: 45,
+               marginBottom: 45,
+               flexDirection: 'row',
+               justifyContent: 'center',
   }}>
-  <Text style={{
-    backgroundColor: colors.deepBlue,
-    borderRadius: 5,
-    fontSize: fontSize.small,
-    fontStyle: 'italic',
-    color: colors.white,
-    marginTop: 60,
-    overflow: 'hidden',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    textAlign: 'center',
-    width: 250,
-  }}>
-    {props.text}
+    <Text onPress={onPress}
+          style={{
+                 backgroundColor: colors.deepBlue,
+                 borderRadius: 5,
+                 fontSize: fontSize.small,
+                 fontStyle: 'italic',
+                 color: colors.white,
+                 marginTop: 60,
+                 overflow: 'hidden',
+                 paddingHorizontal: 20,
+                 paddingVertical: 16,
+                 textAlign: 'center',
+                 width: 250,
+                 }}>
+    Registrer
   </Text>
   </View>
 );
@@ -103,4 +107,26 @@ export const Question = (props: {name?: string, children?: any, style?: any}) =>
   }
   {props.children}
   </View>
+);
+
+export const Choice = ({label, choices, optional}: { label: string, choices: Array<string>, optional?: boolean }) => (
+  <View style={{flexDirection: 'row'}}>
+    <SegmentedControlIOS
+      values={choices}
+      style={{flex: 1, height: 30, marginBottom: 10, padding: 20}}
+      tintColor= { colors.darkBlue }
+      accessibilityLabel={label} />
+    <Required optional={optional} />
+  </View>
+);
+
+
+export const YesNoQuestionWithTextField = ({ label, textFieldCaption} : { label: string, textFieldCaption: string }) => (
+  <Section>
+    <Header text={label} />
+    <Question>
+      <Choice label={label} choices={["Nei", "Ja"]} />
+      <InputField placeholder={textFieldCaption} optional={true} onChange={() => { return; }}/>
+    </Question>
+  </Section>
 );

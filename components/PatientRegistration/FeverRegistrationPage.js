@@ -25,7 +25,7 @@ import {
 import { connect } from 'react-redux';
 import NavigationBar from '../NavigationBar'
 import { resetApp, showPreviousPage } from '../../actions';
-import { Divider, RegisterButton, YesNoQuestionWithTextField } from '../common';
+import { Divider, RegisterButton, YesNoQuestionWithTextField } from './common';
 
 type Celcius = number;
 

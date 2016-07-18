@@ -30,7 +30,7 @@ import type {
 import NavigationBar from '../NavigationBar'
 import { resetApp, showFeverRegistrationPage, showPreviousPage } from '../../actions';
 import NeedsRegistration from './NeedsRegistration';
-import { Divider, RegisterButton } from '../common';
+import { Divider, RegisterButton } from './common';
 
 class NeedsRegistrationPage extends Component {
   state:{weight: ?Kilograms, height: ?Meter};
