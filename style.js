@@ -18,6 +18,8 @@
  *
  */
 
+export type Color = string;
+
 export const colors = {
   darkBlue: "#18374c",
   deepBlue: "#2173a1",

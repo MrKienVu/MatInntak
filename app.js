@@ -23,11 +23,17 @@ import { AppRegistry } from 'react-native';
 import { connect, Provider } from 'react-redux'
 
 import StartPage from './components/StartPage';
-import NeedsRegistrationPage from './components/NeedsRegistrationPage'
-import PatientRegistrationPage from './components/PatientRegistrationPage';
+import NeedsRegistrationPage from './components/PatientRegistration/NeedsRegistrationPage'
+import PatientRegistrationPage from './components/PatientRegistration/PatientRegistrationPage';
+import LiquidRegistrationPage from './components/FoodRegistration/LiquidRegistrationPage';
 import store from './store';
 
-const pages = { 'StartPage': StartPage, 'RegisterPatient': PatientRegistrationPage, 'RegisterNeeds': NeedsRegistrationPage };
+const pages = {
+  'RegisterLiquid': LiquidRegistrationPage,
+  'RegisterPatient': PatientRegistrationPage,
+  'RegisterNeeds': NeedsRegistrationPage,
+  'StartPage': StartPage,
+};
 
 const Page = (props) => {
   const DisplayPage = pages[props.pageName];

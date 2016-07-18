@@ -24,13 +24,25 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { colors, fontSize } from '../style';
+import { colors, fontSize } from '../../style';
 
 export const Button = (props: {text: string}) => (
-  <View style={{marginBottom: 15}}>
-  <Text style={{marginTop: 60, fontSize: fontSize.small, color: colors.white, backgroundColor: colors.deepBlue, paddingLeft: 20,
-                paddingTop: 16, paddingRight: 20, paddingBottom: 16, fontStyle: 'italic',
-                borderRadius: 5, overflow: 'hidden', width: 250, textAlign: 'center'}}>
+  <View style={{
+    marginBottom: 45,
+  }}>
+  <Text style={{
+    backgroundColor: colors.deepBlue,
+    borderRadius: 5,
+    fontSize: fontSize.small,
+    fontStyle: 'italic',
+    color: colors.white,
+    marginTop: 60,
+    overflow: 'hidden',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    textAlign: 'center',
+    width: 250,
+  }}>
     {props.text}
   </Text>
   </View>
@@ -44,16 +56,25 @@ export const Header = (props: {text: string}) => (
   </Text>
 );
 
-export const InputField = (props: { optional?: boolean, small?: boolean, numeric?: boolean, label?: string, placeholder?: string, onChange: (value: number) => void}) => (
+export const InputField = (props: { optional?: boolean, small?: boolean, numeric?: boolean,
+                           label?: string, placeholder?: string, onChange: (value: number) => void}) => (
   <View style={{flexDirection: 'row'}}>
     <View style={{flex: 1, flexDirection: 'row'}}>
-      <TextInput onChange={(event) => props.onChange(event.nativeEvent.text)} placeholder={props.placeholder || ""}
-                 style={{width: props.small ? 140 : 685, height: 60, backgroundColor: colors.inputFieldBackground,
-                        borderRadius: 8, fontSize: fontSize.small, padding: 10, marginBottom: 15,
-                       borderColor: colors.inputFieldBorder, borderWidth: 3}}
+      <TextInput onChange={(event) => props.onChange(event.nativeEvent.text)}
+                 placeholder={props.placeholder || ""}
                  keyboardType={props.numeric ? 'number-pad' : 'default'}
                  accessibilityLabel={props.label || props.placeholder }
-                       />
+                 style={{
+                   backgroundColor: colors.inputFieldBackground,
+                   borderColor: colors.inputFieldBorder,
+                   borderRadius: 8,
+                   borderWidth: 3,
+                   fontSize: fontSize.small,
+                   height: 60,
+                   marginBottom: 15,
+                   padding: 10,
+                   width: props.small ? 140 : 685,
+                  }}/>
       <Required optional={props.optional} />
     </View>
   </View>
