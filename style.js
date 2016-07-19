@@ -29,6 +29,7 @@ export const colors = {
   inputFieldBorder: "#D8D8D8",
   inputFieldBackground:"#F8F8F8",
   red: 'red',
+  green: 'rgb(31, 176, 120)',
   transparent: 'rgba(0,0,0,0)',
   redOrange: '#f26531',
   white: "#FFFFFF",

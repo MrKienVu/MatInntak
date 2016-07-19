@@ -28,9 +28,9 @@ import {
 } from 'react-native';
 import { colors, fontSize } from '../../style';
 
-export const Button = (props: {text: string, small?: boolean}) => (
+export const Button = (props: {text: string, small?: boolean, color?: Color}) => (
   <Text style={{
-    backgroundColor: colors.deepBlue,
+    backgroundColor: props.color || colors.deepBlue,
     borderRadius: 8,
     color: colors.white,
     fontSize: fontSize.small,
@@ -38,10 +38,21 @@ export const Button = (props: {text: string, small?: boolean}) => (
     overflow: 'hidden',
     paddingVertical: 15,
     textAlign: 'center',
-    width: props.small ? 150 : 250,
+    width: props.small ? 150 : 200,
   }}>
     {props.text}
   </Text>
+);
+
+export const CenterButton = (props: {text?: string, style?: any}) => (
+  <View style={{
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 64,
+    ...props.style,
+  }}>
+    <Button text={props.text}/>
+  </View>
 );
 
 export const SearchBar = (props: {placeholder?: string}) => (
@@ -79,24 +90,34 @@ export const GridLayout = (props: {children?: any}) => (
   </View>
 );
 
-export const GridItem = (props: {label?: string, icon?: any, small?: boolean}) => (
-  <View style={{
-    alignItems: 'center',
-    backgroundColor: 'white',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    width: props.small ? 250 : 378,
-    height: 200,
-    marginHorizontal: 3,
-    marginVertical: 3,
-  }}>
-    <Image source={props.icon ? props.icon : require('../../img/dinner.png')} />
+export const GridItem = (props: {label?: string, icon?: any, small?: boolean, selected?: boolean, action?: () => void}) => (
+  <TouchableOpacity onPress={() => {
+      props.action();
+    }}>
+  <GridView small={props.small} selected={props.selected}>
+    <Image resizeMode='contain' source={props.icon ? props.icon : require('../../img/dinner.png')} />
     <Text style={{
       color: colors.deepBlue,
       fontSize: 22,
       marginTop: 20,
     }}>
-      {props.label ? props.label : "placeholder"}
+      {props.label || "placeholder"}
     </Text>
+  </GridView>
+  </TouchableOpacity>
+);
+
+const GridView = (props: {small?: boolean, selected?: boolean, children?: any}) => (
+  <View style={{
+    alignItems: 'center',
+    backgroundColor: props.selected ? 'rgb(245, 245, 245)' : colors.white,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    width: props.small ? 250 : 378,
+    height: props.small ? 200 : 240,
+    marginHorizontal: 3,
+    marginBottom: 6,
+  }}>
+    {props.children}
   </View>
 );

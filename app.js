@@ -31,10 +31,16 @@ import PatientRegistrationPage from './components/PatientRegistration/PatientReg
 import TodaysIntakePage from './components/todaysIntake/TodaysIntakePage';
 
 import store from './store';
+import {
+  ColdLiquidRegistrationPage,
+  HotLiquidRegistrationPage,
+} from './components/FoodRegistration/LiquidAmountRegistrationPage';
 
 const pages = {
   'RegisterFood': FoodRegistrationPage,
   'RegisterLiquid': LiquidRegistrationPage,
+  'RegisterHotLiquid': HotLiquidRegistrationPage,
+  'RegisterColdLiquid': ColdLiquidRegistrationPage,
   'RegisterNeeds': NeedsRegistrationPage,
   'RegisterPatient': PatientRegistrationPage,
   'StartPage': StartPage,

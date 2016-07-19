@@ -39,9 +39,10 @@ export type PageName = 'RegisterNeeds'
                      | 'RegisterFever'
                      | 'RegisterFood'
                      | 'RegisterLiquid'
+                     | 'RegisterHotLiquid'
+                     | 'RegisterColdLiquid'
                      | 'TodaysIntake'
 ;
-
 
 export function registerNeeds(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterNeeds' }
@@ -73,4 +74,12 @@ export function registerFood(): GoToPageAction {
 
 export function registerLiquid(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterLiquid' }
+}
+
+export function registerHotLiquid(): GoToPageAction {
+  return { type: 'GO_TO_PAGE', name: 'RegisterHotLiquid' }
+}
+
+export function registerColdLiquid(): GoToPageAction {
+  return { type: 'GO_TO_PAGE', name: 'RegisterColdLiquid' }
 }

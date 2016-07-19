@@ -25,19 +25,19 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import NavigationBar from '../NavigationBar'
-import { showPreviousPage } from '../../actions';
+import { showPreviousPage, registerHotLiquid, registerColdLiquid } from '../../actions';
 import { SearchBar, GridLayout, GridItem } from './common';
 import { colors } from '../../style';
 
 type Liquid = {name: string, image: number}
 const liquids: Array<Liquid> = [
-  { name: 'Kaffe', image: require('../../img/dinner.png') },
-  { name: 'Te', image: require('../../img/dinner.png') },
-  { name: 'Melk', image: require('../../img/dinner.png') },
-  { name: 'Juice', image: require('../../img/dinner.png') },
-  { name: 'Saft', image: require('../../img/dinner.png') },
-  { name: 'Vann', image: require('../../img/dinner.png') },
-  { name: 'Brus', image: require('../../img/dinner.png') },
+  { name: 'Kaffe', image: require('../../img/dinner.png'), hot: true },
+  { name: 'Te', image: require('../../img/dinner.png'), hot: true },
+  { name: 'Melk', image: require('../../img/dinner.png'), hot: false },
+  { name: 'Juice', image: require('../../img/dinner.png'), hot: false },
+  { name: 'Saft', image: require('../../img/dinner.png'), hot: false },
+  { name: 'Vann', image: require('../../img/dinner.png'), hot: false },
+  { name: 'Brus', image: require('../../img/dinner.png'), hot: false },
 ];
 
 class LiquidRegistrationPage extends Component {
@@ -55,7 +55,12 @@ class LiquidRegistrationPage extends Component {
         <SearchBar placeholder="Søk etter matprodukter"/>
         <GridLayout>{
           liquids.map(liquid => (
-            <GridItem key={liquid.name} small={true} label={liquid.name} icon={liquid.image} />
+            <GridItem key={liquid.name}
+                      small={true}
+                      label={liquid.name}
+                      icon={liquid.image}
+                      action={liquid.hot ? this.props.registerHotLiquid :
+                                           this.props.registerColdLiquid} />
           ))}
         </GridLayout>
         </ScrollView>
@@ -68,6 +73,8 @@ const ConnectedPage = connect(
   () => ({}),
   (dispatch) => ({
     showPreviousPage: () => dispatch(showPreviousPage()),
+    registerHotLiquid: () => dispatch(registerHotLiquid()),
+    registerColdLiquid: () => dispatch(registerColdLiquid()),
   }),
 )(LiquidRegistrationPage);
 
