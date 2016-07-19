@@ -26,7 +26,7 @@ import {
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { registerNeeds, registerPatient } from '../actions';
+import { registerNeeds, registerPatient, registerFood } from '../actions';
 
 const textColor = '#FFFFFF';
 const lightTextColor = '#777777';
@@ -48,7 +48,7 @@ class StartPage extends Component {
         <LargeHeading text="Matinntak" />
         <SmallHeading text="Skriv inn fødselsnummer" />
         <InputField placeholder="11 siffer" />
-        <Button text="Start matregistrering" />
+        <Button text="Start matregistrering" onPress={this.props.registerFood}/>
         <SeparatorText text="eller" />
         <Button text="Registrer behov" onPress={this.props.registerNeeds}/>
         <Button text="Registrer ny pasient" onPress={this.props.registerPatient} explanation="(kun for sykepleier)" />
@@ -129,6 +129,7 @@ const ConnectedApp = connect(
   (dispatch) => ({
     registerNeeds: () => dispatch(registerNeeds()),
     registerPatient: () => dispatch(registerPatient()),
+    registerFood: () => dispatch(registerFood()),
   }),
 )(StartPage);
 

@@ -24,15 +24,17 @@ import { connect, Provider } from 'react-redux'
 
 import StartPage from './components/StartPage';
 import FeverRegistrationPage from './components/PatientRegistration/FeverRegistrationPage'
+import FoodRegistrationPage from './components/FoodRegistration/FoodRegistrationPage'
+import LiquidRegistrationPage from './components/FoodRegistration/LiquidRegistrationPage';
 import NeedsRegistrationPage from './components/PatientRegistration/NeedsRegistrationPage'
 import PatientRegistrationPage from './components/PatientRegistration/PatientRegistrationPage';
-import LiquidRegistrationPage from './components/FoodRegistration/LiquidRegistrationPage';
 import store from './store';
 
 const pages = {
+  'RegisterFood': FoodRegistrationPage,
   'RegisterLiquid': LiquidRegistrationPage,
-  'RegisterPatient': PatientRegistrationPage,
   'RegisterNeeds': NeedsRegistrationPage,
+  'RegisterPatient': PatientRegistrationPage,
   'StartPage': StartPage,
   'RegisterFever': FeverRegistrationPage,
 };

@@ -74,7 +74,6 @@ export const GridLayout = (props: {children?: any}) => (
   <View style={{
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginLeft: 5,
   }}>
     {props.children}
   </View>
@@ -88,8 +87,8 @@ export const GridItem = (props: {label?: string, icon?: any, small?: boolean}) =
     justifyContent: 'center',
     width: props.small ? 250 : 378,
     height: 200,
-    marginRight: 4,
-    marginBottom: 4,
+    marginHorizontal: 3,
+    marginVertical: 3,
   }}>
     <Image source={props.icon ? props.icon : require('../../img/dinner.png')} />
     <Text style={{

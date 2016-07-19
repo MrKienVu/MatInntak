@@ -25,7 +25,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import NavigationBar from '../NavigationBar'
-import { resetApp } from '../../actions';
+import { showPreviousPage } from '../../actions';
 import { SearchBar, GridLayout, GridItem } from './common';
 import { colors } from '../../style';
 
@@ -48,8 +48,8 @@ class LiquidRegistrationPage extends Component {
         flex: 1,
       }}>
         <NavigationBar currentPage="Drikke"
-                       showFrontPage={this.props.showFrontPage}
-                       goBack={this.props.showFrontPage}
+                       showFrontPage={this.props.showPreviousPage}
+                       goBack={this.props.showPreviousPage}
                        color={colors.deepBlue}/>
         <ScrollView>
         <SearchBar placeholder="Søk etter matprodukter"/>
@@ -67,7 +67,7 @@ class LiquidRegistrationPage extends Component {
 const ConnectedPage = connect(
   () => ({}),
   (dispatch) => ({
-    showFrontPage: () => dispatch(resetApp()),
+    showPreviousPage: () => dispatch(showPreviousPage()),
   }),
 )(LiquidRegistrationPage);
 
