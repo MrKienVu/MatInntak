@@ -1,20 +1,36 @@
 # Runs all unit and functional tests for iOS. Designed for use with ci.usit.uio.no
 
+function abort {
+    exit 50
+}
+function failTests {
+    exit 1
+}
+function failBuild {
+    exit 2
+}
+
 if [ ! -d ./ci ]; then
   echo "Run this script from the project root directory"
-  exit 1
+  exit SETUP_ERROR
 fi
 
-curl https://utv.uio.no/node/v6.3.0/node-v6.3.0-darwin-x64.tar.gz | tar xz
-export PATH=$PATH:$(pwd)/node-v6.3.0-darwin-x64/bin
+if ! which npm ; then
+  curl https://utv.uio.no/node/v6.3.0/node-v6.3.0-darwin-x64.tar.gz | tar xz
+  export PATH=$PATH:$(pwd)/node-v6.3.0-darwin-x64/bin
+fi
 
-npm install
-npm install -g mocha flow-bin@0.27
+if ! npm install ; then abort; fi
+if ! npm install -g mocha flow-bin@0.27 ; then abort; fi
 
-npm test
-flow check
+if ! npm test ; then failTests; fi
+if ! flow check ; then failTests; fi
 
-(cd ios; xcodebuild -sdk iphonesimulator  -scheme Calabash -configuration Calabash build 2>&1)
+( cd ios;
+  if ! xcodebuild -sdk iphonesimulator  -scheme Calabash -configuration Calabash build 2>&1; then
+    failBuild
+  fi
+)
 
 if [ ! -d ~/.calabash/sandbox ]; then
   curl -sSL https://raw.githubusercontent.com/calabash/install/master/install-osx.sh | bash
@@ -32,5 +48,7 @@ PATH="${CALABASH_RUBY_PATH}:${GEM_HOME}/bin:${PATH}"
 echo "Using Ruby: "$(which ruby) # This should be Calabash sandbox' Ruby
 echo "Using Bundle: "$(which bundle) # This should be Calabash sandbox' Bundle
 
-(cd ios; bundle install)
-./functional_test_ios.sh
+( cd ios;
+  if ! bundle install; then abort; fi
+)
+if ! ./functional_test_ios.sh; then failTests; fi
