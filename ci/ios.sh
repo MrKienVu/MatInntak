@@ -36,7 +36,8 @@ if [ ! -d ./ci ]; then
 fi
 
 if ! command_exists npm ; then
-  curl https://utv.uio.no/node/v6.3.0/node-v6.3.0-darwin-x64.tar.gz | tar xz
+  inform "Node/npm not installed, installing from UiO-safe server"
+  curl -s https://utv.uio.no/node/v6.3.0/node-v6.3.0-darwin-x64.tar.gz | tar xz
   export PATH=$PATH:$(pwd)/node-v6.3.0-darwin-x64/bin
 fi
 
@@ -98,10 +99,11 @@ bundle install | tee "../ci/"$LOG_FILE > /dev/null ||
 success
 
 inform "Running functional tests"
-APP=Products/app/matinntak.app \
-   DEVICE_TARGET="iPad 2 (9.3)" \
+APP=Products/app/matinntak.app                                 \
+   DEVICE_TARGET="iPad 2 (9.3)"                                \
    bundle exec cucumber ../features -r ../features/support/ios \
-   -r ../features/step_definitions \
-   --format junit \
-   --out ../ci/calabash.xml || { failTests; }
+   -r ../features/step_definitions                             \
+   --format junit --out ../ci/calabash.xml                     \
+   --format usage                                           \
+    || { failTests; }
 success
