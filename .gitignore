@@ -44,3 +44,7 @@ android/keystores/debug.keystore
 ios/screenshot*
 ios/Products/*
 .irb-history
+
+# CI
+ci/*.log
+ci/*.xml

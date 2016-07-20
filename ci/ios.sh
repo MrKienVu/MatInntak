@@ -1,54 +1,107 @@
+#!/bin/bash
 # Runs all unit and functional tests for iOS. Designed for use with ci.usit.uio.no
 
-function abort {
+abort() {
+    echo "ERROR: "$1
     exit 50
 }
-function failTests {
+failTests() {
+    echo "FAIL: Test run failed"
     exit 1
 }
-function failBuild {
+failBuild() {
+    echo "ERROR: Build failed"
     exit 2
 }
+inform() {
+    echo "INFO: "$1"..."
+}
+command_exists() {
+    command -v $1 &> /dev/null;
+}
+assert_in_sandbox() {
+  CMD_PATH=$(command -v $1)
+  echo $CMD_PATH | grep -q .calabash \
+      || abort "Failed to find "$1" in Calabash sandbox, instead found it at: "$CMD_PATH
+}
+success() {
+    echo "SUCCESS!"
+}
+
+set -o pipefail
 
 if [ ! -d ./ci ]; then
   echo "Run this script from the project root directory"
   exit SETUP_ERROR
 fi
 
-if ! which npm ; then
+if ! command_exists npm ; then
   curl https://utv.uio.no/node/v6.3.0/node-v6.3.0-darwin-x64.tar.gz | tar xz
   export PATH=$PATH:$(pwd)/node-v6.3.0-darwin-x64/bin
 fi
 
-if ! npm install ; then abort; fi
-if ! npm install -g mocha flow-bin@0.27 ; then abort; fi
+inform "Installing project dependencies"
+npm install || { abort; }
+success
 
-if ! npm test ; then failTests; fi
-if ! flow check ; then failTests; fi
+if ! command_exists flow ; then
+    inform "Installing Flow as a global package"
+    npm install -g flow-bin@0.27 || { abort; }
+    success
+fi
 
-( cd ios;
-  if ! xcodebuild -sdk iphonesimulator  -scheme Calabash -configuration Calabash build 2>&1; then
-    failBuild
-  fi
-)
+inform "Running javascript unit tests"
+npm test 2>&1 >ci/npm.test.log || { failTests; }
+success
+
+inform "Running flow typecheck"
+flow check --json 2>ci/flow.stderr.log | tee ci/flow.json.log > /dev/null || { failTests; }
+success
 
 if [ ! -d ~/.calabash/sandbox ]; then
+  inform "Calabash sandbox not found, installing"
   curl -sSL https://raw.githubusercontent.com/calabash/install/master/install-osx.sh | bash
 fi
 
-# Excerpt from calabash-sandbox
+# BEGIN Excerpt from calabash-sandbox.
+# If the below code breaks in CI, it may be useful to compare with the latest calabash-sandbox script.
 CALABASH_RUBY_VERSION="2.1.6-p336"
 CALABASH_RUBY_PATH="${HOME}/.calabash/sandbox/Rubies/${CALABASH_RUBY_VERSION}/bin"
 CALABASH_GEM_HOME="${HOME}/.calabash/sandbox/Gems"
 export GEM_HOME="${CALABASH_GEM_HOME}"
 export GEM_PATH="${CALABASH_GEM_HOME}:${CALABASH_GEM_HOME}/ruby/2.0.0:${CALABASH_GEM_HOME}/ruby/2.1.0"
-
 PATH="${CALABASH_RUBY_PATH}:${GEM_HOME}/bin:${PATH}"
+# END excerpt
 
-echo "Using Ruby: "$(which ruby) # This should be Calabash sandbox' Ruby
-echo "Using Bundle: "$(which bundle) # This should be Calabash sandbox' Bundle
+command_exists xcpretty || { inform "xcpretty not found, installing"; gem install xcpretty; }
 
-( cd ios;
-  if ! bundle install; then abort; fi
-)
-if ! ./functional_test_ios.sh; then failTests; fi
+inform "Building iOS app"
+cd ios
+
+xcodebuild -sdk iphonesimulator \
+           -scheme Calabash \
+           -configuration Calabash \
+           build \
+           2>&1 \
+    | tee ../ci/xcodebuild.log \
+    | xcpretty \
+    || { failBuild; };
+success
+
+assert_in_sandbox ruby
+assert_in_sandbox bundle
+
+inform "Installing calabash dependencies"
+LOG_FILE=bundle.log
+bundle install | tee "../ci/"$LOG_FILE > /dev/null ||
+    { abort "`bundle install` failed, see "$LOG_FILE" for details"; }
+success
+
+inform "Running functional tests"
+APP=Products/app/matinntak.app \
+   DEVICE_TARGET="iPad 2 (9.3)" \
+   bundle exec cucumber ../features -r ../features/support/ios \
+   -r ../features/step_definitions \
+   --format junit \
+   --out ../ci/calabash.xml || { failTests; }
+success
