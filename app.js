@@ -28,6 +28,8 @@ import FoodRegistrationPage from './components/FoodRegistration/FoodRegistration
 import LiquidRegistrationPage from './components/FoodRegistration/LiquidRegistrationPage';
 import NeedsRegistrationPage from './components/PatientRegistration/NeedsRegistrationPage'
 import PatientRegistrationPage from './components/PatientRegistration/PatientRegistrationPage';
+import TodaysIntakePage from './components/todaysIntake/TodaysIntakePage';
+
 import store from './store';
 
 const pages = {
@@ -37,6 +39,7 @@ const pages = {
   'RegisterPatient': PatientRegistrationPage,
   'StartPage': StartPage,
   'RegisterFever': FeverRegistrationPage,
+  'TodaysIntake': TodaysIntakePage,
 };
 
 const Page = (props) => {

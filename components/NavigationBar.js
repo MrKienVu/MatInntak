@@ -26,19 +26,21 @@ import {
 import { colors, fontSize } from '../style';
 import type { Color } from '../style';
 
-const NavigationBar = (props: {currentPage: string, showFrontPage: () => void, goBack: () => void, color?: Color}) => (
-  <View style={{backgroundColor: props.color || colors.darkBlue, paddingTop: 50, paddingBottom: 30, paddingLeft: 20, paddingRight: 20}}>
+const NavigationBar = ({currentPage, caption, showFrontPage, goBack, color}: {currentPage: string, caption?: string, showFrontPage: () => void, goBack: () => void, color?: Color}) => (
+  <View style={{backgroundColor: color || colors.darkBlue, paddingTop: 50, paddingBottom: 30, paddingLeft: 20, paddingRight: 20}}>
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
       <View style={{flex: 1}}>
-        <Link text="Tilbake" performNavigation={props.goBack}/>
+        <Link text="Tilbake" performNavigation={goBack}/>
       </View>
-      <View style={{flex: 2}} />
+      <View style={{flex: 2}}>
+        { caption && <Link text={caption} /> }
+      </View>
       <View style={{flex: 1}}>
-        <Link text="Til forsiden" performNavigation={props.showFrontPage} />
+        <Link text="Til forsiden" performNavigation={showFrontPage} />
       </View>
     </View>
     <Text style={{color: colors.white, textAlign: 'center', fontSize: 35, fontWeight: 'bold', marginTop: 25}}>
-      {props.currentPage}
+      {currentPage}
     </Text>
   </View>
 );

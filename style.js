@@ -21,17 +21,23 @@
 export type Color = string;
 
 export const colors = {
+  black: "#222222",
   darkBlue: "#18374c",
   deepBlue: "#2173a1",
+  lightBlue: "#519dc7",
   divider: "#ECECEC",
   inputFieldBorder: "#D8D8D8",
   inputFieldBackground:"#F8F8F8",
   red: 'red',
   transparent: 'rgba(0,0,0,0)',
+  redOrange: '#f26531',
   white: "#FFFFFF",
+  lightGreen: "#1fb078",
+  darkGreen: "#157d54",
 }
 
 export const fontSize = {
+  ordinaryText: 20,
   small: 25,
   large: 38,
 }
