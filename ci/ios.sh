@@ -98,6 +98,17 @@ bundle install | tee "../ci/"$LOG_FILE > /dev/null ||
     { abort "`bundle install` failed, see "$LOG_FILE" for details"; }
 success
 
+inform "Killing any running simulators"
+killall Simulator
+
+# https://gist.github.com/ZevEisenberg/5a172662cb576872d1ab
+xcrun simctl list devices    \
+    | grep -v '^[-=]'        \
+    | grep -v 'unavailable'  \
+    | cut -d "(" -f2         \
+    | cut -d ")" -f1         \
+    | xargs -I {} xcrun -log simctl erase "{}"
+
 inform "Running functional tests"
 APP=Products/app/matinntak.app                                 \
    DEVICE_TARGET="iPad 2 (9.3)"                                \
