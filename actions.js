@@ -22,7 +22,12 @@
 export type GoToPageAction = {
   type: 'GO_TO_PAGE',
   name: PageName,
+  navBarTitle?: string,
+  navBarSubTitle?: string,
 }
+
+export type IncreaseAction = { type: 'INCREASE' }
+export type DecreaseAction = { type: 'DECREASE' }
 
 export type GoToPreviousPageAction = {
   type: 'GO_TO_PREVIOUS_PAGE',
@@ -32,7 +37,7 @@ export type ResetAppAction = {
   type: 'RESET_APP',
 }
 
-export type Action = GoToPageAction;
+export type Action = GoToPageAction | IncreaseAction | DecreaseAction;
 export type PageName = 'RegisterNeeds'
                      | 'RegisterPatient'
                      | 'StartPage'
@@ -76,10 +81,19 @@ export function registerLiquid(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterLiquid' }
 }
 
-export function registerHotLiquid(): GoToPageAction {
-  return { type: 'GO_TO_PAGE', name: 'RegisterHotLiquid' }
+export function registerLiquidAmount(liquid: string): GoToPageAction {
+  return {
+    type: 'GO_TO_PAGE',
+    name: 'RegisterLiquidAmount',
+    navBarTitle: liquid,
+    navBarSubTitle: 'Drikke',
+  }
 }
 
-export function registerColdLiquid(): GoToPageAction {
-  return { type: 'GO_TO_PAGE', name: 'RegisterColdLiquid' }
+export function increaseAmount(): IncreaseAction {
+  return { type: 'INCREASE' }
+}
+
+export function decreaseAmount(): DecreaseAction {
+  return { type: 'DECREASE' }
 }

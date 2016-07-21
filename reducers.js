@@ -21,11 +21,15 @@
 import { combineReducers } from 'redux';
 import type { Action } from './actions';
 
-const initialRouting = { pageStack: ['StartPage'] };
+const initialRouting = { pageStack: ['StartPage'], navBarTitle: '', navBarSubTitle: '' };
 
 function routing(state = initialRouting, action: Action) {
   if (action.type === 'GO_TO_PAGE' && (state.pageStack.length === 0 || action.name !== state[state.pageStack.length - 1])) {
-    return { pageStack: [...state.pageStack, action.name] };
+    return {
+      pageStack: [...state.pageStack, action.name],
+      navBarTitle: action.navBarTitle || '',
+      navBarSubTitle: action.navBarSubTitle || '',
+     };
   }
 
   if (action.type === 'GO_TO_PREVIOUS_PAGE') {
@@ -39,6 +43,18 @@ function routing(state = initialRouting, action: Action) {
   return state;
 }
 
-const app = combineReducers({routing});
+
+export function amountCounter(state = {value: 0.5}, action: Action) {
+  switch (action.type) {
+    case 'INCREASE':
+      return { value: state.value + 0.5 };
+    case 'DECREASE':
+      return { value: state.value - 0.5 };
+    default:
+      return state;
+  }
+}
+
+const app = combineReducers({routing, amountCounter});
 
 export default app;

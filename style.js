@@ -22,6 +22,8 @@ export type Color = string;
 
 export const colors = {
   black: "#222222",
+  grey: 'grey',
+  lightGrey: '#CCCCCC',
   darkBlue: "#18374c",
   deepBlue: "#2173a1",
   lightBlue: "#519dc7",
@@ -30,6 +32,7 @@ export const colors = {
   inputFieldBackground:"#F8F8F8",
   red: 'red',
   green: 'rgb(31, 176, 120)',
+  darkGrey: 'rgb(119, 119, 119)',
   transparent: 'rgba(0,0,0,0)',
   redOrange: '#f26531',
   white: "#FFFFFF",
@@ -41,4 +44,16 @@ export const fontSize = {
   ordinaryText: 20,
   small: 25,
   large: 38,
+}
+
+export const dimens = {
+  smallButton: 150,
+  mediumButton: 200,
+  bigButton: 420,
+}
+
+export const icons = {
+  increment: 'add-circle',
+  decrement: 'remove-circle',
+  arrowBack: 'arrow-back',
 }

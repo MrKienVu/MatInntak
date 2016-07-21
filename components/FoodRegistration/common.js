@@ -18,7 +18,7 @@
  *
  */
 
-import React from 'react';
+import React, { Component } from 'react';
 import {
   Image,
   Text,
@@ -26,36 +26,43 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { colors, fontSize } from '../../style';
+import { colors, fontSize, dimens } from '../../style';
 
-export const Button = (props: {text: string, small?: boolean, color?: Color}) => (
-  <Text style={{
-    backgroundColor: props.color || colors.deepBlue,
+const bigGrid = {width: 381, height: 220};
+const smallGrid = {width: 252, height: 200};
+
+export const Button = ({text, color, inverted, action, style}: {
+  action?: () => void,
+  color: Color,
+  inverted?: boolean,
+  text: string,
+}) => (
+  <Text onPress={action} style={{
+    backgroundColor: inverted ? colors.transparent : color,
+    borderColor: color,
+    borderWidth: 2,
     borderRadius: 8,
-    color: colors.white,
+    color: inverted ? color : colors.white,
     fontSize: fontSize.small,
-    fontStyle: 'italic',
     overflow: 'hidden',
-    paddingVertical: 15,
+    paddingVertical: 14,
     textAlign: 'center',
-    width: props.small ? 150 : 200,
+    width: dimens.smallButton,
+    ...style,
   }}>
-    {props.text}
+    {text}
   </Text>
 );
 
-export const CenterButton = (props: {text?: string, style?: any}) => (
-  <View style={{
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 64,
-    ...props.style,
-  }}>
-    <Button text={props.text}/>
-  </View>
+export const BigButton = ({text, color, inverted, action}) => (
+  <Button text={text} color={color} inverted={inverted} action={action} style={{
+    width: dimens.bigButton,
+    paddingVertical: 20,
+    fontWeight: inverted ? 'normal' : 'bold',
+  }} />
 );
 
-export const SearchBar = (props: {placeholder?: string}) => (
+export const SearchBar = (props: {placeholder?: string, color?: string}) => (
   <View style={{
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -76,7 +83,7 @@ export const SearchBar = (props: {placeholder?: string}) => (
         width: 510,
       }}/>
     <TouchableOpacity>
-      <Button text="Søk" small={true}/>
+      <Button text="Søk" small={true} color={props.color || colors.deepBlue}/>
     </TouchableOpacity>
   </View>
 );
@@ -85,16 +92,47 @@ export const GridLayout = (props: {children?: any}) => (
   <View style={{
     flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'space-between',
   }}>
     {props.children}
+    {
+      Array.isArray(props.children) &&
+      props.children.length % 3 != 0 &&
+      <GridDummy />
+    }
   </View>
 );
 
-export const GridItem = (props: {label?: string, icon?: any, small?: boolean, selected?: boolean, action?: () => void}) => (
-  <TouchableOpacity onPress={() => {
-      props.action();
-    }}>
-  <GridView small={props.small} selected={props.selected}>
+export class SelectableGridLayout extends Component {
+  props: { items: Array<any>, small?: boolean }
+  state: { selected: string };
+  constructor() {
+    super()
+    this.state = { selected: null }
+  }
+  selectItem: (item: string) => void = (item) => {
+    this.setState({selected: item})
+  };
+  render() {
+    return (
+      <GridLayout>{
+        this.props.items.map(item => (
+          <GridItem key={item.name}
+                    small={this.props.small}
+                    selected={item.name == this.state.selected}
+                    label={item.name}
+                    icon={item.image}
+                    action={() => this.selectItem(item.name)}
+                    noFeedback={true} />
+        ))}
+      </GridLayout>
+    );
+  }
+}
+
+export const GridItem = (props: {label?: string, icon?: any, small?: boolean,
+                                         selected?: boolean, action?: () => void, noFeedback?: boolean}) => (
+  <GridView action={props.action} small={props.small} selected={props.selected} noFeedback={props.noFeedback}>
     <Image resizeMode='contain' source={props.icon ? props.icon : require('../../img/dinner.png')} />
     <Text style={{
       color: colors.deepBlue,
@@ -104,20 +142,20 @@ export const GridItem = (props: {label?: string, icon?: any, small?: boolean, se
       {props.label || "placeholder"}
     </Text>
   </GridView>
-  </TouchableOpacity>
 );
 
-const GridView = (props: {small?: boolean, selected?: boolean, children?: any}) => (
-  <View style={{
+const GridDummy = () => (<View style={{width: smallGrid.width}}/>);
+
+const GridView = (props: {small?: boolean, selected?: boolean, children?: any, action?: () => void, noFeedback?: boolean}) => (
+  <TouchableOpacity activeOpacity={props.noFeedback ? 1 : 0.8} onPress={props.action} style={{
     alignItems: 'center',
     backgroundColor: props.selected ? 'rgb(245, 245, 245)' : colors.white,
     flexDirection: 'column',
     justifyContent: 'center',
-    width: props.small ? 250 : 378,
-    height: props.small ? 200 : 240,
-    marginHorizontal: 3,
+    height: props.small ? smallGrid.height : bigGrid.height,
+    width: props.small ? smallGrid.width : bigGrid.width,
     marginBottom: 6,
   }}>
     {props.children}
-  </View>
+  </TouchableOpacity>
 );

@@ -25,7 +25,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import NavigationBar from '../NavigationBar'
-import { showPreviousPage, registerHotLiquid, registerColdLiquid } from '../../actions';
+import { showPreviousPage, registerLiquidAmount } from '../../actions';
 import { SearchBar, GridLayout, GridItem } from './common';
 import { colors } from '../../style';
 
@@ -59,8 +59,8 @@ class LiquidRegistrationPage extends Component {
                       small={true}
                       label={liquid.name}
                       icon={liquid.image}
-                      action={liquid.hot ? this.props.registerHotLiquid :
-                                           this.props.registerColdLiquid} />
+                      action={liquid.hot ? () => this.props.registerLiquidAmount(liquid.name) :
+                                           () => this.props.registerLiquidAmount(liquid.name)} />
           ))}
         </GridLayout>
         </ScrollView>
@@ -73,8 +73,7 @@ const ConnectedPage = connect(
   () => ({}),
   (dispatch) => ({
     showPreviousPage: () => dispatch(showPreviousPage()),
-    registerHotLiquid: () => dispatch(registerHotLiquid()),
-    registerColdLiquid: () => dispatch(registerColdLiquid()),
+    registerLiquidAmount: (liquid: name) => dispatch(registerLiquidAmount(liquid)),
   }),
 )(LiquidRegistrationPage);
 
