@@ -29,6 +29,7 @@ function routing(state = initialRouting, action: Action) {
       pageStack: [...state.pageStack, action.name],
       navBarTitle: action.navBarTitle || '',
       navBarSubTitle: action.navBarSubTitle || '',
+      liquid: action.liquid || null,
      };
   }
 
@@ -43,18 +44,21 @@ function routing(state = initialRouting, action: Action) {
   return state;
 }
 
+const initialAmount = { value: 0.0 };
 
-export function amountCounter(state = {value: 0.5}, action: Action) {
+export function amountSelector(state: any = initialAmount, action: Action) {
   switch (action.type) {
-    case 'INCREASE':
-      return { value: state.value + 0.5 };
-    case 'DECREASE':
-      return { value: state.value - 0.5 };
+    case 'INCREASE_AMOUNT':
+      return { value: state.value + action.step };
+    case 'DECREASE_AMOUNT':
+      return { value: state.value - action.step };
+    case 'SELECT_AMOUNT':
+      return { value: action.amount };
     default:
       return state;
   }
 }
 
-const app = combineReducers({routing, amountCounter});
+const app = combineReducers({routing, amountSelector});
 
 export default app;

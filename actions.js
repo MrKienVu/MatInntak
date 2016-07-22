@@ -18,16 +18,30 @@
  *
  */
 
+import type { Liquid } from './components/FoodRegistration/liquid';
 
 export type GoToPageAction = {
   type: 'GO_TO_PAGE',
   name: PageName,
   navBarTitle?: string,
   navBarSubTitle?: string,
+  liquid?: Liquid,
 }
 
-export type IncreaseAction = { type: 'INCREASE' }
-export type DecreaseAction = { type: 'DECREASE' }
+export type IncreaseAmountAction = {
+  type: 'INCREASE_AMOUNT',
+  step: number,
+}
+
+export type DecreaseAmountAction = {
+  type: 'DECREASE_AMOUNT',
+  step: number,
+}
+
+export type SelectAmountAction = {
+  type: 'SELECT_AMOUNT',
+  amount: number,
+}
 
 export type GoToPreviousPageAction = {
   type: 'GO_TO_PREVIOUS_PAGE',
@@ -37,15 +51,14 @@ export type ResetAppAction = {
   type: 'RESET_APP',
 }
 
-export type Action = GoToPageAction | IncreaseAction | DecreaseAction;
+export type Action = GoToPageAction | IncreaseAmountAction | DecreaseAmountAction | SelectAmountAction;
 export type PageName = 'RegisterNeeds'
                      | 'RegisterPatient'
                      | 'StartPage'
                      | 'RegisterFever'
                      | 'RegisterFood'
                      | 'RegisterLiquid'
-                     | 'RegisterHotLiquid'
-                     | 'RegisterColdLiquid'
+                     | 'RegisterLiquidAmount'
                      | 'TodaysIntake'
 ;
 
@@ -81,19 +94,24 @@ export function registerLiquid(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterLiquid' }
 }
 
-export function registerLiquidAmount(liquid: string): GoToPageAction {
+export function registerLiquidAmount(liquid: Liquid): GoToPageAction {
   return {
     type: 'GO_TO_PAGE',
     name: 'RegisterLiquidAmount',
-    navBarTitle: liquid,
+    navBarTitle: liquid.name,
     navBarSubTitle: 'Drikke',
+    liquid: liquid,
   }
 }
 
-export function increaseAmount(): IncreaseAction {
-  return { type: 'INCREASE' }
+export function increaseAmount(step: number): IncreaseAmountAction {
+  return { type: 'INCREASE_AMOUNT', step: step }
 }
 
-export function decreaseAmount(): DecreaseAction {
-  return { type: 'DECREASE' }
+export function decreaseAmount(step: number): DecreaseAmountAction {
+  return { type: 'DECREASE_AMOUNT', step: step }
+}
+
+export function selectAmount(amount: number): SelectAmountAction {
+  return { type: 'SELECT_AMOUNT', amount: amount }
 }

@@ -18,9 +18,8 @@
  *
  */
 
-import React, { Component } from 'react';
+import React, { Component } from 'react';
 import {
-  Image,
   View,
   ScrollView,
   Text,
@@ -29,41 +28,72 @@ import {
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import NavigationBar from '../NavigationBar'
-import { showPreviousPage, registerFood, increaseAmount, decreaseAmount } from '../../actions';
+import { showPreviousPage, registerFood, increaseAmount, decreaseAmount, selectAmount } from '../../actions';
 import { Button, BigButton, SelectableGridLayout } from './common';
-import { colors, fontSize, icons, dimens } from '../../style';
+import { colors, fontSize, dimens } from '../../style';
+import { icons } from '../../graphics';
 
-type Liquid = {name: string, image: number}
-const coldLiquids: Array<Liquid> = [
-  { name: 'Kvart (0,5 dl)', image: require('../../img/dinner.png'), amount: 0.5 },
-  { name: 'Halvt (1 dl)', image: require('../../img/dinner.png'), amount: 1 },
-  { name: 'Trekvart (1,5 dl)', image: require('../../img/dinner.png'), amount: 1.5 },
-  { name: 'Helt (2 dl)', image: require('../../img/dinner.png'), amount: 2 },
+import type { MenuItem } from './common';
+import type { Liquid } from './liquid';
+
+const quarterStep = 0.25;
+const halfStep = 0.50;
+
+function selectStep(liquid: Liquid) {
+  return liquid.hot ? quarterStep : halfStep;
+}
+
+type Step = { key: string, icon: string, multiplier: number};
+const steps: Array<Step> = [
+  { key: 'Kvart', icon: icons.quarterGlass, multiplier: 1 },
+  { key: 'Halvt', icon: icons.halfGlass, multiplier: 2 },
+  { key: 'Trekvart', icon: icons.threeQuarterGlass, multiplier: 3 },
+  { key: 'Helt', icon: icons.wholeGlass, multiplier: 4 },
 ];
 
-const hotLiquids: Array<Liquid> = [
-  { name: 'Kvart (xx dl)', image: require('../../img/dinner.png'), amount: 0.5 },
-  { name: 'Halvt (xx dl)', image: require('../../img/dinner.png'), amount: 1 },
-  { name: 'Trekvart (xx dl)', image: require('../../img/dinner.png'), amount: 1.5 },
-  { name: 'Helt (xx dl)', image: require('../../img/dinner.png'), amount: 2 },
-];
+function getSelectedItemKey(amountStep: number, amount: number): string {
+  for (const item of steps) {
+    if (item.multiplier * amountStep == amount) {
+      return item.key;
+    }
+  }
+
+  return '';
+}
+
+function getMenuItems(amountStep: number, selectAmount: (amount: number) => void): Array<MenuItem> {
+  return steps.map(item => (
+    {
+      key: item.key,
+      name: item.key + " (" + amountStep * item.multiplier + " dl)",
+      icon: item.icon,
+      action: () => selectAmount(amountStep * item.multiplier),
+    }
+  ));
+}
 
 class LiquidAmountRegistrationPage extends Component {
   props: {navBarTitle: string,
           navBarSubTitle: string,
           registerFood: () => void,
+          registerLiquid: () => void,
           showPreviousPage: () => void,
           increaseAmount: () => void,
           decreaseAmount: () => void,
+          selectAmount: () => void,
           amount: number,
+          amountStep: number,
+          liquid: Liquid,
   };
   state: {specify: boolean};
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.state = {specify: false};
   }
-  enableSpecify = () => { this.setState({specify: true}) };
-  disableSpecify = () => { this.setState({specify: false}) };
+  enableSpecify = () => { this.setState({specify: true}) };
+  disableSpecify = () => { this.setState({specify: false}) };
+  selectAmount = (amount: number) => { this.props.selectAmount(amount); };
+  confirmAmount = () => { this.props.registerLiquid(this.props.liquid, this.props.amount) };
   render() {
     return (
       <View style={{
@@ -74,23 +104,35 @@ class LiquidAmountRegistrationPage extends Component {
                      caption={this.props.navBarSubTitle}
                      showFrontPage={this.props.registerFood}
                      goBack={this.props.showPreviousPage}
-                     color={colors.deepBlue} />
+                     color={colors.deepBlue}
+                     confirmAmount={() => this.confirmAmount()} />
       { this.state.specify ?
         <SpecifyAmount amount={this.props.amount}
+                       amountStep={this.props.amountStep}
                        cancelAction={this.disableSpecify}
                        increaseAmount={this.props.increaseAmount}
-                       decreaseAmount={this.props.decreaseAmount} /> :
-        <PickAmount liquids={this.props.liquids}
-                    specifyAction={this.enableSpecify}/>
+                       decreaseAmount={this.props.decreaseAmount}
+                       confirmAmount={this.confirmAmount} /> :
+        <PickAmount amount={this.props.amount}
+                    amountStep={this.props.amountStep}
+                    items={getMenuItems(this.props.amountStep, this.selectAmount)}
+                    confirmAmount={this.confirmAmount}
+                    specifyAction={this.enableSpecify} />
       }
       </View>
     );
   }
 }
 
-const PickAmount = ({liquids, specifyAction}: {liquids: Array<any>, specifyAction: () => void}) => (
+const PickAmount = ({amount, amountStep, items, confirmAmount, specifyAction}: {
+  amount: number,
+  amountStep: number,
+  items: Array<MenuItem>,
+  confirmAmount: () => void,
+  specifyAction: () => void,
+}) => (
   <ScrollView>
-  <SelectableGridLayout items={liquids} />
+  <SelectableGridLayout items={items} defaultItem={getSelectedItemKey(amountStep, amount)} />
   <View style={{
     marginVertical: 64,
     flexDirection: 'column',
@@ -98,7 +140,8 @@ const PickAmount = ({liquids, specifyAction}: {liquids: Array<any>, specifyActio
     justifyContent: 'space-around',
     height: 200,
   }}>
-  <Button text="Registrer"
+  <Button action={() => confirmAmount()}
+          text="Registrer"
           color={colors.deepBlue}
           style={{fontWeight: 'bold', width: dimens.mediumButton}} />
   <SeparatorText text="eller" />
@@ -112,12 +155,14 @@ const PickAmount = ({liquids, specifyAction}: {liquids: Array<any>, specifyActio
 class SpecifyAmount extends Component {
   props: ({
     amount: number,
+    amountStep: number,
     increaseAmount: () => void,
     decreaseAmount: () => void,
     cancelAction: () => void,
+    confirmAmount: () => void,
   });
   state: ({incrementerEnabled: boolean, decrementerEnabled: boolean});
-  constructor(props) {
+  constructor(props: any) {
     super(props)
     this.state = {
       incrementerEnabled: true,
@@ -127,16 +172,13 @@ class SpecifyAmount extends Component {
   increase() {
     if (this.props.amount == 0)
       this.setState({decrementerEnabled: true});
-    this.props.increaseAmount();
+    this.props.increaseAmount(this.props.amountStep);
   };
   decrease() {
-    this.props.decreaseAmount();
-    if (this.props.amount == 0.5)
+    this.props.decreaseAmount(this.props.amountStep);
+    if (this.props.amount == 0)
       this.setState({decrementerEnabled: false});
   };
-  confirm() {
-    console.log('Confirmed amount:' , this.props.amount);
-  }
   render() {
     return (
       <View style={{
@@ -151,7 +193,7 @@ class SpecifyAmount extends Component {
                         decrease={() => this.decrease()}
                         amount={this.props.amount}
                         decrementerEnabled={this.state.decrementerEnabled} />
-        <BigButton action={() => this.confirm()}
+        <BigButton action={this.props.confirmAmount}
                    color={colors.deepBlue}
                    text="Bekreft" />
         <BigButton action={this.props.cancelAction}
@@ -163,9 +205,12 @@ class SpecifyAmount extends Component {
   }
 }
 
-const AmountSelector = ({increase, decrease, amount, decrementerEnabled}:
-                        {increase: () => void, decrease: () => void,
-                         amount: number, decrementerEnabled: boolean}) => (
+const AmountSelector = ({increase, decrease, amount, decrementerEnabled}: {
+  amount: number,
+  increase: () => void,
+  decrease: () => void,
+  decrementerEnabled: boolean,
+}) => (
   <View style={{
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -186,7 +231,11 @@ const AmountSelector = ({increase, decrease, amount, decrementerEnabled}:
   </View>
 );
 
-const ImageButton = ({image, action, enabled}: {image: string, action: () => void, enabled?: boolean}) => (
+const ImageButton = ({image, action, enabled}: {
+  action: () => void,
+  enabled?: boolean,
+  image: string,
+}) => (
   <TouchableOpacity activeOpacity={enabled ? 0.8 : 1} onPress={enabled ? action : null} style={{
     margin: 24,
   }}>
@@ -203,35 +252,32 @@ const SubTitle = ({text}) => (
   </Text>
 );
 
-export const SeparatorText = ({text}) => (
+export const SeparatorText = ({text}: {text: string}) => (
   <Text style={{color: colors.darkGrey, fontSize: fontSize.small, fontStyle: 'italic'}}>
     {text}
   </Text>
 );
-/*
-export const PickHotLiquid = () => (
-  <ConnectedPage liquids={hotLiquids} />
-);
 
-export const PickColdLiquid = () => (
-  <ConnectedPage liquids={coldLiquids} />
-);
-*/
 const ConnectedPage = connect(
   (state) => ({
     navBarTitle: state.routing.navBarTitle,
     navBarSubTitle: state.routing.navBarSubTitle,
-    amount: state.amountCounter.value,
-    liquids: hotLiquids,
+    amount: state.amountSelector.value,
+    liquid: state.routing.liquid,
+    amountStep: selectStep(state.routing.liquid),
   }),
   (dispatch) => ({
     registerFood: () => dispatch(registerFood()),
     showPreviousPage: () => dispatch(showPreviousPage()),
-    increaseAmount: () => dispatch(increaseAmount()),
-    decreaseAmount: () => dispatch(decreaseAmount()),
-    registerLiquid: (amount: number) => {
-      console.log(amount);
-      dispatch(registerFood());
+    increaseAmount: (amountStep: number) => dispatch(increaseAmount(amountStep)),
+    decreaseAmount: (amountStep: number) => dispatch(decreaseAmount(amountStep)),
+    selectAmount: (amount: number) => {
+      console.log('Selected amount:', amount);
+      dispatch(selectAmount(amount));
+    },
+    registerLiquid: (liquid: Liquid, amount: number) => {
+      console.log("Registered liquid:", liquid.name, amount);
+      //dispatch(registerFood());
     },
   }),
 )(LiquidAmountRegistrationPage);

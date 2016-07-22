@@ -23,19 +23,31 @@ import {
   Text,
   View,
 } from 'react-native';
-import { colors, fontSize, icons } from '../style';
+import { colors, fontSize } from '../style';
+import { icons } from '../graphics';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import type { Color } from '../style';
 
-const NavigationBar = ({currentPage, caption, showFrontPage, goBack, color}: {currentPage: string, caption?: string, showFrontPage: () => void, goBack: () => void, color?: Color}) => (
-  <View style={{backgroundColor: color || colors.darkBlue, paddingTop: 50, paddingBottom: 30, paddingLeft: 20, paddingRight: 20}}>
+const NavigationBar = ({currentPage, caption, showFrontPage, goBack, color}: {
+  currentPage: string,
+  caption?: string,
+  showFrontPage: () => void,
+  goBack: () => void,
+  color?: Color
+}) => (
+  <View style={{
+    backgroundColor: color || colors.darkBlue,
+    paddingTop: 50,
+    paddingBottom: 30,
+    paddingLeft: 20,
+    paddingRight: 20}}>
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
       <View style={{flex: 1, flexDirection: 'row'}}>
         <Icon name={icons.arrowBack} size={28} color={colors.white} />
         <Link text="Tilbake" performNavigation={goBack} style={{backgroundColor: colors.transparent, marginRight: 60}}/>
       </View>
       <View style={{flex: 2}}>
-        { caption && <Link text={caption} /> }
+        { caption && <Link text={caption || ''} /> }
       </View>
       <View style={{flex: 1}}>
         <Link text="Til forsiden" performNavigation={showFrontPage} />
@@ -47,7 +59,11 @@ const NavigationBar = ({currentPage, caption, showFrontPage, goBack, color}: {cu
   </View>
 );
 
-const Link = ({performNavigation, text, style}: {performNavigation: () => void, text: string, style?: any}) => (
+const Link = ({performNavigation, text, style}: {
+    performNavigation?: () => void,
+    text: string,
+    style?: any,
+  }) => (
   <Text onPress={performNavigation} style={{
     flex: 1,
     color: colors.white,

@@ -28,17 +28,8 @@ import NavigationBar from '../NavigationBar'
 import { showPreviousPage, registerLiquidAmount } from '../../actions';
 import { SearchBar, GridLayout, GridItem } from './common';
 import { colors } from '../../style';
-
-type Liquid = {name: string, image: number}
-const liquids: Array<Liquid> = [
-  { name: 'Kaffe', image: require('../../img/dinner.png'), hot: true },
-  { name: 'Te', image: require('../../img/dinner.png'), hot: true },
-  { name: 'Melk', image: require('../../img/dinner.png'), hot: false },
-  { name: 'Juice', image: require('../../img/dinner.png'), hot: false },
-  { name: 'Saft', image: require('../../img/dinner.png'), hot: false },
-  { name: 'Vann', image: require('../../img/dinner.png'), hot: false },
-  { name: 'Brus', image: require('../../img/dinner.png'), hot: false },
-];
+import type { Liquid } from './liquid';
+import { liquids } from './liquid';
 
 class LiquidRegistrationPage extends Component {
   render() {
@@ -58,9 +49,8 @@ class LiquidRegistrationPage extends Component {
             <GridItem key={liquid.name}
                       small={true}
                       label={liquid.name}
-                      icon={liquid.image}
-                      action={liquid.hot ? () => this.props.registerLiquidAmount(liquid.name) :
-                                           () => this.props.registerLiquidAmount(liquid.name)} />
+                      icon={liquid.icon}
+                      action={() => this.props.registerLiquidAmount(liquid)} />
           ))}
         </GridLayout>
         </ScrollView>
@@ -73,7 +63,7 @@ const ConnectedPage = connect(
   () => ({}),
   (dispatch) => ({
     showPreviousPage: () => dispatch(showPreviousPage()),
-    registerLiquidAmount: (liquid: name) => dispatch(registerLiquidAmount(liquid)),
+    registerLiquidAmount: (liquid: Liquid) => dispatch(registerLiquidAmount(liquid)),
   }),
 )(LiquidRegistrationPage);
 

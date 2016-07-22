@@ -20,13 +20,15 @@
 
 import React, { Component } from 'react';
 import {
-  Image,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors, fontSize, dimens } from '../../style';
+import type { Color } from '../../style';
+import { icons } from '../../graphics';
 
 const bigGrid = {width: 381, height: 220};
 const smallGrid = {width: 252, height: 200};
@@ -35,6 +37,7 @@ export const Button = ({text, color, inverted, action, style}: {
   action?: () => void,
   color: Color,
   inverted?: boolean,
+  style?: any,
   text: string,
 }) => (
   <Text onPress={action} style={{
@@ -54,7 +57,12 @@ export const Button = ({text, color, inverted, action, style}: {
   </Text>
 );
 
-export const BigButton = ({text, color, inverted, action}) => (
+export const BigButton = ({text, color, inverted, action}: {
+  action?: () => void,
+  color: Color,
+  inverted?: boolean,
+  text: string,
+}) => (
   <Button text={text} color={color} inverted={inverted} action={action} style={{
     width: dimens.bigButton,
     paddingVertical: 20,
@@ -62,7 +70,10 @@ export const BigButton = ({text, color, inverted, action}) => (
   }} />
 );
 
-export const SearchBar = (props: {placeholder?: string, color?: string}) => (
+export const SearchBar = ({color, placeholder}: {
+  color?: string,
+  placeholder?: string,
+}) => (
   <View style={{
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -71,7 +82,7 @@ export const SearchBar = (props: {placeholder?: string, color?: string}) => (
     marginVertical: 30,
   }}>
     <TextInput
-      placeholder={props.placeholder || ""}
+      placeholder={placeholder || ""}
       style={{
         backgroundColor: colors.inputFieldBackground,
         borderColor: colors.deepBlue,
@@ -83,46 +94,58 @@ export const SearchBar = (props: {placeholder?: string, color?: string}) => (
         width: 510,
       }}/>
     <TouchableOpacity>
-      <Button text="Søk" small={true} color={props.color || colors.deepBlue}/>
+      <Button text="Søk" small={true} color={color || colors.deepBlue}/>
     </TouchableOpacity>
   </View>
 );
 
-export const GridLayout = (props: {children?: any}) => (
+export const GridLayout = ({children}: {children?: any}) => (
   <View style={{
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   }}>
-    {props.children}
+    {children}
     {
-      Array.isArray(props.children) &&
-      props.children.length % 3 != 0 &&
+      Array.isArray(children) &&
+      children.length % 3 != 0 &&
       <GridDummy />
     }
   </View>
 );
 
+
+export type MenuItem = { key: string, name: string, icon: string, action: () => void };
+
 export class SelectableGridLayout extends Component {
-  props: { items: Array<any>, small?: boolean }
+  props: {
+    items: Array<MenuItem>,
+    defaultItem?: string,
+    small?: boolean,
+  };
   state: { selected: string };
-  constructor() {
-    super()
-    this.state = { selected: null }
+  constructor(props: any) {
+    super(props)
+    this.state = { selected: this.props.defaultItem || '' }
   }
-  selectItem: (item: string) => void = (item) => {
-    this.setState({selected: item})
+  selectItem: (item: MenuItem) => void = (item) => {
+    if (item.key === this.state.selected) {
+      this.setState({selected: ''});
+    } else {
+      this.setState({selected: item.key});
+      item.action();
+    }
   };
   render() {
     return (
       <GridLayout>{
         this.props.items.map(item => (
-          <GridItem key={item.name}
+          <GridItem key={item.key}
                     small={this.props.small}
-                    selected={item.name == this.state.selected}
+                    selected={item.key === this.state.selected}
                     label={item.name}
-                    icon={item.image}
-                    action={() => this.selectItem(item.name)}
+                    icon={item.icon}
+                    action={() => this.selectItem(item)}
                     noFeedback={true} />
         ))}
       </GridLayout>
@@ -130,32 +153,44 @@ export class SelectableGridLayout extends Component {
   }
 }
 
-export const GridItem = (props: {label?: string, icon?: any, small?: boolean,
-                                         selected?: boolean, action?: () => void, noFeedback?: boolean}) => (
-  <GridView action={props.action} small={props.small} selected={props.selected} noFeedback={props.noFeedback}>
-    <Image resizeMode='contain' source={props.icon ? props.icon : require('../../img/dinner.png')} />
+export const GridItem = ({label, icon, small, selected, action, noFeedback}: {
+  action?: () => void,
+  icon?: any,
+  label?: string,
+  noFeedback?: boolean,
+  selected?: boolean,
+  small?: boolean,
+}) => (
+  <GridView action={action} small={small} selected={selected} noFeedback={noFeedback}>
+    <Icon size={72} name={icon ? icon : icons.placeholder} color={colors.darkGrey} />
     <Text style={{
       color: colors.deepBlue,
       fontSize: 22,
       marginTop: 20,
     }}>
-      {props.label || "placeholder"}
+      {label || "placeholder"}
     </Text>
   </GridView>
 );
 
 const GridDummy = () => (<View style={{width: smallGrid.width}}/>);
 
-const GridView = (props: {small?: boolean, selected?: boolean, children?: any, action?: () => void, noFeedback?: boolean}) => (
-  <TouchableOpacity activeOpacity={props.noFeedback ? 1 : 0.8} onPress={props.action} style={{
+const GridView = ({small, selected, children, action, noFeedback}: {
+  action?: () => void,
+  children?: any,
+  noFeedback?: boolean,
+  selected?: boolean,
+  small?: boolean,
+}) => (
+  <TouchableOpacity activeOpacity={noFeedback ? 1 : 0.8} onPress={action} style={{
     alignItems: 'center',
-    backgroundColor: props.selected ? 'rgb(245, 245, 245)' : colors.white,
+    backgroundColor: selected ? colors.selectedItem : colors.white,
     flexDirection: 'column',
     justifyContent: 'center',
-    height: props.small ? smallGrid.height : bigGrid.height,
-    width: props.small ? smallGrid.width : bigGrid.width,
+    height: small ? smallGrid.height : bigGrid.height,
+    width: small ? smallGrid.width : bigGrid.width,
     marginBottom: 6,
   }}>
-    {props.children}
+    {children}
   </TouchableOpacity>
 );
