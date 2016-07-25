@@ -18,33 +18,62 @@
  *
  */
 
-import React from 'react';
+import React, { Component } from 'react';
 import {
-  Image,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { colors, fontSize } from '../../style';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { colors, fontSize, dimens } from '../../style';
+import type { Color } from '../../style';
+import { icons } from '../../graphics';
 
-export const Button = (props: {text: string, small?: boolean}) => (
-  <Text style={{
-    backgroundColor: colors.deepBlue,
+const bigGrid = {width: 381, height: 220};
+const smallGrid = {width: 252, height: 200};
+
+export const Button = ({text, color, inverted, action, style}: {
+  action?: () => void,
+  color: Color,
+  inverted?: boolean,
+  style?: any,
+  text: string,
+}) => (
+  <Text onPress={action} style={{
+    backgroundColor: inverted ? colors.transparent : color,
+    borderColor: color,
+    borderWidth: 2,
     borderRadius: 8,
-    color: colors.white,
+    color: inverted ? color : colors.white,
     fontSize: fontSize.small,
-    fontStyle: 'italic',
     overflow: 'hidden',
-    paddingVertical: 15,
+    paddingVertical: 14,
     textAlign: 'center',
-    width: props.small ? 150 : 250,
+    width: dimens.smallButton,
+    ...style,
   }}>
-    {props.text}
+    {text}
   </Text>
 );
 
-export const SearchBar = (props: {placeholder?: string}) => (
+export const BigButton = ({text, color, inverted, action}: {
+  action?: () => void,
+  color: Color,
+  inverted?: boolean,
+  text: string,
+}) => (
+  <Button text={text} color={color} inverted={inverted} action={action} style={{
+    width: dimens.bigButton,
+    paddingVertical: 20,
+    fontWeight: inverted ? 'normal' : 'bold',
+  }} />
+);
+
+export const SearchBar = ({color, placeholder}: {
+  color?: string,
+  placeholder?: string,
+}) => (
   <View style={{
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -53,7 +82,7 @@ export const SearchBar = (props: {placeholder?: string}) => (
     marginVertical: 30,
   }}>
     <TextInput
-      placeholder={props.placeholder || ""}
+      placeholder={placeholder || ""}
       style={{
         backgroundColor: colors.inputFieldBackground,
         borderColor: colors.deepBlue,
@@ -65,38 +94,103 @@ export const SearchBar = (props: {placeholder?: string}) => (
         width: 510,
       }}/>
     <TouchableOpacity>
-      <Button text="Søk" small={true}/>
+      <Button text="Søk" small={true} color={color || colors.deepBlue}/>
     </TouchableOpacity>
   </View>
 );
 
-export const GridLayout = (props: {children?: any}) => (
+export const GridLayout = ({children}: {children?: any}) => (
   <View style={{
     flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'space-between',
   }}>
-    {props.children}
+    {children}
+    {
+      Array.isArray(children) &&
+      children.length % 3 != 0 &&
+      <GridDummy />
+    }
   </View>
 );
 
-export const GridItem = (props: {label?: string, icon?: any, small?: boolean}) => (
-  <View style={{
-    alignItems: 'center',
-    backgroundColor: 'white',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    width: props.small ? 250 : 378,
-    height: 200,
-    marginHorizontal: 3,
-    marginVertical: 3,
-  }}>
-    <Image source={props.icon ? props.icon : require('../../img/dinner.png')} />
+
+export type MenuItem = { key: string, name: string, icon: string, action: () => void };
+
+export class SelectableGridLayout extends Component {
+  props: {
+    items: Array<MenuItem>,
+    defaultItem?: string,
+    small?: boolean,
+  };
+  state: { selected: string };
+  constructor(props: any) {
+    super(props)
+    this.state = { selected: this.props.defaultItem || '' }
+  }
+  selectItem: (item: MenuItem) => void = (item) => {
+    if (item.key === this.state.selected) {
+      this.setState({selected: ''});
+    } else {
+      this.setState({selected: item.key});
+      item.action();
+    }
+  };
+  render() {
+    return (
+      <GridLayout>{
+        this.props.items.map(item => (
+          <GridItem key={item.key}
+                    small={this.props.small}
+                    selected={item.key === this.state.selected}
+                    label={item.name}
+                    icon={item.icon}
+                    action={() => this.selectItem(item)}
+                    noFeedback={true} />
+        ))}
+      </GridLayout>
+    );
+  }
+}
+
+export const GridItem = ({label, icon, small, selected, action, noFeedback}: {
+  action?: () => void,
+  icon?: any,
+  label?: string,
+  noFeedback?: boolean,
+  selected?: boolean,
+  small?: boolean,
+}) => (
+  <GridView action={action} small={small} selected={selected} noFeedback={noFeedback}>
+    <Icon size={72} name={icon ? icon : icons.placeholder} color={colors.darkGrey} />
     <Text style={{
       color: colors.deepBlue,
       fontSize: 22,
       marginTop: 20,
     }}>
-      {props.label ? props.label : "placeholder"}
+      {label || "placeholder"}
     </Text>
-  </View>
+  </GridView>
+);
+
+const GridDummy = () => (<View style={{width: smallGrid.width}}/>);
+
+const GridView = ({small, selected, children, action, noFeedback}: {
+  action?: () => void,
+  children?: any,
+  noFeedback?: boolean,
+  selected?: boolean,
+  small?: boolean,
+}) => (
+  <TouchableOpacity activeOpacity={noFeedback ? 1 : 0.8} onPress={action} style={{
+    alignItems: 'center',
+    backgroundColor: selected ? colors.selectedItem : colors.white,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    height: small ? smallGrid.height : bigGrid.height,
+    width: small ? smallGrid.width : bigGrid.width,
+    marginBottom: 6,
+  }}>
+    {children}
+  </TouchableOpacity>
 );

@@ -29,12 +29,14 @@ import LiquidRegistrationPage from './components/FoodRegistration/LiquidRegistra
 import NeedsRegistrationPage from './components/PatientRegistration/NeedsRegistrationPage'
 import PatientRegistrationPage from './components/PatientRegistration/PatientRegistrationPage';
 import TodaysIntakePage from './components/todaysIntake/TodaysIntakePage';
+import LiquidAmountRegistrationPage from './components/FoodRegistration/LiquidAmountRegistrationPage';
 
 import store from './store';
 
 const pages = {
   'RegisterFood': FoodRegistrationPage,
   'RegisterLiquid': LiquidRegistrationPage,
+  'RegisterLiquidAmount': LiquidAmountRegistrationPage,
   'RegisterNeeds': NeedsRegistrationPage,
   'RegisterPatient': PatientRegistrationPage,
   'StartPage': StartPage,

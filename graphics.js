@@ -18,37 +18,13 @@
  *
  */
 
-export type Color = string;
-
-export const colors = {
-  black: "#222222",
-  grey: 'grey',
-  lightGrey: '#CCCCCC',
-  darkBlue: "#18374c",
-  deepBlue: "#2173a1",
-  lightBlue: "#519dc7",
-  divider: "#ECECEC",
-  inputFieldBorder: "#D8D8D8",
-  inputFieldBackground:"#F8F8F8",
-  selectedItem: '#F5F5F5',
-  red: 'red',
-  green: 'rgb(31, 176, 120)',
-  darkGrey: 'rgb(119, 119, 119)',
-  transparent: 'rgba(0,0,0,0)',
-  redOrange: '#f26531',
-  white: "#FFFFFF",
-  lightGreen: "#1fb078",
-  darkGreen: "#157d54",
-}
-
-export const fontSize = {
-  ordinaryText: 20,
-  small: 25,
-  large: 38,
-}
-
-export const dimens = {
-  smallButton: 150,
-  mediumButton: 200,
-  bigButton: 420,
+export const icons = {
+  placeholder: 'question-mark',
+  increment: 'add-circle',
+  decrement: 'remove-circle',
+  arrowBack: 'arrow-back',
+  quarterGlass: 'filter-1',
+  halfGlass: 'filter-2',
+  threeQuarterGlass: 'filter-3',
+  wholeGlass: 'filter-4',
 }

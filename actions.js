@@ -18,10 +18,29 @@
  *
  */
 
+import type { Liquid } from './components/FoodRegistration/liquid';
 
 export type GoToPageAction = {
   type: 'GO_TO_PAGE',
   name: PageName,
+  navBarTitle?: string,
+  navBarSubTitle?: string,
+  liquid?: Liquid,
+}
+
+export type IncreaseAmountAction = {
+  type: 'INCREASE_AMOUNT',
+  step: number,
+}
+
+export type DecreaseAmountAction = {
+  type: 'DECREASE_AMOUNT',
+  step: number,
+}
+
+export type SelectAmountAction = {
+  type: 'SELECT_AMOUNT',
+  amount: number,
 }
 
 export type GoToPreviousPageAction = {
@@ -32,16 +51,16 @@ export type ResetAppAction = {
   type: 'RESET_APP',
 }
 
-export type Action = GoToPageAction;
+export type Action = GoToPageAction | IncreaseAmountAction | DecreaseAmountAction | SelectAmountAction;
 export type PageName = 'RegisterNeeds'
                      | 'RegisterPatient'
                      | 'StartPage'
                      | 'RegisterFever'
                      | 'RegisterFood'
                      | 'RegisterLiquid'
+                     | 'RegisterLiquidAmount'
                      | 'TodaysIntake'
 ;
-
 
 export function registerNeeds(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterNeeds' }
@@ -73,4 +92,26 @@ export function registerFood(): GoToPageAction {
 
 export function registerLiquid(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterLiquid' }
+}
+
+export function registerLiquidAmount(liquid: Liquid): GoToPageAction {
+  return {
+    type: 'GO_TO_PAGE',
+    name: 'RegisterLiquidAmount',
+    navBarTitle: liquid.name,
+    navBarSubTitle: 'Drikke',
+    liquid: liquid,
+  }
+}
+
+export function increaseAmount(step: number): IncreaseAmountAction {
+  return { type: 'INCREASE_AMOUNT', step: step }
+}
+
+export function decreaseAmount(step: number): DecreaseAmountAction {
+  return { type: 'DECREASE_AMOUNT', step: step }
+}
+
+export function selectAmount(amount: number): SelectAmountAction {
+  return { type: 'SELECT_AMOUNT', amount: amount }
 }
