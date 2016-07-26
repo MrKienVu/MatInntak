@@ -28,7 +28,14 @@ import {
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import NavigationBar from '../NavigationBar'
-import { showPreviousPage, registerFood, increaseAmount, decreaseAmount, selectAmount } from '../../actions';
+import {
+  showPreviousPage,
+  registerFood,
+  increaseAmount,
+  decreaseAmount,
+  selectAmount,
+  showTodaysIntakePage,
+} from '../../actions';
 import { Button, BigButton, SelectableGridLayout } from './common';
 import { colors, fontSize, dimens } from '../../style';
 import { icons } from '../../graphics';
@@ -277,7 +284,7 @@ const ConnectedPage = connect(
     },
     registerLiquid: (liquid: Liquid, amount: number) => {
       console.log("Registered liquid:", liquid.name, amount);
-      //dispatch(registerFood());
+      dispatch(showTodaysIntakePage());
     },
   }),
 )(LiquidAmountRegistrationPage);

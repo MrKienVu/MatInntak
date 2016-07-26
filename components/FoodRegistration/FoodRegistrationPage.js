@@ -95,6 +95,7 @@ const MenuItem = (props: {text: string, image?: any, action?: () => void}) => (
   <View style={{
     alignItems: 'center',
     width: 260,
+    height: 300,
   }}>
     <Image source={props.image || require('../../img/dinner.png')} />
     <Text style={{
