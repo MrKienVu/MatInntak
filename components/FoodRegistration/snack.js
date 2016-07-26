@@ -18,7 +18,7 @@
  *
  */
 
-export type snack = {name: string, icon: string};
+export type Snack = {name: string, icon: string};
 
 export const snacks: Array<Snack> = [
   { name: 'Bolle', icon: 'opacity'},

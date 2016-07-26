@@ -28,7 +28,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../../style';
 import { icons } from '../../graphics';
-import { BigButton } from './common';
+import { BigButton } from './common';
 
 import type { Color } from '../../style';
 
@@ -98,7 +98,7 @@ export const AmountSelector = ({increase, decrease, amount, decrementerEnabled, 
   increase: () => void,
   decrease: () => void,
   decrementerEnabled: boolean,
-  color: color,
+  color: Color,
 }) => (
   <View style={{
     flexDirection: 'row',
@@ -124,7 +124,7 @@ const ImageButton = ({image, action, enabled, color}: {
   action: () => void,
   enabled?: boolean,
   image: string,
-  color: Colors,
+  color: Color,
 }) => (
   <TouchableOpacity activeOpacity={enabled ? 0.8 : 1} onPress={enabled ? action : null} style={{
     margin: 24,
@@ -133,7 +133,7 @@ const ImageButton = ({image, action, enabled, color}: {
   </TouchableOpacity>
 );
 
-export const SubTitle = ({text}) => (
+export const SubTitle = ({text}: {text: string}) => (
   <Text style={{
     color: colors.darkGrey,
     fontSize: 36,
