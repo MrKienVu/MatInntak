@@ -27,7 +27,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { colors, fontSize } from '../../style';
-import { resetApp, registerLiquid, showTodaysIntakePage } from '../../actions';
+import { resetApp, registerLiquid, registerSnack, showTodaysIntakePage } from '../../actions';
 
 const backgroundSource = require('../../img/food-registration-background.png');
 
@@ -44,7 +44,7 @@ class FoodRegistrationPage extends Component {
       <FoodRegistrationMenu>
         <MenuRow>
           <CategorizedMenuItem category={meal} action={this.props.resetApp}/>
-          <CategorizedMenuItem category={snack} />
+          <CategorizedMenuItem category={snack} action={this.props.registerSnack} />
         </MenuRow>
         <MenuRow style={{marginHorizontal: -150}}>
           <CategorizedMenuItem category={dinner} />
@@ -116,6 +116,7 @@ const ConnectedPage = connect(
   (dispatch) => ({
     resetApp: () => dispatch(resetApp()),
     registerLiquid: () => dispatch(registerLiquid()),
+    registerSnack: () => dispatch(registerSnack()),
     showTodaysIntake: () => dispatch(showTodaysIntakePage()),
   }),
 )(FoodRegistrationPage);

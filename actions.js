@@ -19,6 +19,7 @@
  */
 
 import type { Liquid } from './components/FoodRegistration/liquid';
+import type { Snack } from './components/FoodRegistration/snack';
 
 export type GoToPageAction = {
   type: 'GO_TO_PAGE',
@@ -59,6 +60,8 @@ export type PageName = 'RegisterNeeds'
                      | 'RegisterFood'
                      | 'RegisterLiquid'
                      | 'RegisterLiquidAmount'
+                     | 'RegisterSnack'
+                     | 'RegisterSnackAmount'
                      | 'TodaysIntake'
 ;
 
@@ -101,6 +104,20 @@ export function registerLiquidAmount(liquid: Liquid): GoToPageAction {
     navBarTitle: liquid.name,
     navBarSubTitle: 'Drikke',
     liquid: liquid,
+  }
+}
+
+export function registerSnack(): GoToPageAction {
+  return { type: 'GO_TO_PAGE', name: 'RegisterSnack'}
+}
+
+export function registerSnackAmount(snack: Snack): GoToPageAction {
+  return {
+    type: 'GO_TO_PAGE',
+    name: 'RegisterSnackAmount',
+    navBarTitle: snack.name,
+    navBarSubTitle: 'Mellommåltid',
+    snack: snack,
   }
 }
 

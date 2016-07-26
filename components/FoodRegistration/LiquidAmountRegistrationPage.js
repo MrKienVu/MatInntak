@@ -22,11 +22,8 @@ import React, { Component } from 'react';
 import {
   View,
   ScrollView,
-  Text,
-  TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import NavigationBar from '../NavigationBar'
 import {
   showPreviousPage,
@@ -37,8 +34,24 @@ import {
   showTodaysIntakePage,
 } from '../../actions';
 import { Button, BigButton, SelectableGridLayout } from './common';
-import { colors, fontSize, dimens } from '../../style';
+import { colors, dimens } from '../../style';
 import { icons } from '../../graphics';
+import NavigationBar from '../NavigationBar'
+import {
+  showPreviousPage,
+  registerFood,
+  increaseAmount,
+  decreaseAmount,
+  selectAmount,
+} from '../../actions';
+import {
+  AmountSelector,
+  BigButton,
+  Button,
+  SelectableGridLayout,
+  SeparatorText,
+  SubTitle,
+} from './common';
 
 import type { MenuItem } from './common';
 import type { Liquid } from './liquid';
@@ -199,7 +212,8 @@ class SpecifyAmount extends Component {
         <AmountSelector increase={() => this.increase()}
                         decrease={() => this.decrease()}
                         amount={this.props.amount}
-                        decrementerEnabled={this.state.decrementerEnabled} />
+                        decrementerEnabled={this.state.decrementerEnabled}
+                        color={colors.deepBlue} />
         <BigButton action={this.props.confirmAmount}
                    color={colors.deepBlue}
                    text="Bekreft" />
@@ -211,59 +225,6 @@ class SpecifyAmount extends Component {
     );
   }
 }
-
-const AmountSelector = ({increase, decrease, amount, decrementerEnabled}: {
-  amount: number,
-  increase: () => void,
-  decrease: () => void,
-  decrementerEnabled: boolean,
-}) => (
-  <View style={{
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 32,
-  }}>
-    <ImageButton action={decrease} image={icons.decrement} enabled={decrementerEnabled} />
-    <Text style={{
-      color: colors.deepBlue,
-      fontSize: 52,
-      fontWeight: 'bold',
-      alignSelf: 'center',
-      textAlign: 'center',
-      width: 120,
-    }}>
-      {amount}
-    </Text>
-    <ImageButton action={increase} image={icons.increment} enabled={true} />
-  </View>
-);
-
-const ImageButton = ({image, action, enabled}: {
-  action: () => void,
-  enabled?: boolean,
-  image: string,
-}) => (
-  <TouchableOpacity activeOpacity={enabled ? 0.8 : 1} onPress={enabled ? action : null} style={{
-    margin: 24,
-  }}>
-    <Icon name={image} size={70} color={enabled ? colors.deepBlue : colors.lightGrey} />
-  </TouchableOpacity>
-);
-
-const SubTitle = ({text}) => (
-  <Text style={{
-    color: colors.darkGrey,
-    fontSize: 36,
-  }}>
-    {text}
-  </Text>
-);
-
-export const SeparatorText = ({text}: {text: string}) => (
-  <Text style={{color: colors.darkGrey, fontSize: fontSize.small, fontStyle: 'italic'}}>
-    {text}
-  </Text>
-);
 
 const ConnectedPage = connect(
   (state) => ({

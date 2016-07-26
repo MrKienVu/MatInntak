@@ -18,38 +18,19 @@
  *
  */
 
-export type Color = string;
+export type snack = {name: string, icon: string};
 
-export const colors = {
-  black: "#222222",
-  grey: 'grey',
-  lightGrey: '#CCCCCC',
-  darkBlue: "#18374c",
-  deepBlue: "#2173a1",
-  lightBlue: "#519dc7",
-  snack: "#519dc7",
-  divider: "#ECECEC",
-  inputFieldBorder: "#D8D8D8",
-  inputFieldBackground:"#F8F8F8",
-  selectedItem: '#F5F5F5',
-  red: 'red',
-  green: 'rgb(31, 176, 120)',
-  darkGrey: 'rgb(119, 119, 119)',
-  transparent: 'rgba(0,0,0,0)',
-  redOrange: '#f26531',
-  white: "#FFFFFF",
-  lightGreen: "#1fb078",
-  darkGreen: "#157d54",
-}
-
-export const fontSize = {
-  ordinaryText: 20,
-  small: 25,
-  large: 38,
-}
-
-export const dimens = {
-  smallButton: 150,
-  mediumButton: 200,
-  bigButton: 420,
-}
+export const snacks: Array<Snack> = [
+  { name: 'Bolle', icon: 'opacity'},
+  { name: 'Kake', icon: 'opacity'},
+  { name: 'Kjeks', icon: 'opacity'},
+  { name: 'Smurt lefse', icon: 'opacity'},
+  { name: 'Fruktskål', icon: 'opacity'},
+  { name: 'Banan', icon: 'opacity'},
+  { name: 'Eple', icon: 'opacity'},
+  { name: 'Appelsin', icon: 'opacity'},
+  { name: 'Clementin', icon: 'opacity'},
+  { name: 'Pære', icon: 'opacity'},
+  { name: 'Druer', icon: 'opacity'},
+  { name: 'Melon', icon: 'opacity'},
+];
