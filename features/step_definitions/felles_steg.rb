@@ -27,3 +27,16 @@ Gitt(/^at "(.*)" er valgt fra startsiden$/) do |button|
   step "at applikasjonen har startet"
   step "knappen \"#{button}\" trykkes på"
 end
+
+Gitt(/^at "(.*)" er valgt fra hovedmenyen$/) do |button|
+  step "at \"Start matregistrering\" er valgt fra startsiden"
+  step "knappen \"#{button}\" trykkes på"
+end
+
+Og(/^produkt "(.*)" er valgt$/) do |button|
+  step "knappen \"#{button}\" trykkes på"
+end
+
+Og(/^mengde "(.*)" er valgt$/) do |mengde|
+  step "knappen \"#{mengde}\" trykkes på"
+end
