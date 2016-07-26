@@ -30,36 +30,6 @@ import { colors, fontSize, dimens } from '../../style';
 import type { Color } from '../../style';
 import { icons } from '../../graphics';
 
-const bigGrid = {width: 381, height: 220};
-const smallGrid = {width: 252, height: 200};
-
-export const AmountSelector = ({increase, decrease, amount, decrementerEnabled, color}: {
-  amount: number,
-  increase: () => void,
-  decrease: () => void,
-  decrementerEnabled: boolean,
-  color: color,
-}) => (
-  <View style={{
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 32,
-  }}>
-    <ImageButton action={decrease} image={icons.decrement} enabled={decrementerEnabled} color={color} />
-    <Text style={{
-      color: color,
-      fontSize: 52,
-      fontWeight: 'bold',
-      alignSelf: 'center',
-      textAlign: 'center',
-      width: 120,
-    }}>
-      {amount}
-    </Text>
-    <ImageButton action={increase} image={icons.increment} enabled={true} color={color} />
-  </View>
-);
-
 export const Button = ({text, color, inverted, action, style}: {
   action?: () => void,
   color: Color,
@@ -84,6 +54,12 @@ export const Button = ({text, color, inverted, action, style}: {
   </Text>
 );
 
+export const SeparatorText = ({text}: {text: string}) => (
+  <Text style={{color: colors.darkGrey, fontSize: fontSize.small, fontStyle: 'italic'}}>
+    {text}
+  </Text>
+);
+
 export const BigButton = ({text, color, inverted, action}: {
   action?: () => void,
   color: Color,
@@ -95,19 +71,6 @@ export const BigButton = ({text, color, inverted, action}: {
     paddingVertical: 20,
     fontWeight: inverted ? 'normal' : 'bold',
   }} />
-);
-
-const ImageButton = ({image, action, enabled, color}: {
-  action: () => void,
-  enabled?: boolean,
-  image: string,
-  color: Colors,
-}) => (
-  <TouchableOpacity activeOpacity={enabled ? 0.8 : 1} onPress={enabled ? action : null} style={{
-    margin: 24,
-  }}>
-    <Icon name={image} size={70} color={enabled ? color : colors.lightGrey} />
-  </TouchableOpacity>
 );
 
 export const SearchBar = ({color, placeholder}: {
@@ -139,20 +102,8 @@ export const SearchBar = ({color, placeholder}: {
   </View>
 );
 
-export const SeparatorText = ({text}: {text: string}) => (
-  <Text style={{color: colors.darkGrey, fontSize: fontSize.small, fontStyle: 'italic'}}>
-    {text}
-  </Text>
-);
-
-export const SubTitle = ({text}) => (
-  <Text style={{
-    color: colors.darkGrey,
-    fontSize: 36,
-  }}>
-    {text}
-  </Text>
-);
+const bigGrid = {width: 381, height: 220};
+const smallGrid = {width: 252, height: 200};
 
 export const GridLayout = ({children}: {children?: any}) => (
   <View style={{
@@ -168,7 +119,6 @@ export const GridLayout = ({children}: {children?: any}) => (
     }
   </View>
 );
-
 
 export type MenuItem = { key: string, name: string, icon: string, action: () => void };
 

@@ -27,42 +27,33 @@
    decreaseAmount,
    increaseAmount,
    registerFood,
-   selectAmount,
    showPreviousPage,
+   showTodaysIntakePage,
  } from '../../actions';
- import {
-   AmountSelector,
-   BigButton,
-   SubTitle,
- } from './common';
+ import { SpecifyAmount } from './SpecifyAmount';
 
 class SnackAmountRegistrationPage extends Component {
   props: ({
     amount: number,
-    increaseAmount: () => void,
     decreaseAmount: () => void,
-    cancelAction: () => void,
-    confirmAmount: () => void,
+    increaseAmount: () => void,
+    navBarTitle: string,
+    navBarSubTitle: string,
+    registerSnack: (snack: Snack, amount: number) => void,
+    snack: Snack,
+    showPreviousPage: () => void,
   });
-  state: ({incrementerEnabled: boolean, decrementerEnabled: boolean});
+  state: ({
+    amountStep: number,
+  });
   constructor(props: any) {
     super(props)
-    this.amountStep = 0.5;
+    console.log(props);
     this.state = {
-      incrementerEnabled: true,
-      decrementerEnabled: (this.props.amount > 0),
+      amountStep: 0.5,
     };
   }
-  increase() {
-    if (this.props.amount == this.amountStep)
-      this.setState({decrementerEnabled: true});
-    this.props.increaseAmount(this.amountStep);
-  };
-  decrease() {
-    this.props.decreaseAmount(this.amountStep);
-    if (this.props.amount == this.amountStep)
-      this.setState({decrementerEnabled: false})
-  };
+  registerSnack = () => { this.props.registerSnack(this.props.snack, this.props.amount); };
   render() {
     return (
       <View>
@@ -71,27 +62,14 @@ class SnackAmountRegistrationPage extends Component {
                        showFrontPage={this.props.registerFood}
                        goBack={this.props.showPreviousPage}
                        color={colors.snack} />
-        <View style={{ marginTop: 64,
-                       height: 460,
-                       flexDirection: 'column',
-                       alignItems: 'center',
-                       justifyContent: 'space-between',
-                       }}>
-        <SubTitle text="Velg antall" />
-        <AmountSelector increase={() => this.increase()}
-                        decrease={() => this.decrease()}
-                        amount={this.props.amount}
-                        decrementerEnabled={this.state.decrementerEnabled}
-                        color={colors.snack} />
-        <BigButton action={this.props.confirmAmount}
-                   color={colors.snack}
-                   text="Bekreft" />
-        <BigButton action={this.props.showPreviousPage}
-                   color={colors.snack}
-                   inverted={true}
-                   text="Avbryt" />
-        </View>
-
+        <SpecifyAmount amount={this.props.amount}
+                       color={colors.snack}
+                       interval={this.state.amountStep}
+                       cancelAction={this.props.showPreviousPage}
+                       increaseAmount={this.props.increaseAmount}
+                       decreaseAmount={this.props.decreaseAmount}
+                       confirmAction={this.registerSnack}
+                       text={"Velg antall"} />
       </View>
     );
   }
@@ -109,13 +87,9 @@ const ConnectedPage = connect(
     showPreviousPage: () => dispatch(showPreviousPage()),
     increaseAmount: (amountStep: number) => dispatch(increaseAmount(amountStep)),
     decreaseAmount: (amountStep: number) => dispatch(decreaseAmount(amountStep)),
-    selectAmount: (amount: number) => {
-      console.log('Selected amount:', amount);
-      dispatch(selectAmount(amount));
-    },
-    registerSnackAmount: (snack: Liquid, amount: number) => {
+    registerSnack: (snack: Snack, amount: number) => {
       console.log("Registered snack:", snack.name, amount);
-      //dispatch(registerFood());
+      dispatch(showTodaysIntakePage());
     },
   }),
 )(SnackAmountRegistrationPage);

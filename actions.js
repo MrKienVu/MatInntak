@@ -27,6 +27,7 @@ export type GoToPageAction = {
   navBarTitle?: string,
   navBarSubTitle?: string,
   liquid?: Liquid,
+  snack?: Snack,
 }
 
 export type IncreaseAmountAction = {

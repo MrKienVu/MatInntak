@@ -24,6 +24,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { connect } from 'react-redux';
+
 import NavigationBar from '../NavigationBar'
 import {
   showPreviousPage,
@@ -33,25 +34,11 @@ import {
   selectAmount,
   showTodaysIntakePage,
 } from '../../actions';
-import { Button, BigButton, SelectableGridLayout } from './common';
+
+import { SpecifyAmount } from './SpecifyAmount';
+import { Button, SelectableGridLayout, SeparatorText } from './common';
 import { colors, dimens } from '../../style';
 import { icons } from '../../graphics';
-import NavigationBar from '../NavigationBar'
-import {
-  showPreviousPage,
-  registerFood,
-  increaseAmount,
-  decreaseAmount,
-  selectAmount,
-} from '../../actions';
-import {
-  AmountSelector,
-  BigButton,
-  Button,
-  SelectableGridLayout,
-  SeparatorText,
-  SubTitle,
-} from './common';
 
 import type { MenuItem } from './common';
 import type { Liquid } from './liquid';
@@ -93,17 +80,18 @@ function getMenuItems(amountStep: number, selectAmount: (amount: number) => void
 }
 
 class LiquidAmountRegistrationPage extends Component {
-  props: {navBarTitle: string,
-          navBarSubTitle: string,
-          registerFood: () => void,
-          registerLiquid: () => void,
-          showPreviousPage: () => void,
-          increaseAmount: () => void,
-          decreaseAmount: () => void,
-          selectAmount: () => void,
-          amount: number,
-          amountStep: number,
-          liquid: Liquid,
+  props: {
+    amount: number,
+    amountStep: number,
+    decreaseAmount: () => void,
+    increaseAmount: () => void,
+    liquid: Liquid,
+    navBarTitle: string,
+    navBarSubTitle: string,
+    registerFood: () => void,
+    registerLiquid: (liquid: Liquid, amount: number) => void,
+    selectAmount: () => void,
+    showPreviousPage: () => void,
   };
   state: {specify: boolean};
   constructor(props: any) {
@@ -113,7 +101,7 @@ class LiquidAmountRegistrationPage extends Component {
   enableSpecify = () => { this.setState({specify: true}) };
   disableSpecify = () => { this.setState({specify: false}) };
   selectAmount = (amount: number) => { this.props.selectAmount(amount); };
-  confirmAmount = () => { this.props.registerLiquid(this.props.liquid, this.props.amount) };
+  registerLiquid = () => { this.props.registerLiquid(this.props.liquid, this.props.amount) };
   render() {
     return (
       <View style={{
@@ -128,15 +116,17 @@ class LiquidAmountRegistrationPage extends Component {
                      confirmAmount={() => this.confirmAmount()} />
       { this.state.specify ?
         <SpecifyAmount amount={this.props.amount}
-                       amountStep={this.props.amountStep}
+                       color={colors.deepBlue}
+                       interval={this.props.amountStep}
                        cancelAction={this.disableSpecify}
                        increaseAmount={this.props.increaseAmount}
                        decreaseAmount={this.props.decreaseAmount}
-                       confirmAmount={this.confirmAmount} /> :
+                       confirmAction={this.registerLiquid}
+                       text={"Angi mengde i dl"}/> :
         <PickAmount amount={this.props.amount}
                     amountStep={this.props.amountStep}
                     items={getMenuItems(this.props.amountStep, this.selectAmount)}
-                    confirmAmount={this.confirmAmount}
+                    confirmAmount={this.registerLiquid}
                     specifyAction={this.enableSpecify} />
       }
       </View>
@@ -160,7 +150,7 @@ const PickAmount = ({amount, amountStep, items, confirmAmount, specifyAction}: {
     justifyContent: 'space-around',
     height: 200,
   }}>
-  <Button action={() => confirmAmount()}
+  <Button action={confirmAmount}
           text="Registrer"
           color={colors.deepBlue}
           style={{fontWeight: 'bold', width: dimens.mediumButton}} />
@@ -171,60 +161,6 @@ const PickAmount = ({amount, amountStep, items, confirmAmount, specifyAction}: {
   </View>
   </ScrollView>
 );
-
-class SpecifyAmount extends Component {
-  props: ({
-    amount: number,
-    amountStep: number,
-    increaseAmount: () => void,
-    decreaseAmount: () => void,
-    cancelAction: () => void,
-    confirmAmount: () => void,
-  });
-  state: ({incrementerEnabled: boolean, decrementerEnabled: boolean});
-  constructor(props: any) {
-    super(props)
-    this.state = {
-      incrementerEnabled: true,
-      decrementerEnabled: (this.props.amount > 0),
-    };
-  }
-  increase() {
-    if (this.props.amount == 0)
-      this.setState({decrementerEnabled: true});
-    this.props.increaseAmount(this.props.amountStep);
-  };
-  decrease() {
-    this.props.decreaseAmount(this.props.amountStep);
-    if (this.props.amount == 0)
-      this.setState({decrementerEnabled: false});
-  };
-  render() {
-    return (
-      <View style={{
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: 64,
-        height: 460,
-      }}>
-        <SubTitle text="Angi mengde i dl" />
-        <AmountSelector increase={() => this.increase()}
-                        decrease={() => this.decrease()}
-                        amount={this.props.amount}
-                        decrementerEnabled={this.state.decrementerEnabled}
-                        color={colors.deepBlue} />
-        <BigButton action={this.props.confirmAmount}
-                   color={colors.deepBlue}
-                   text="Bekreft" />
-        <BigButton action={this.props.cancelAction}
-                   color={colors.deepBlue}
-                   inverted={true}
-                   text="Avbryt" />
-      </View>
-    );
-  }
-}
 
 const ConnectedPage = connect(
   (state) => ({
@@ -240,7 +176,6 @@ const ConnectedPage = connect(
     increaseAmount: (amountStep: number) => dispatch(increaseAmount(amountStep)),
     decreaseAmount: (amountStep: number) => dispatch(decreaseAmount(amountStep)),
     selectAmount: (amount: number) => {
-      console.log('Selected amount:', amount);
       dispatch(selectAmount(amount));
     },
     registerLiquid: (liquid: Liquid, amount: number) => {
