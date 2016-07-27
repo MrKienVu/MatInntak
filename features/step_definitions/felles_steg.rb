@@ -37,6 +37,14 @@ Og(/^produkt "(.*)" er valgt$/) do |button|
   step "knappen \"#{button}\" trykkes på"
 end
 
-Og(/^mengde "(.*)" er valgt$/) do |mengde|
-  step "knappen \"#{mengde}\" trykkes på"
+Og(/^mengde "(.*)" er valgt$/) do |value|
+  step "knappen \"#{value}\" trykkes på"
+end
+
+Og(/^antall (\d+) er valgt$/) do |value|
+  i = 0
+  while i < value.to_i*2 do
+    step "knappen \"increase\" trykkes på"
+    i += 1
+  end
 end

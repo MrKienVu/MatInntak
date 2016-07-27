@@ -105,7 +105,9 @@ export const AmountSelector = ({increase, decrease, amount, decrementerEnabled, 
     justifyContent: 'space-between',
     marginVertical: 32,
   }}>
-    <ImageButton action={decrease} image={icons.decrement} enabled={decrementerEnabled} color={color} />
+    <View accessibilityLabel={'decrease'}>
+      <ImageButton action={decrease} image={icons.decrement} enabled={decrementerEnabled} color={color} />
+    </View>
     <Text style={{
       color: color,
       fontSize: 52,
@@ -116,7 +118,9 @@ export const AmountSelector = ({increase, decrease, amount, decrementerEnabled, 
     }}>
       {amount}
     </Text>
-    <ImageButton action={increase} image={icons.increment} enabled={true} color={color} />
+    <View accessibilityLabel={'increase'}>
+      <ImageButton action={increase} image={icons.increment} enabled={true} color={color} />
+    </View>
   </View>
 );
 
