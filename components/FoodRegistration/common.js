@@ -30,9 +30,6 @@ import { colors, fontSize, dimens } from '../../style';
 import type { Color } from '../../style';
 import { icons } from '../../graphics';
 
-const bigGrid = {width: 381, height: 220};
-const smallGrid = {width: 252, height: 200};
-
 export const Button = ({text, color, inverted, action, style}: {
   action?: () => void,
   color: Color,
@@ -53,6 +50,12 @@ export const Button = ({text, color, inverted, action, style}: {
     width: dimens.smallButton,
     ...style,
   }}>
+    {text}
+  </Text>
+);
+
+export const SeparatorText = ({text}: {text: string}) => (
+  <Text style={{color: colors.darkGrey, fontSize: fontSize.small, fontStyle: 'italic'}}>
     {text}
   </Text>
 );
@@ -85,7 +88,7 @@ export const SearchBar = ({color, placeholder}: {
       placeholder={placeholder || ""}
       style={{
         backgroundColor: colors.inputFieldBackground,
-        borderColor: colors.deepBlue,
+        borderColor: color || colors.deepBlue,
         borderRadius: 5,
         borderWidth: 3,
         fontSize: fontSize.small,
@@ -98,6 +101,9 @@ export const SearchBar = ({color, placeholder}: {
     </TouchableOpacity>
   </View>
 );
+
+const bigGrid = {width: 381, height: 220};
+const smallGrid = {width: 252, height: 200};
 
 export const GridLayout = ({children}: {children?: any}) => (
   <View style={{
@@ -113,7 +119,6 @@ export const GridLayout = ({children}: {children?: any}) => (
     }
   </View>
 );
-
 
 export type MenuItem = { key: string, name: string, icon: string, action: () => void };
 
