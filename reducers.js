@@ -30,7 +30,7 @@ function routing(state = initialRouting, action: Action) {
       navBarTitle: action.navBarTitle || '',
       navBarSubTitle: action.navBarSubTitle || '',
       liquid: action.liquid || null,
-      snack: action.snack || null,
+      snack: action.snack || null,
      };
   }
 

@@ -32,6 +32,8 @@
  } from '../../actions';
  import { SpecifyAmount } from './SpecifyAmount';
 
+ import type { Snack } from './snack';
+
 class SnackAmountRegistrationPage extends Component {
   props: ({
     amount: number,
@@ -39,6 +41,7 @@ class SnackAmountRegistrationPage extends Component {
     increaseAmount: () => void,
     navBarTitle: string,
     navBarSubTitle: string,
+    registerFood: () => void,
     registerSnack: (snack: Snack, amount: number) => void,
     snack: Snack,
     showPreviousPage: () => void,
@@ -48,12 +51,11 @@ class SnackAmountRegistrationPage extends Component {
   });
   constructor(props: any) {
     super(props)
-    console.log(props);
     this.state = {
       amountStep: 0.5,
     };
   }
-  registerSnack = () => { this.props.registerSnack(this.props.snack, this.props.amount); };
+  registerSnack = () => { this.props.registerSnack(this.props.snack, this.props.amount); };
   render() {
     return (
       <View>

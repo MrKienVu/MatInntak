@@ -112,8 +112,7 @@ class LiquidAmountRegistrationPage extends Component {
                      caption={this.props.navBarSubTitle}
                      showFrontPage={this.props.registerFood}
                      goBack={this.props.showPreviousPage}
-                     color={colors.deepBlue}
-                     confirmAmount={() => this.confirmAmount()} />
+                     color={colors.deepBlue} />
       { this.state.specify ?
         <SpecifyAmount amount={this.props.amount}
                        color={colors.deepBlue}
