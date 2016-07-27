@@ -34,7 +34,10 @@ import ProgressCircle from './ProgressCircle';
 import { colors, fontSize } from '../../style';
 import NavigationBar from '../NavigationBar';
 import { showPreviousPage, registerFood } from '../../actions';
+import Swiper from 'react-native-swiper';
+
 import type { Gram, Kcal } from '../../logic/needs';
+import type { Color } from '../../style'
 
 function upperCaseFirst(string: string) {
   return string[0].toUpperCase() + string.slice(1);
@@ -56,10 +59,28 @@ const TodaysIntakePage = ({goBack, showFrontPage}) => (
                    caption={ upperCaseFirst(formatDate(new Date())) }
                    goBack={goBack}
                    showFrontPage={showFrontPage} />
-    <TodaysIntake style={{marginTop: 30, marginBottom: 20}}/>
     <ScrollView style={{flex: 1}}>
+    <TodaysIntake style={{marginTop: 30, marginBottom: 20}}/>
       <MealDrawerChest style={{marginTop: 20}} />
     </ScrollView>
+  </View>
+);
+
+type Indicator = {color: Color, progress: number};
+
+const IntakeIndicator = ({indicators}: {indicators: Array<Indicator>}) => (
+  <Swiper nextButton={<Icon name={'chevron-right'} size={100} color={colors.divider} />}
+          prevButton={<Icon name={'chevron-left'} size={100} color={colors.divider} />}
+          index={1} height={200} loop={false} showsButtons={true} showsPagination={false}>
+      <IntakeIndicatorPage color={indicators[0].color} progress={indicators[0].progress} />
+      <IntakeIndicatorPage color={indicators[1].color} progress={indicators[1].progress} />
+      <IntakeIndicatorPage color={indicators[2].color} progress={indicators[2].progress} />
+  </Swiper>
+);
+
+const IntakeIndicatorPage = ({color, progress}: {color: Color, progress: number}) => (
+  <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+    <IntakeIndicatorCircle color={color} progress={progress} />
   </View>
 );
 
@@ -77,10 +98,10 @@ const TodaysIntake = ({style}) => (
                 ...style,
                }}>
     <IntakeIndicator indicators={[
-                                {color: colors.redOrange, progress: 1},
-                                {color: colors.deepBlue, progress: 0.75},
-                                {color: colors.lightGreen, progress: 0.25},
-                                ]} />
+                        {color: colors.redOrange, progress: 1},
+                        {color: colors.deepBlue, progress: 0.75},
+                        {color: colors.lightGreen, progress: 0.25},
+                     ]}/>
     <NutritientStatuses style={{marginTop: 20}} />
   </View>
 );
@@ -96,107 +117,6 @@ const IntakeIndicatorCircle = ({color, progress}) => (
                   thickness={8}
                   textStyle={{color:colors.black, fontSize: fontSize.ordinaryText}}
                   percentageStyle={{color:colors.black, fontSize: 40, fontWeight: '600'}} />
-);
-
-function isLeftSwipe(gesture, limit=0): boolean {
-  return gesture.dx < -limit;
-}
-
-function isRightSwipe(gesture, limit=0): boolean {
-  return gesture.dx > limit;
-}
-
-type IndicatorSpec = { color: string, progress: number };
-class IntakeIndicator extends Component {
-  state: {
-    displayIndicatorIndex: number,
-    rightOffset: number,
-    leftOffset: number,
-  };
-  props: { indicators: Array<IndicatorSpec> };
-  panResponder: Object;
-  constructor() {
-    super();
-    this.state = {
-      displayIndicatorIndex: 1,
-      rightOffset: 0,
-      leftOffset: 0,
-    };
-  }
-  previousIndicatorExists = () => this.state.displayIndicatorIndex > 0;
-  nextIndicatorExists = () => this.state.displayIndicatorIndex < (this.props.indicators.length - 1);
-  showPreviousIndicator = () => {
-    this.setState({displayIndicatorIndex: this.state.displayIndicatorIndex - 1 });
-  };
-  showNextIndicator = () => {
-    this.setState({displayIndicatorIndex: this.state.displayIndicatorIndex + 1 });
-  };
-  _clearOffsets() {
-    this.setState({leftOffset:0, rightOffset: 0});
-  }
-  componentWillMount() {
-    this.panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: (e, gesture) => {
-        const { leftOffset, rightOffset } = this.state;
-        const step = 8;
-        const maxOffset = 300;
-        isLeftSwipe(gesture) && leftOffset < maxOffset && this.setState({leftOffset: leftOffset + step});
-        isRightSwipe(gesture) && rightOffset < maxOffset && this.setState({rightOffset: rightOffset + step});
-      },
-      onPanResponderRelease: (e, gesture) => {
-        const limit = 50;
-        isLeftSwipe(gesture, limit) && this.nextIndicatorExists() && this.showNextIndicator();
-        isRightSwipe(gesture, limit) && this.previousIndicatorExists() && this.showPreviousIndicator();
-        this._clearOffsets();
-      },
-    });
-  }
-  render() {
-    const { indicators } = this.props;
-    const indicator = indicators[this.state.displayIndicatorIndex];
-    const currentIndicator = <IntakeIndicatorCircle color={indicator.color} progress={indicator.progress} />;
-
-    return (
-      <View style={{flexDirection:'row', justifyContent: 'center', alignItems: 'center'}} {...this.panResponder.panHandlers}>
-        <HideableChevronButton displayIf={this.previousIndicatorExists()}
-                               width={100}
-                               direction="left"
-                               onPress={ this.showPreviousIndicator } />
-        <View style={{flex: 1, alignItems:'center'}}>
-          <View style={{marginLeft: this.state.rightOffset, marginRight: this.state.leftOffset}}>
-            {currentIndicator}
-          </View>
-        </View>
-        <HideableChevronButton displayIf={this.nextIndicatorExists()}
-                               width={100}
-                               direction="right"
-                               onPress={ this.showNextIndicator } />
-      </View>
-    );
-  }
-}
-
-type HorizontalDirection = 'left' | 'right';
-
-const HideableChevronButton = (props: {
-  displayIf: boolean,
-  width: number,
-  direction: HorizontalDirection,
-  onPress: () => void
-}) => {
-  const { displayIf, width, ...buttonProps } = props;
-  return (
-    <View style={{width}}>
-    { displayIf && <ChevronButton width={width} {...buttonProps}/> }
-  </View>
-  );
-}
-
-const ChevronButton = ({width, direction, onPress}: {width: number, direction: 'left' | 'right', onPress: () => void}) => (
-  <TouchableOpacity onPress={ onPress }>
-    <Icon name={`chevron-${direction}`} size={width} color={colors.divider} />
-  </TouchableOpacity>
 );
 
 const NutritientStatuses = ({style}) => (
