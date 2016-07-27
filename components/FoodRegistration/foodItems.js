@@ -18,7 +18,7 @@
  *
  */
 
-import type { Liquid, Snack } from '../../logic/food';
+import type { Liquid, Snack, Dish, Dinner } from '../../logic/food';
 
 export const liquids: Array<Liquid> = [
   { name: 'Kaffe', energy: 50, liquid: 100, protein: 0, weight: 100, icon: 'opacity', hot: true },
@@ -43,4 +43,19 @@ export const snacks: Array<Snack> = [
   { name: 'Pære', energy: 50, liquid: 50, protein: 0, weight: 50, icon: 'opacity'},
   { name: 'Druer', energy: 50, liquid: 60, protein: 0, weight: 50, icon: 'opacity'},
   { name: 'Melon', energy: 50, liquid: 90, protein: 0, weight: 50, icon: 'opacity'},
+];
+
+export const dinner: Array<Dinner> = [
+  { name: 'Kjøttkaker', icon: 'opacity' },
+  { name: 'Kalkunfilet', icon: 'opacity' },
+  { name: 'Fiskeboller', icon: 'opacity' },
+  { name: 'Pannekaker', icon: 'opacity' },
+  { name: 'Bringebærfromasj', icon: 'opacity' },
+];
+
+export const dish: Array<Dish> = [
+  { name: 'Kjøttkaker', energy: 100, liquid: 10, protein: 2, weight: 50, icon: 'opacity', quantity: 2, unit: 'stk'},
+  { name: 'Poteter', energy: 100, liquid: 10, protein: 2, weight: 50, icon: 'opacity', quantity: 3, unit: 'stk'},
+  { name: 'Ertestuing', energy: 100, liquid: 10, protein: 2, weight: 50, icon: 'opacity', quantity: 3, unit: 'ss '},
+  { name: 'Saus', energy: 100, liquid: 10, protein: 2, weight: 50, icon: 'opacity',  quantity: 0, unit: 'ss'},
 ];

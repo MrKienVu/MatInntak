@@ -27,14 +27,14 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { colors, fontSize } from '../../style';
-import { resetApp, showRegisterLiquidPage, showRegisterSnackPage, showTodaysIntakePage } from '../../actions';
+import { resetApp, showDinnerMenuPage, showRegisterLiquidPage, showRegisterSnackPage, showTodaysIntakePage } from '../../actions';
 
 const backgroundSource = require('../../img/food-registration-background.png');
 
 type Category = { name: string, image: any };
 const meal: Category = { name: 'Frokost, lunsj og kveldsmat', image: require('../../img/1-1-frokostlunsj.png') };
 const snack: Category = { name: 'Mellommåltid', image: require('../../img/1-4-mellommaltid.png') };
-const dinner: Category = { name: 'Middag', image: require('../../img/1-3-middag.png') };
+const dish: Category = { name: 'Middag', image: require('../../img/1-3-middag.png') };
 const liquid: Category = { name: 'Drikke', image: require('../../img/1-5-drikke.png') };
 const consumption: Category = { name: 'Dagens inntak', image: require('../../img/1-2-dagbok.png') };
 
@@ -47,7 +47,7 @@ class FoodRegistrationPage extends Component {
           <CategorizedMenuItem category={snack} action={this.props.showRegisterSnackPage} />
         </MenuRow>
         <MenuRow style={{marginHorizontal: -150}}>
-          <CategorizedMenuItem category={dinner} />
+          <CategorizedMenuItem category={dish} action={this.props.showDinnerMenuPage} />
           <CategorizedMenuItem category={liquid} action={this.props.showRegisterLiquidPage} />
         </MenuRow>
         <MenuRow style={{marginTop: -50}}>
@@ -115,6 +115,7 @@ const ConnectedPage = connect(
   () => ({}),
   (dispatch) => ({
     resetApp: () => dispatch(resetApp()),
+    showDinnerMenuPage: () => dispatch(showDinnerMenuPage()),
     showRegisterLiquidPage: () => dispatch(showRegisterLiquidPage()),
     showRegisterSnackPage: () => dispatch(showRegisterSnackPage()),
     showTodaysIntake: () => dispatch(showTodaysIntakePage()),

@@ -124,16 +124,15 @@ export const AmountSelector = ({increase, decrease, amount, decrementerEnabled, 
   </View>
 );
 
-const ImageButton = ({image, action, enabled, color}: {
+export const ImageButton = ({image, action, enabled, color, size }: {
   action: () => void,
   enabled?: boolean,
   image: string,
   color: Color,
+  size?: number,
 }) => (
-  <TouchableOpacity activeOpacity={enabled ? 0.8 : 1} onPress={enabled ? action : null} style={{
-    margin: 24,
-  }}>
-    <Icon name={image} size={70} color={enabled ? color : colors.lightGrey} />
+  <TouchableOpacity activeOpacity={enabled ? 0.8 : 1} onPress={enabled ? action : null} style={{ margin: 24 }}>
+    <Icon name={image} size={size || 75} color={enabled ? color : colors.lightGrey} />
   </TouchableOpacity>
 );
 

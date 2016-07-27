@@ -18,8 +18,9 @@
  *
  */
 
-import type { Liquid, Snack, ConsumedFoodItem } from './logic/food';
+import type { Dish, Liquid, Snack, ConsumedFoodItem } from './logic/food';
 import type { Kcal, Ml, Gram } from './logic/needs';
+
 
 export type GoToPageAction = {
   type: 'GO_TO_PAGE',
@@ -28,6 +29,7 @@ export type GoToPageAction = {
   navBarSubTitle?: string,
   liquid?: Liquid,
   snack?: Snack,
+  dish?: Dish,
 }
 
 export type RegisterNeedsAction = {
@@ -88,6 +90,9 @@ export type Action = GoToPageAction
 export type PageName = 'RegisterNeeds'
                      | 'RegisterPatient'
                      | 'StartPage'
+                     | 'RegisterDinner'
+                     | 'RegisterDish'
+                     | 'RegisterDishAmount'
                      | 'RegisterFever'
                      | 'RegisterFood'
                      | 'RegisterLiquid'
@@ -141,8 +146,20 @@ export function showRegisterFoodPage(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterFood' }
 }
 
+export function showDinnerMenuPage(): GoToPageAction {
+  return { type: 'GO_TO_PAGE', name: 'RegisterDinner' }
+}
+
+export function showDishAmountPage(): GoToPageAction {
+  return { type: 'GO_TO_PAGE', name: 'RegisterDishAmount'}
+}
+
 export function showRegisterLiquidPage(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterLiquid' }
+}
+
+export function showRegisterDishPage(): GoToPageAction {
+  return { type: 'GO_TO_PAGE', name: 'RegisterDish'}
 }
 
 export function showLiquidAmountPage(liquid: Liquid): GoToPageAction {

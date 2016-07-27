@@ -32,10 +32,16 @@ import TodaysIntakePage from './components/todaysIntake/TodaysIntakePage';
 import LiquidAmountRegistrationPage from './components/FoodRegistration/LiquidAmountRegistrationPage';
 import SnackRegistrationPage from './components/FoodRegistration/SnackRegistrationPage';
 import SnackAmountRegistrationPage from './components/FoodRegistration/SnackAmountRegistrationPage';
+import DishRegistrationPage from './components/FoodRegistration/DishRegistrationPage';
+import DishSpecifyPortionPage from './components/FoodRegistration/DishSpecifyPortionPage';
+import DinnerMenuPage from './components/FoodRegistration/DinnerMenuPage';
 
 import store from './store';
 
 const pages = {
+  'RegisterDinner': DinnerMenuPage,
+  'RegisterDish': DishRegistrationPage,
+  'RegisterDishAmount': DishSpecifyPortionPage,
   'RegisterFood': FoodRegistrationPage,
   'RegisterLiquid': LiquidRegistrationPage,
   'RegisterLiquidAmount': LiquidAmountRegistrationPage,
