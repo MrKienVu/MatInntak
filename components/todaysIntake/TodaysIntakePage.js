@@ -19,9 +19,9 @@
  */
 
 import React, { Component } from 'react';
+import Swiper from 'react-native-swiper';
 import {
   Image,
-  PanResponder,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -33,11 +33,9 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import ProgressCircle from './ProgressCircle';
 import { colors, fontSize } from '../../style';
 import NavigationBar from '../NavigationBar';
-import { showPreviousPage, registerFood } from '../../actions';
-import Swiper from 'react-native-swiper';
-
-import type { Gram, Kcal } from '../../logic/needs';
+import { showRegisterFoodPage } from '../../actions';
 import type { Color } from '../../style'
+import type { ConsumedFoodItem } from '../FoodRegistration/foodItems';
 
 function upperCaseFirst(string: string) {
   return string[0].toUpperCase() + string.slice(1);
@@ -53,15 +51,16 @@ function formatTime(time: Date): string {
   return time.toLocaleTimeString(LOCALE, {hour: '2-digit', minute: '2-digit'});
 };
 
-const TodaysIntakePage = ({goBack, showFrontPage}) => (
+const TodaysIntakePage = ({goBack, showFrontPage, consumedFood}) => (
   <View style={{flex: 1}}>
+    { console.log(consumedFood) }
     <NavigationBar currentPage="Dagens inntak"
                    caption={ upperCaseFirst(formatDate(new Date())) }
                    goBack={goBack}
                    showFrontPage={showFrontPage} />
     <ScrollView style={{flex: 1}}>
     <TodaysIntake style={{marginTop: 30, marginBottom: 20}}/>
-      <MealDrawerChest style={{marginTop: 20}} />
+      <MealDrawerChest consumedFood={consumedFood} style={{marginTop: 20}} />
     </ScrollView>
   </View>
 );
@@ -85,10 +84,17 @@ const IntakeIndicatorPage = ({color, progress}: {color: Color, progress: number}
 );
 
 const ConnectedPage = connect(
-  () => ({}),
+  (state) => ({
+    consumedFood: {
+      consumedDinner: state.consumption.consumedDinner,
+      consumedLiquids: state.consumption.consumedLiquids,
+      consumedMeals: state.consumption.consumedMeals,
+      consumedSnacks: state.consumption.consumedSnacks,
+    },
+  }),
   (dispatch) => ({
-    goBack: () => dispatch(showPreviousPage()),
-    showFrontPage: () => dispatch(registerFood()),
+    goBack: () => dispatch(showRegisterFoodPage()),
+    showFrontPage: () => dispatch(showRegisterFoodPage()),
   }),
 )(TodaysIntakePage);
 
@@ -136,48 +142,44 @@ const NutritientStatuses = ({style}) => (
   </View>
 );
 
-type ConsumedFoodItem = {
-  name: string,
-  amount: Gram,
-  energy: Kcal,
-  time: Date,
+type ConsumedFood = {
+  consumedDinner: Array<ConsumedFoodItem>,
+  consumedLiquids: Array<ConsumedFoodItem>,
+  consumedMeals: Array<ConsumedFoodItem>,
+  consumedSnacks: Array<ConsumedFoodItem>,
 };
 
-const drawers: Array<{title: string, color: string, items: Array<ConsumedFoodItem>}> = [
-  {title: "Frokost, lunsj og kveldsmat",
-   color: colors.lightGreen,
-   items: [
-    {name: "Agurk", amount: 24, energy: 10, time: new Date()},
-    {name: "Tomat", amount: 50, energy: 5, time: new Date()},
-   ],
-  },
-  {title: "Mellommåltid",
-   color: colors.darkGreen,
-   items: [
-     {name: "Agurk", amount: 24, energy: 10, time: new Date()},
-     {name: "Tomat", amount: 50, energy: 5, time: new Date()},
-   ],
-  },
-  {title: "Middag",
-   color: colors.lightBlue,
-   items: [
-     {name: "Agurk", amount: 24, energy: 10, time: new Date()},
-     {name: "Tomat", amount: 50, energy: 5, time: new Date()},
-   ],
-  },
-  {title: "Drikke",
-   color: colors.deepBlue,
-   items: [
-     {name: "Agurk", amount: 24, energy: 10, time: new Date()},
-     {name: "Tomat", amount: 50, energy: 5, time: new Date()},
-   ],
-  },
-];
+function constructDrawerItems(consumedFood: ConsumedFood):
+                              Array<{title: string, color: Color, items: Array<ConsumedFoodItem>}> {
+  return ([
+    {title: "Frokost, lunsj og kveldsmat",
+     color: colors.lightGreen,
+     items: consumedFood.consumedMeals,
+    },
+    {title: "Mellommåltid",
+     color: colors.darkGreen,
+     items: consumedFood.consumedSnacks,
+    },
+    {title: "Middag",
+     color: colors.lightBlue,
+     items: consumedFood.consumedDinner,
+    },
+    {title: "Drikke",
+     color: colors.deepBlue,
+     items: consumedFood.consumedLiquids,
+    },
+  ]);
+}
 
-const MealDrawerChest = ({style}) => (
+const MealDrawerChest = ({consumedFood, style}: {consumedFood: ConsumedFood, style: any}) => (
   <View style={style}>
-    { drawers.map(drawer =>
-      <MealDrawer title={drawer.title} key={drawer.title} items={drawer.items} openColor={drawer.color} />)
+    { constructDrawerItems(consumedFood).map(drawer =>
+      <MealDrawer
+        items={drawer.items}
+        key={drawer.title}
+        openColor={drawer.color}
+        title={drawer.title}
+      />)
     }
   </View>
 );
@@ -212,9 +214,9 @@ class MealDrawer extends Component {
         <View style={{marginBottom: 2, backgroundColor: colors.divider}} >
           <DrawerHeading open={this.state.open} title={this.props.title} color={this.props.openColor} />
           { this.state.open && this.props.items.map(item =>
-            <DrawerItem firstLine={`${item.name} (kl. ${formatTime(item.time)})`}
+            <DrawerItem firstLine={`${item.consumed.name} (kl. ${formatTime(item.time)})`}
                         secondLine={`${item.amount} g - ${item.energy} kcal`}
-                        key={item.name} />) }
+                        key={item.time} />) }
         </View>
       </TouchableOpacity>
     );

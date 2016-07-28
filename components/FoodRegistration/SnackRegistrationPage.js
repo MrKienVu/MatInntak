@@ -25,12 +25,12 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import NavigationBar from '../NavigationBar'
-import { showPreviousPage, registerSnackAmount } from '../../actions';
+import { showPreviousPage, showSnackAmountPage } from '../../actions';
 import { SearchBar, GridLayout, GridItem } from './common';
 import { colors } from '../../style';
-import type { Snack } from './snack';
-import { snacks } from './snack';
+import { snacks } from './foodItems';
 
+import type { Snack } from './foodItems';
 
 class SnackRegistrationPage extends Component {
   render() {
@@ -51,7 +51,7 @@ class SnackRegistrationPage extends Component {
                       small={true}
                       label={snack.name}
                       icon={snack.icon}
-                      action={() => this.props.registerSnackAmount(snack)} />
+                      action={() => this.props.showSnackAmountPage(snack)} />
           ))}
         </GridLayout>
         </ScrollView>
@@ -64,7 +64,7 @@ const ConnectedPage = connect(
   () => ({}),
   (dispatch) => ({
     showPreviousPage: () => dispatch(showPreviousPage()),
-    registerSnackAmount: (snack: Snack) => dispatch(registerSnackAmount(snack)),
+    showSnackAmountPage: (snack: Snack) => dispatch(showSnackAmountPage(snack)),
   }),
 )(SnackRegistrationPage);
 

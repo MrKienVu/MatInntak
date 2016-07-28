@@ -20,6 +20,7 @@
 
 import { combineReducers } from 'redux';
 import type { Action } from './actions';
+import type { ConsumedFoodItem } from './components/FoodRegistration/foodItems';
 
 const initialRouting = { pageStack: ['StartPage'], navBarTitle: '', navBarSubTitle: '' };
 
@@ -45,6 +46,31 @@ function routing(state = initialRouting, action: Action) {
   return state;
 }
 
+const initialConsumption = {
+  consumedDinner: [],
+  consumedLiquids: [],
+  consumedMeals: [],
+  consumedSnacks: [],
+};
+
+export function consumption(state: any = initialConsumption, action: Action) {
+  if (action.type === 'REGISTER_FOOD') {
+    switch (action.food.category) {
+      case 'Dinner': return {...state, consumedDinners: addConsumedItem(action.food, state.consumedDinner) };
+      case 'Liquid': return {...state, consumedLiquids: addConsumedItem(action.food, state.consumedLiquids) };
+      case 'Meal': return {...state, consumedMeals: addConsumedItem(action.food, state.consumedMeals) };
+      case 'Snack': return {...state, consumedSnacks: addConsumedItem(action.food, state.consumedSnacks) };
+    }
+  }
+
+  return state;
+}
+
+function addConsumedItem(item: any, alreadyConsumed: Array<ConsumedFoodItem>) {
+  alreadyConsumed.push(item);
+  return alreadyConsumed;
+}
+
 const initialAmount = { value: 0.0 };
 
 export function amountSelector(state: any = initialAmount, action: Action) {
@@ -60,6 +86,6 @@ export function amountSelector(state: any = initialAmount, action: Action) {
   }
 }
 
-const app = combineReducers({routing, amountSelector});
+const app = combineReducers({routing, consumption, amountSelector});
 
 export default app;

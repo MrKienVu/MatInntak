@@ -26,13 +26,15 @@
  import {
    decreaseAmount,
    increaseAmount,
-   registerFood,
+   showRegisterFoodPage,
    showPreviousPage,
    showTodaysIntakePage,
+   registerFood,
  } from '../../actions';
  import { SpecifyAmount } from './SpecifyAmount';
+ import { constructConsumedFoodItem } from './foodItems';
 
- import type { Snack } from './snack';
+ import type { Snack } from './foodItems';
 
 class SnackAmountRegistrationPage extends Component {
   props: ({
@@ -41,8 +43,8 @@ class SnackAmountRegistrationPage extends Component {
     increaseAmount: () => void,
     navBarTitle: string,
     navBarSubTitle: string,
-    registerFood: () => void,
-    registerSnack: (snack: Snack, amount: number) => void,
+    showRegisterFoodPage: () => void,
+    registerSnack: () => void,
     snack: Snack,
     showPreviousPage: () => void,
   });
@@ -61,7 +63,7 @@ class SnackAmountRegistrationPage extends Component {
       <View>
         <NavigationBar currentPage={this.props.navBarTitle}
                        caption={this.props.navBarSubTitle}
-                       showFrontPage={this.props.registerFood}
+                       showFrontPage={this.props.showRegisterFoodPage}
                        goBack={this.props.showPreviousPage}
                        color={colors.snack} />
         <SpecifyAmount amount={this.props.amount}
@@ -85,12 +87,13 @@ const ConnectedPage = connect(
     snack: state.routing.snack,
   }),
   (dispatch) => ({
-    registerFood: () => dispatch(registerFood()),
+    showRegisterFoodPage: () => dispatch(showRegisterFoodPage()),
     showPreviousPage: () => dispatch(showPreviousPage()),
     increaseAmount: (amountStep: number) => dispatch(increaseAmount(amountStep)),
     decreaseAmount: (amountStep: number) => dispatch(decreaseAmount(amountStep)),
     registerSnack: (snack: Snack, amount: number) => {
       console.log("Registered snack:", snack.name, amount);
+      dispatch(registerFood(constructConsumedFoodItem('Snack', snack, amount)));
       dispatch(showTodaysIntakePage());
     },
   }),
