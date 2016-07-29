@@ -5,12 +5,14 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "mocha --require test/babelhook.js",
-    "unittest-ci": "mocha --require test/babelhook.js --reporter mocha-junit-reporter --reporter-options mochaFile=./ci/mocha.xml"
+    "ci-unittest": "mocha --require test/babelhook.js --reporter mocha-junit-reporter --reporter-options mochaFile=./ci/mocha.xml 2>&1 >ci/npm.test.log",
+    "ci-flow": "flow check --json 2>ci/flow.stderr.log | tee ci/flow.json.log > /dev/null",
+    "flow": "flow"
   },
   "dependencies": {
     "art": "^0.10.1",
     "react": "^15.2.0",
-    "react-native": "^0.29.2",
+    "react-native": "^0.30.0",
     "react-native-vector-icons": "^2.0.3",
     "react-native-swiper": "^1.4.7",
     "react-redux": "^4.4.5",
@@ -24,6 +26,7 @@
     "babel-register": "^6.9.0",
     "eslint": "^3.0.0",
     "eslint-plugin-react": "^5.2.2",
+    "flow-bin": "^0.27.0",
     "mocha": "^2.5.3",
     "mocha-junit-reporter": "^1.11.1",
     "remote-redux-devtools": "^0.3.3",

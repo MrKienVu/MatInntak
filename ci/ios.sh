@@ -45,18 +45,12 @@ inform "Installing project dependencies"
 npm install || { abort; }
 success
 
-if ! command_exists flow ; then
-    inform "Installing Flow as a global package"
-    npm install -g flow-bin@0.27 || { abort; }
-    success
-fi
-
 inform "Running javascript unit tests"
-npm run unittest-ci 2>&1 >ci/npm.test.log || { failTests; }
+npm run ci-unittest || { failTests; }
 success
 
 inform "Running flow typecheck"
-flow check --json 2>ci/flow.stderr.log | tee ci/flow.json.log > /dev/null || { failTests; }
+npm run ci-flow || { failTests; }
 success
 
 if [ ! -d ~/.calabash/sandbox ]; then
