@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "mocha --require test/babelhook.js --reporter mocha-junit-reporter --reporter-options mochaFile=./ci/mocha.xml"
+    "test": "mocha --require test/babelhook.js",
+    "unittest-ci": "mocha --require test/babelhook.js --reporter mocha-junit-reporter --reporter-options mochaFile=./ci/mocha.xml"
   },
   "dependencies": {
     "art": "^0.10.1",

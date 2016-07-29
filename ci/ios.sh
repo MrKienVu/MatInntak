@@ -52,7 +52,7 @@ if ! command_exists flow ; then
 fi
 
 inform "Running javascript unit tests"
-npm test 2>&1 >ci/npm.test.log || { failTests; }
+npm run unittest-ci 2>&1 >ci/npm.test.log || { failTests; }
 success
 
 inform "Running flow typecheck"
@@ -76,6 +76,14 @@ PATH="${CALABASH_RUBY_PATH}:${GEM_HOME}/bin:${PATH}"
 
 command_exists xcpretty || { inform "xcpretty not found, installing"; gem install xcpretty; }
 
+inform "Kill any React Native Packager instances"
+killall node
+
+inform "Resetting iOS simulators"
+# osascript -e 'tell application "Simulator" to quit'
+# osascript -e 'tell application "iOS Simulator" to quit'
+xcrun simctl erase all
+
 inform "Building iOS app"
 cd ios
 
@@ -97,11 +105,6 @@ LOG_FILE=bundle.log
 bundle install | tee "../ci/"$LOG_FILE > /dev/null ||
     { abort "`bundle install` failed, see "$LOG_FILE" for details"; }
 success
-
-inform "Resetting iOS simulators"
-osascript -e 'tell application "Simulator" to quit'
-osascript -e 'tell application "iOS Simulator" to quit'
-xcrun simctl erase all
 
 inform "Running functional tests"
 APP=Products/app/matinntak.app                                 \
