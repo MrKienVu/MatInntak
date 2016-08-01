@@ -26,7 +26,7 @@ import {
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { registerNeeds, registerPatient, registerFood } from '../actions';
+import { registerNeeds, registerPatient, showRegisterFoodPage } from '../actions';
 
 const textColor = '#FFFFFF';
 const lightTextColor = '#777777';
@@ -129,7 +129,7 @@ const ConnectedApp = connect(
   (dispatch) => ({
     registerNeeds: () => dispatch(registerNeeds()),
     registerPatient: () => dispatch(registerPatient()),
-    registerFood: () => dispatch(registerFood()),
+    registerFood: () => dispatch(showRegisterFoodPage()),
   }),
 )(StartPage);
 

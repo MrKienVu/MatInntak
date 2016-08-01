@@ -27,21 +27,23 @@ import { connect } from 'react-redux';
 
 import NavigationBar from '../NavigationBar'
 import {
-  showPreviousPage,
-  registerFood,
-  increaseAmount,
   decreaseAmount,
+  increaseAmount,
   selectAmount,
+  showPreviousPage,
+  showRegisterFoodPage,
   showTodaysIntakePage,
+  registerFood,
 } from '../../actions';
 
 import { SpecifyAmount } from './SpecifyAmount';
 import { Button, SelectableGridLayout, SeparatorText } from './common';
 import { colors, dimens } from '../../style';
 import { icons } from '../../graphics';
+import { constructConsumedFoodItem } from './foodItems';
 
 import type { MenuItem } from './common';
-import type { Liquid } from './liquid';
+import type { Liquid } from './foodItems';
 
 const quarterStep = 0.25;
 const halfStep = 0.50;
@@ -88,8 +90,8 @@ class LiquidAmountRegistrationPage extends Component {
     liquid: Liquid,
     navBarTitle: string,
     navBarSubTitle: string,
-    registerFood: () => void,
-    registerLiquid: (liquid: Liquid, amount: number) => void,
+    showRegisterFoodPage: () => void,
+    registerLiquid: () => void,
     selectAmount: () => void,
     showPreviousPage: () => void,
   };
@@ -110,7 +112,7 @@ class LiquidAmountRegistrationPage extends Component {
       }}>
       <NavigationBar currentPage={this.props.navBarTitle}
                      caption={this.props.navBarSubTitle}
-                     showFrontPage={this.props.registerFood}
+                     showFrontPage={this.props.showRegisterFoodPage}
                      goBack={this.props.showPreviousPage}
                      color={colors.deepBlue} />
       { this.state.specify ?
@@ -170,7 +172,7 @@ const ConnectedPage = connect(
     amountStep: selectStep(state.routing.liquid),
   }),
   (dispatch) => ({
-    registerFood: () => dispatch(registerFood()),
+    showRegisterFoodPage: () => dispatch(showRegisterFoodPage()),
     showPreviousPage: () => dispatch(showPreviousPage()),
     increaseAmount: (amountStep: number) => dispatch(increaseAmount(amountStep)),
     decreaseAmount: (amountStep: number) => dispatch(decreaseAmount(amountStep)),
@@ -178,7 +180,10 @@ const ConnectedPage = connect(
       dispatch(selectAmount(amount));
     },
     registerLiquid: (liquid: Liquid, amount: number) => {
+
+
       console.log("Registered liquid:", liquid.name, amount);
+      dispatch(registerFood(constructConsumedFoodItem('Liquid', liquid, amount)));
       dispatch(showTodaysIntakePage());
     },
   }),

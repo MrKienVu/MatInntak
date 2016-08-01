@@ -18,8 +18,7 @@
  *
  */
 
-import type { Liquid } from './components/FoodRegistration/liquid';
-import type { Snack } from './components/FoodRegistration/snack';
+import type { Liquid, Snack, ConsumedFoodItem } from './components/FoodRegistration/foodItems';
 
 export type GoToPageAction = {
   type: 'GO_TO_PAGE',
@@ -28,6 +27,21 @@ export type GoToPageAction = {
   navBarSubTitle?: string,
   liquid?: Liquid,
   snack?: Snack,
+}
+
+export type RegisterFoodAction = {
+  type: 'REGISTER_FOOD',
+  food: ConsumedFoodItem,
+}
+
+export type EditFoodAction = {
+  type: 'EDIT_FOOD',
+  id: string,
+}
+
+export type RemoveFoodAction = {
+  type: 'REMOVE_FOOD',
+  id: string,
 }
 
 export type IncreaseAmountAction = {
@@ -53,7 +67,15 @@ export type ResetAppAction = {
   type: 'RESET_APP',
 }
 
-export type Action = GoToPageAction | IncreaseAmountAction | DecreaseAmountAction | SelectAmountAction;
+export type Action = GoToPageAction
+                   | IncreaseAmountAction
+                   | DecreaseAmountAction
+                   | SelectAmountAction
+                   | RegisterFoodAction
+                   | EditFoodAction
+                   | RemoveFoodAction
+;
+
 export type PageName = 'RegisterNeeds'
                      | 'RegisterPatient'
                      | 'StartPage'
@@ -74,6 +96,18 @@ export function registerPatient(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterPatient' }
 }
 
+export function registerFood(food: ConsumedFoodItem): RegisterFoodAction {
+  return { type: 'REGISTER_FOOD', food: food };
+}
+
+export function editFood(id: string): EditFoodAction {
+  return { type: 'EDIT_FOOD', id: id };
+}
+
+export function removeFood(id: string): RemoveFoodAction {
+  return { type: 'REMOVE_FOOD', id: id };
+}
+
 export function resetApp(): ResetAppAction {
   return { type: 'RESET_APP' }
 }
@@ -90,15 +124,15 @@ export function showPreviousPage() {
   return { type: 'GO_TO_PREVIOUS_PAGE' }
 }
 
-export function registerFood(): GoToPageAction {
+export function showRegisterFoodPage(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterFood' }
 }
 
-export function registerLiquid(): GoToPageAction {
+export function showRegisterLiquidPage(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterLiquid' }
 }
 
-export function registerLiquidAmount(liquid: Liquid): GoToPageAction {
+export function showLiquidAmountPage(liquid: Liquid): GoToPageAction {
   return {
     type: 'GO_TO_PAGE',
     name: 'RegisterLiquidAmount',
@@ -108,11 +142,11 @@ export function registerLiquidAmount(liquid: Liquid): GoToPageAction {
   }
 }
 
-export function registerSnack(): GoToPageAction {
+export function showRegisterSnackPage(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterSnack'}
 }
 
-export function registerSnackAmount(snack: Snack): GoToPageAction {
+export function showSnackAmountPage(snack: Snack): GoToPageAction {
   return {
     type: 'GO_TO_PAGE',
     name: 'RegisterSnackAmount',

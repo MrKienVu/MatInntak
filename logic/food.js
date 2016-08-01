@@ -18,19 +18,12 @@
  *
  */
 
-export type Snack = {name: string, icon: string};
+import type { Gram, Kcal } from './needs';
 
-export const snacks: Array<Snack> = [
-  { name: 'Bolle', icon: 'opacity'},
-  { name: 'Kake', icon: 'opacity'},
-  { name: 'Kjeks', icon: 'opacity'},
-  { name: 'Smurt lefse', icon: 'opacity'},
-  { name: 'Fruktskål', icon: 'opacity'},
-  { name: 'Banan', icon: 'opacity'},
-  { name: 'Eple', icon: 'opacity'},
-  { name: 'Appelsin', icon: 'opacity'},
-  { name: 'Clementin', icon: 'opacity'},
-  { name: 'Pære', icon: 'opacity'},
-  { name: 'Druer', icon: 'opacity'},
-  { name: 'Melon', icon: 'opacity'},
-];
+export function computeGramByAmount(foodWeight: Gram, foodAmount: Gram): Gram {
+  return foodWeight * foodAmount;
+}
+
+export function computeKcalByAmount(energyPerUnit: Kcal, numberOfUnits: number) {
+  return energyPerUnit * numberOfUnits;
+}

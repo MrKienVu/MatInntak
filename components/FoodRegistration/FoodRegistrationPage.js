@@ -27,7 +27,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { colors, fontSize } from '../../style';
-import { resetApp, registerLiquid, registerSnack, showTodaysIntakePage } from '../../actions';
+import { resetApp, showRegisterLiquidPage, showRegisterSnackPage, showTodaysIntakePage } from '../../actions';
 
 const backgroundSource = require('../../img/food-registration-background.png');
 
@@ -44,11 +44,11 @@ class FoodRegistrationPage extends Component {
       <FoodRegistrationMenu>
         <MenuRow>
           <CategorizedMenuItem category={meal} action={this.props.resetApp}/>
-          <CategorizedMenuItem category={snack} action={this.props.registerSnack} />
+          <CategorizedMenuItem category={snack} action={this.props.showRegisterSnackPage} />
         </MenuRow>
         <MenuRow style={{marginHorizontal: -150}}>
           <CategorizedMenuItem category={dinner} />
-          <CategorizedMenuItem category={liquid} action={this.props.registerLiquid} />
+          <CategorizedMenuItem category={liquid} action={this.props.showRegisterLiquidPage} />
         </MenuRow>
         <MenuRow style={{marginTop: -50}}>
           <CategorizedMenuItem category={consumption} action={this.props.showTodaysIntake}/>
@@ -115,8 +115,8 @@ const ConnectedPage = connect(
   () => ({}),
   (dispatch) => ({
     resetApp: () => dispatch(resetApp()),
-    registerLiquid: () => dispatch(registerLiquid()),
-    registerSnack: () => dispatch(registerSnack()),
+    showRegisterLiquidPage: () => dispatch(showRegisterLiquidPage()),
+    showRegisterSnackPage: () => dispatch(showRegisterSnackPage()),
     showTodaysIntake: () => dispatch(showTodaysIntakePage()),
   }),
 )(FoodRegistrationPage);
