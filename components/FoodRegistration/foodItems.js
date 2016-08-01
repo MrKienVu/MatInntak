@@ -23,10 +23,19 @@ import {
   computeKcalByAmount,
 } from '../../logic/food';
 import type { Gram, Kcal } from '../../logic/needs';
+import uuid from 'react-native-uuid';
 
 export type FoodCategory = 'Dinner' | 'Liquid' | 'Meal' | 'Snack';
 
+export type DailyConsumption = {
+  consumedDinner: Array<ConsumedFoodItem>,
+  consumedLiquids: Array<ConsumedFoodItem>,
+  consumedMeals: Array<ConsumedFoodItem>,
+  consumedSnacks: Array<ConsumedFoodItem>,
+}
+
 export type ConsumedFoodItem = {
+  id: Symbol,
   category: FoodCategory,
   consumed: FoodItem,
   amount: Gram,
@@ -37,6 +46,7 @@ export type ConsumedFoodItem = {
 export function constructConsumedFoodItem(category: FoodCategory,
                           foodItem: FoodItem, amount: number): ConsumedFoodItem {
   return {
+    id: uuid(),
     category: category,
     consumed: foodItem,
     amount: computeGramByAmount(foodItem.weight, amount),

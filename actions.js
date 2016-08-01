@@ -34,6 +34,16 @@ export type RegisterFoodAction = {
   food: ConsumedFoodItem,
 }
 
+export type EditFoodAction = {
+  type: 'EDIT_FOOD',
+  id: string,
+}
+
+export type RemoveFoodAction = {
+  type: 'REMOVE_FOOD',
+  id: string,
+}
+
 export type IncreaseAmountAction = {
   type: 'INCREASE_AMOUNT',
   step: number,
@@ -62,6 +72,8 @@ export type Action = GoToPageAction
                    | DecreaseAmountAction
                    | SelectAmountAction
                    | RegisterFoodAction
+                   | EditFoodAction
+                   | RemoveFoodAction
 ;
 
 export type PageName = 'RegisterNeeds'
@@ -86,6 +98,14 @@ export function registerPatient(): GoToPageAction {
 
 export function registerFood(food: ConsumedFoodItem): RegisterFoodAction {
   return { type: 'REGISTER_FOOD', food: food };
+}
+
+export function editFood(id: string): EditFoodAction {
+  return { type: 'EDIT_FOOD', id: id };
+}
+
+export function removeFood(id: string): RemoveFoodAction {
+  return { type: 'REMOVE_FOOD', id: id };
 }
 
 export function resetApp(): ResetAppAction {

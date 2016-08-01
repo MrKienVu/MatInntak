@@ -20,7 +20,7 @@
 
 import { combineReducers } from 'redux';
 import type { Action } from './actions';
-import type { ConsumedFoodItem } from './components/FoodRegistration/foodItems';
+import type { ConsumedFoodItem, DailyConsumption } from './components/FoodRegistration/foodItems';
 
 const initialRouting = { pageStack: ['StartPage'], navBarTitle: '', navBarSubTitle: '' };
 
@@ -53,7 +53,11 @@ const initialConsumption = {
   consumedSnacks: [],
 };
 
-export function consumption(state: any = initialConsumption, action: Action) {
+export function needs() {
+
+}
+
+export function consumption(state: DailyConsumption = initialConsumption, action: Action) {
   if (action.type === 'REGISTER_FOOD') {
     switch (action.food.category) {
       case 'Dinner': return {...state, consumedDinners: addConsumedItem(action.food, state.consumedDinner) };
@@ -63,12 +67,26 @@ export function consumption(state: any = initialConsumption, action: Action) {
     }
   }
 
+  if (action.type === 'REMOVE_FOOD') {
+    return removeConsumedItem(action.id, state);
+  }
+
   return state;
 }
 
 function addConsumedItem(item: any, alreadyConsumed: Array<ConsumedFoodItem>) {
   alreadyConsumed.push(item);
   return alreadyConsumed;
+}
+
+function removeConsumedItem(id: string, dailyConsumption: DailyConsumption): DailyConsumption {
+  const doesNotMatch = (item) => {return id !== item.id};
+  return {
+    consumedDinner: dailyConsumption.consumedDinner.filter(doesNotMatch),
+    consumedLiquids: dailyConsumption.consumedLiquids.filter(doesNotMatch),
+    consumedMeals: dailyConsumption.consumedMeals.filter(doesNotMatch),
+    consumedSnacks: dailyConsumption.consumedSnacks.filter(doesNotMatch),
+  };
 }
 
 const initialAmount = { value: 0.0 };

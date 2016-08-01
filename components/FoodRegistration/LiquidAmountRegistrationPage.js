@@ -180,6 +180,8 @@ const ConnectedPage = connect(
       dispatch(selectAmount(amount));
     },
     registerLiquid: (liquid: Liquid, amount: number) => {
+
+
       console.log("Registered liquid:", liquid.name, amount);
       dispatch(registerFood(constructConsumedFoodItem('Liquid', liquid, amount)));
       dispatch(showTodaysIntakePage());

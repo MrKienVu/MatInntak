@@ -33,9 +33,16 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import ProgressCircle from './ProgressCircle';
 import { colors, fontSize } from '../../style';
 import NavigationBar from '../NavigationBar';
-import { showRegisterFoodPage } from '../../actions';
+import {
+  showRegisterFoodPage,
+  showRegisterLiquidPage,
+  showRegisterSnackPage,
+  editFood,
+  removeFood,
+} from '../../actions';
+
 import type { Color } from '../../style'
-import type { ConsumedFoodItem } from '../FoodRegistration/foodItems';
+import type { ConsumedFoodItem, DailyConsumption } from '../FoodRegistration/foodItems';
 
 function upperCaseFirst(string: string) {
   return string[0].toUpperCase() + string.slice(1);
@@ -51,16 +58,28 @@ function formatTime(time: Date): string {
   return time.toLocaleTimeString(LOCALE, {hour: '2-digit', minute: '2-digit'});
 };
 
-const TodaysIntakePage = ({goBack, showFrontPage, consumedFood}) => (
+const TodaysIntakePage = ({
+  goBack,
+  showFrontPage,
+  consumedFood,
+  showRegisterLiquidPage,
+  showRegisterSnackPage,
+  editFood,
+  removeFood,
+}) => (
   <View style={{flex: 1}}>
-    { console.log(consumedFood) }
     <NavigationBar currentPage="Dagens inntak"
                    caption={ upperCaseFirst(formatDate(new Date())) }
                    goBack={goBack}
                    showFrontPage={showFrontPage} />
     <ScrollView style={{flex: 1}}>
     <TodaysIntake style={{marginTop: 30, marginBottom: 20}}/>
-      <MealDrawerChest consumedFood={consumedFood} style={{marginTop: 20}} />
+      <MealDrawerChest consumedFood={consumedFood}
+                       showRegisterLiquidPage={showRegisterLiquidPage}
+                       showRegisterSnackPage={showRegisterSnackPage}
+                       editFood={editFood}
+                       removeFood={removeFood}
+                       style={{marginTop: 20}} />
     </ScrollView>
   </View>
 );
@@ -95,6 +114,10 @@ const ConnectedPage = connect(
   (dispatch) => ({
     goBack: () => dispatch(showRegisterFoodPage()),
     showFrontPage: () => dispatch(showRegisterFoodPage()),
+    showRegisterLiquidPage: () => dispatch(showRegisterLiquidPage()),
+    showRegisterSnackPage: () => dispatch(showRegisterSnackPage()),
+    editFood: (id: string) => dispatch(editFood(id)),
+    removeFood: (id: string) => dispatch(removeFood(id)),
   }),
 )(TodaysIntakePage);
 
@@ -142,39 +165,53 @@ const NutritientStatuses = ({style}) => (
   </View>
 );
 
-type ConsumedFood = {
+type DrawerItems = {
   consumedDinner: Array<ConsumedFoodItem>,
   consumedLiquids: Array<ConsumedFoodItem>,
   consumedMeals: Array<ConsumedFoodItem>,
   consumedSnacks: Array<ConsumedFoodItem>,
 };
 
-function constructDrawerItems(consumedFood: ConsumedFood):
-                              Array<{title: string, color: Color, items: Array<ConsumedFoodItem>}> {
-  return ([
-    {title: "Frokost, lunsj og kveldsmat",
-     color: colors.lightGreen,
-     items: consumedFood.consumedMeals,
-    },
-    {title: "Mellommåltid",
-     color: colors.darkGreen,
-     items: consumedFood.consumedSnacks,
-    },
-    {title: "Middag",
-     color: colors.lightBlue,
-     items: consumedFood.consumedDinner,
-    },
-    {title: "Drikke",
-     color: colors.deepBlue,
-     items: consumedFood.consumedLiquids,
+function constructDrawerItems(drawerItems: DrawerItems, showRegisterLiquidPage, showRegisterSnackPage):
+                              Array<{title: string, addAction: () => void, color: Color, items: Array<ConsumedFoodItem>}> {
+  return ([{
+      title: "Frokost, lunsj og kveldsmat",
+      addAction: showRegisterLiquidPage,
+      color: colors.meal,
+      items: drawerItems.consumedMeals,
+    }, {
+      title: "Mellommåltid",
+      addAction: showRegisterSnackPage,
+      color: colors.snack,
+      items: drawerItems.consumedSnacks,
+    }, {
+      title: "Middag",
+      addAction: showRegisterLiquidPage,
+      color: colors.dinner,
+      items: drawerItems.consumedDinner,
+    }, {
+      title: "Drikke",
+      addAction: showRegisterLiquidPage,
+      color: colors.liquid,
+      items: drawerItems.consumedLiquids,
     },
   ]);
 }
 
-const MealDrawerChest = ({consumedFood, style}: {consumedFood: ConsumedFood, style: any}) => (
+const MealDrawerChest = ({consumedFood, showRegisterLiquidPage, showRegisterSnackPage, editFood, removeFood, style}: {
+  consumedFood: DailyConsumption,
+  showRegisterLiquidPage: () => void,
+  showRegisterSnackPage: () => void,
+  editFood: () => void,
+  removeFood: () => void,
+  style: any,
+}) => (
   <View style={style}>
-    { constructDrawerItems(consumedFood).map(drawer =>
+    { constructDrawerItems(consumedFood, showRegisterLiquidPage, showRegisterSnackPage).map(drawer =>
       <MealDrawer
+        addAction={drawer.addAction}
+        editAction={editFood}
+        removeAction={removeFood}
         items={drawer.items}
         key={drawer.title}
         openColor={drawer.color}
@@ -184,23 +221,47 @@ const MealDrawerChest = ({consumedFood, style}: {consumedFood: ConsumedFood, sty
   </View>
 );
 
-const DrawerHeading = ({open, color, title}: {open: boolean, color: string, title: string}) => (
-  <View style={{backgroundColor: open ? color : colors.darkBlue,
-                paddingLeft: 20, paddingTop: 10, paddingBottom: 10, paddingRight: 20,
-               }}>
-    <View style={{flexDirection:'row', alignItems: 'center'}}>
-      <Icon name={open ? "expand-more" : "chevron-right" } size={30} color={colors.white} />
-      <Text style={{color: colors.white, fontSize: fontSize.small, flex: 1}}>{ title } </Text>
-      <AppIcon normal={require('../../img/icon_add.png')}
-               pressed={require('../../img/icon_add_active.png')}
-               onPress={() => {}}/>
-    </View>
+const DrawerHeading = ({clickAction, addAction, open, color, title}: {
+  clickAction: () => void,
+  addAction: () => void,
+  color: string,
+  open: boolean,
+  title: string,
+}) => (
+  <View style={{backgroundColor: open ? color : colors.darkBlue, flexDirection:'row' }}>
+      <TouchableWithoutFeedback onPress={clickAction}>
+        <View style={{
+          alignItems: 'center',
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'center',
+          paddingLeft: 30,
+          paddingVertical: 15,
+        }}>
+          <Icon name={open ? "expand-more" : "chevron-right" } size={40} color={colors.white} />
+          <Text style={{color: colors.white, fontSize: fontSize.small, flex: 1}}>{ title } </Text>
+        </View>
+      </TouchableWithoutFeedback>
+      { open &&
+        <View style={{justifyContent: 'center', paddingRight: 20}}>
+          <AppIcon normal={require('../../img/icon_add.png')}
+                   pressed={require('../../img/icon_add_active.png')}
+                   onPress={addAction}/>
+        </View>
+      }
   </View>
 );
 
 
 class MealDrawer extends Component {
-  props: {title: string, openColor: string, items: Array<ConsumedFoodItem>};
+  props: {
+    addAction: () => void,
+    editAction: () => void,
+    removeAction: () => void,
+    title: string,
+    openColor: string,
+    items: Array<ConsumedFoodItem>
+  };
   state: {open: boolean};
   constructor() {
     super();
@@ -208,17 +269,28 @@ class MealDrawer extends Component {
   }
   open = () => { this.setState({open: true}) };
   close = () => { this.setState({open: false}) };
+  clickAction = () => { this.state.open ? this.close() : this.open()};
   render() {
     return (
-      <TouchableOpacity onPress={ () => this.state.open ? this.close() : this.open() }>
-        <View style={{marginBottom: 2, backgroundColor: colors.divider}} >
-          <DrawerHeading open={this.state.open} title={this.props.title} color={this.props.openColor} />
-          { this.state.open && this.props.items.map(item =>
+      <View style={{marginBottom: 2, backgroundColor: colors.divider}} >
+        <TouchableOpacity activeOpacity={0.8}>
+          <DrawerHeading clickAction={this.clickAction}
+                         addAction={this.props.addAction}
+                         open={this.state.open}
+                         title={this.props.title}
+                         color={this.props.openColor} />
+        </TouchableOpacity>
+        { this.state.open && (
+          this.props.items.length === 0 ?
+            <DrawerItem dummy={true} showMargin={false} /> :
+          this.props.items.map((item, index) =>
             <DrawerItem firstLine={`${item.consumed.name} (kl. ${formatTime(item.time)})`}
                         secondLine={`${item.amount} g - ${item.energy} kcal`}
-                        key={item.time} />) }
-        </View>
-      </TouchableOpacity>
+                        editAction={() => this.props.editAction(item.id)}
+                        removeAction={() => this.props.removeAction(item.id)}
+                        showMargin={index !== this.props.items.length - 1}
+                        key={item.time}/>))}
+      </View>
     );
   }
 }
@@ -237,7 +309,7 @@ class AppIcon extends Component {
   };
   state: {isPressed: boolean};
   static defaultProps = {
-    size: 40,
+    size: 36,
   };
   constructor() {
     super();
@@ -245,34 +317,50 @@ class AppIcon extends Component {
   }
   render() {
     return (
+      <View>
       <TouchableWithoutFeedback onPressIn={() => this.setState({isPressed: true})}
                                 onPressOut={() => this.setState({isPressed: false})}
-                                onPress={this.props.onPress}
-                                >
+                                onPress={this.props.onPress}>
+        <View>
         <Image source={this.state.isPressed ? this.props.pressed : this.props.normal}
                style={{height: this.props.size, width: this.props.size, ...this.props.style}} />
+        </View>
       </TouchableWithoutFeedback>
+      </View>
     );
   }
 }
 
-const DrawerItem = ({firstLine, secondLine}: {firstLine: string, secondLine: string}) => (
-  <View style={{paddingLeft: 50, marginBottom: 2,
-                paddingTop: 20, paddingBottom: 20, paddingRight: 20,
-                backgroundColor: colors.white, flexDirection: 'row'}}>
+const DrawerItem = ({dummy, firstLine, secondLine, editAction, removeAction, showMargin}: {
+  dummy?: boolean,
+  firstLine?: string,
+  secondLine?: string,
+  editAction?: () => void,
+  removeAction?: () => void,
+  showMargin?: boolean,
+}) => (
+  <View style={{paddingLeft: 50, marginBottom: showMargin ? 2 : 0,
+                paddingVertical: 16, paddingRight: 20,
+                backgroundColor: colors.white,
+                flexDirection: 'row', height: 80}}>
     <View style={{flex:1}}>
-      <OrdinaryText>{ firstLine }</OrdinaryText>
-      <OrdinaryText>{ secondLine }</OrdinaryText>
+      <OrdinaryText style={{color: dummy ? colors.grey : colors.black}}>
+        { dummy ? 'Ingen elementer registrert.' : firstLine }
+      </OrdinaryText>
+      <OrdinaryText style={{color: dummy ? colors.grey : colors.black}}>
+        { dummy ? 'Trykk på plusstegnet for å registrere mat eller drikke.' : secondLine }
+      </OrdinaryText>
     </View>
-    <View style={{flexDirection: 'row'}}>
+    { !dummy &&
+    <View style={{flexDirection: 'row', alignItems: 'center'}}>
       <AppIcon style={{marginRight: 15}}
                normal={require('../../img/icon_edit.png')}
                pressed={require('../../img/icon_edit_active.png')}
-               onPress={() => {}}/>
+               onPress={editAction}/>
       <AppIcon normal={require('../../img/icon_delete.png')}
                pressed={require('../../img/icon_delete_active.png')}
-               onPress={() => {}}/>
-    </View>
+               onPress={removeAction}/>
+    </View>}
   </View>
 );
 
