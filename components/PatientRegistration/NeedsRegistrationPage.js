@@ -24,34 +24,70 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import type {
+  Gram,
+  Kcal,
   Kilograms,
   Meter,
+  Ml,
+} from '../../logic/needs';
+import {
+  computeFluid,
+  computeKcal,
+  computeProtein,
+  positiveComputedValue,
 } from '../../logic/needs';
 import NavigationBar from '../NavigationBar'
-import { resetApp, showFeverRegistrationPage, showPreviousPage } from '../../actions';
+import { resetApp, showFeverRegistrationPage, showPreviousPage, registerNeeds } from '../../actions';
 import NeedsRegistration from './NeedsRegistration';
 import { Divider, RegisterButton } from './common';
 
 class NeedsRegistrationPage extends Component {
-  state:{weight: ?Kilograms, height: ?Meter};
+  state:{
+    weight: ?Kilograms,
+    height: ?Meter,
+    energy: ?Kcal,
+    liquid: ?Ml,
+    protein: ?Gram
+  };
   constructor() {
     super()
-    this.state = {weight: null, height: null}
+    this.state = {
+      weight: null,
+      height: null,
+      energy: 0,
+      liquid: 0,
+      protein: 0,
+    }
   }
   setWeight:(weight:number) => void = (weight) => {
-    this.setState({weight});
+    this.setState({weight: weight});
   };
   setHeight:(height:number) => void = (height) => {
-    this.setState({height});
+    this.setState({height: height});
+  };
+  calculateNeeds = (weight: Kilograms) => {
+    const energy: ?Kcal = positiveComputedValue(weight, computeKcal);
+    const protein: ?Gram = positiveComputedValue(weight, computeProtein);
+    const liquid: ?Ml = positiveComputedValue(weight, computeFluid);
+    this.setState({energy, protein, liquid});
   };
   render() {
     return (
       <View style={{flex: 1}}>
         <NavigationBar currentPage="Registrer behov" showFrontPage={this.props.resetApp} goBack={this.props.showPreviousPage} />
         <View style={{paddingTop: 20}}>
-          <NeedsRegistration height={this.state.height} weight={this.state.weight} setHeight={this.setHeight} setWeight={this.setWeight} /><Divider />
+          <NeedsRegistration height={this.state.height}
+                             weight={this.state.weight}
+                             setHeight={this.setHeight}
+                             setWeight={this.setWeight}
+                             calculateNeeds={this.calculateNeeds}
+                             energyNeed={this.state.energy}
+                             proteinNeed={this.state.protein}
+                             fluidNeed={this.state.liquid} />
+        <Divider />
         </View>
-        <RegisterButton onPress={ this.props.showFeverRegistrationPage } />
+        <RegisterButton onPress={ () =>
+          this.props.registerNeeds(this.state.energy, this.state.liquid, this.state.protein) } />
       </View>
     );
   }
@@ -63,6 +99,10 @@ const ConnectedPage = connect(
     resetApp: () => dispatch(resetApp()),
     showFeverRegistrationPage: () => dispatch(showFeverRegistrationPage()),
     showPreviousPage: () => dispatch(showPreviousPage()),
+    registerNeeds: (energy: Kcal, liquid: Ml, protein: Gram) => {
+      dispatch(registerNeeds(energy, liquid, protein));
+      dispatch(showFeverRegistrationPage());
+    },
   }),
 )(NeedsRegistrationPage);
 

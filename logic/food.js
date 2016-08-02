@@ -18,12 +18,50 @@
  *
  */
 
-import type { Gram, Kcal } from './needs';
+import type { Gram, Kcal, Ml } from './needs';
+import uuid from 'react-native-uuid';
 
-export function computeGramByAmount(foodWeight: Gram, foodAmount: Gram): Gram {
-  return foodWeight * foodAmount;
+import {
+  computeGramByAmount,
+  computeKcalByAmount,
+  computeMlByAmount,
+} from './needs';
+
+export type DailyConsumption = {
+  consumedDinner: Array<ConsumedFoodItem>,
+  consumedLiquids: Array<ConsumedFoodItem>,
+  consumedMeals: Array<ConsumedFoodItem>,
+  consumedSnacks: Array<ConsumedFoodItem>,
 }
 
-export function computeKcalByAmount(energyPerUnit: Kcal, numberOfUnits: number) {
-  return energyPerUnit * numberOfUnits;
+export type ConsumedFoodItem = {
+  id: Symbol,
+  category: FoodCategory,
+  consumed: FoodItem,
+  amount: Gram,
+  energy: Kcal,
+  liquid: Ml,
+  protein: Gram,
+  time: Date,
+};
+
+export type FoodCategory = 'Dinner' | 'Liquid' | 'Meal' | 'Snack';
+export type FoodItem = Dinner | Liquid | Meal | Snack;
+export type Dinner = {name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon: string};
+export type Liquid = {name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon: string, hot: boolean};
+export type Meal   = {name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon: string};
+export type Snack  = {name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon: string};
+
+export function constructConsumedFoodItem(category: FoodCategory,
+                          foodItem: FoodItem, amount: number): ConsumedFoodItem {
+  return {
+    id: uuid(),
+    category: category,
+    consumed: foodItem,
+    amount: computeGramByAmount(foodItem.weight, amount),
+    energy: computeKcalByAmount(foodItem.energy, amount),
+    liquid: computeMlByAmount(foodItem.liquid, amount),
+    protein: computeGramByAmount(foodItem.protein, amount),
+    time: new Date(),
+  };
 }

@@ -30,7 +30,7 @@ import { SearchBar, GridLayout, GridItem } from './common';
 import { colors } from '../../style';
 import { snacks } from './foodItems';
 
-import type { Snack } from './foodItems';
+import type { Snack } from '../../logic/food';
 
 class SnackRegistrationPage extends Component {
   render() {

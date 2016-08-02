@@ -32,9 +32,9 @@
    registerFood,
  } from '../../actions';
  import { SpecifyAmount } from './SpecifyAmount';
- import { constructConsumedFoodItem } from './foodItems';
+ import { constructConsumedFoodItem } from '../../logic/food';
 
- import type { Snack } from './foodItems';
+ import type { Snack } from '../../logic/food';
 
 class SnackAmountRegistrationPage extends Component {
   props: ({

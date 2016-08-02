@@ -40,10 +40,10 @@ import { SpecifyAmount } from './SpecifyAmount';
 import { Button, SelectableGridLayout, SeparatorText } from './common';
 import { colors, dimens } from '../../style';
 import { icons } from '../../graphics';
-import { constructConsumedFoodItem } from './foodItems';
+import { constructConsumedFoodItem } from '../../logic/food';
 
 import type { MenuItem } from './common';
-import type { Liquid } from './foodItems';
+import type { Liquid } from '../../logic/food';
 
 const quarterStep = 0.25;
 const halfStep = 0.50;

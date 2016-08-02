@@ -28,10 +28,10 @@ export const colors = {
   deepBlue: "#2173a1",
   lightBlue: "#519dc7",
 
-  meal: '#157d54',
+  dinner: '#157d54',
   intake: "#18374c",
   liquid: "#2173a1",
-  dinner: '#1fb078',
+  meal: '#1fb078',
   snack: "#519dc7",
 
   divider: "#ECECEC",

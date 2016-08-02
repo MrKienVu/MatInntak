@@ -27,12 +27,22 @@ import { connect } from 'react-redux';
 import type {
   Kilograms,
   Meter,
+  Kcal,
+  Ml,
+  Gram,
+} from '../../logic/needs';
+import {
+  computeFluid,
+  computeKcal,
+  computeProtein,
+  positiveComputedValue,
 } from '../../logic/needs';
 import NavigationBar from '../NavigationBar'
 import {
   resetApp,
   showFeverRegistrationPage,
   showPreviousPage,
+  registerNeeds,
 } from '../../actions';
 import NeedsRegistration from './NeedsRegistration';
 import {
@@ -47,10 +57,22 @@ import {
 } from './common';
 
 class RegistrationPage extends Component {
-  state:{weight: ?Kilograms, height: ?Meter};
+  state:{
+    weight: ?Kilograms,
+    height: ?Meter,
+    energy: ?Kcal,
+    liquid: ?Ml,
+    protein: ?Gram
+  };
   constructor() {
     super()
-    this.state = {weight: null, height: null}
+    this.state = {
+      weight: null,
+      height: null,
+      energy: null,
+      liquid: null,
+      protein: null,
+    }
   }
   setWeight:(weight: Kilograms) => void = (weight) => {
     this.setState({weight});
@@ -58,17 +80,33 @@ class RegistrationPage extends Component {
   setHeight:(height: Meter) => void = (height) => {
     this.setState({height});
   };
+  calculateNeeds = (weight: Kilograms) => {
+    const energy: ?Kcal = positiveComputedValue(weight, computeKcal);
+    const protein: ?Gram = positiveComputedValue(weight, computeProtein);
+    const liquid: ?Ml = positiveComputedValue(weight, computeFluid);
+    this.setState({energy, protein, liquid});
+  };
   render() {
     return (
       <View style={{flex: 1}}>
         <NavigationBar currentPage="Pasientregistrering" showFrontPage={this.props.resetApp} goBack={this.props.showPreviousPage} />
         <ScrollView accessibilityLabel="Registreringsskjema" style={{paddingTop: 20}}>
           <Personalia /><Divider />
-          <NeedsRegistration height={this.state.height} weight={this.state.weight} setWeight={this.setWeight} setHeight={this.setHeight} /><Divider />
+          <NeedsRegistration setNeeds={doNothing}
+                             height={this.state.height}
+                             weight={this.state.weight}
+                             setWeight={this.setWeight}
+                             setHeight={this.setHeight}
+                             calculateNeeds={this.calculateNeeds}
+                             energyNeed={this.state.energy}
+                             proteinNeed={this.state.protein}
+                             fluidNeed={this.state.liquid} />
+          <Divider />
           <Screening/><Divider />
           <SpecialDiet/><Divider />
           <Preferences/>
-          <RegisterButton onPress={ this.props.showFeverRegistrationPage } />
+          <RegisterButton onPress={ () =>
+            this.props.registerNeeds(this.state.energy, this.state.liquid, this.state.protein) } />
         </ScrollView>
       </View>
     );
@@ -81,6 +119,10 @@ const ConnectedPage = connect(
     resetApp: () => dispatch(resetApp()),
     showFeverRegistrationPage: () => dispatch(showFeverRegistrationPage()),
     showPreviousPage: () => dispatch(showPreviousPage()),
+    registerNeeds: (energy: Kcal, liquid: Ml, protein: Gram) => {
+      dispatch(registerNeeds(energy, liquid, protein));
+      dispatch(showFeverRegistrationPage());
+    },
   }),
 )(RegistrationPage);
 
@@ -119,7 +161,7 @@ const Screening = () => (
     <InputField optional={true} onChange={doNothing} />
   </Question>
   <Question name="Ernæringsmessig risiko">
-    <Choice label="Ernæringsmessig risiko" choices={["Moderat", "Gøy"]} optional={true} />
+    <Choice label="Ernæringsmessig risiko" choices={["Moderat", "Høy"]} optional={true} />
   </Question>
   </Section>
 );

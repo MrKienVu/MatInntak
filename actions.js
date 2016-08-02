@@ -18,7 +18,8 @@
  *
  */
 
-import type { Liquid, Snack, ConsumedFoodItem } from './components/FoodRegistration/foodItems';
+import type { Liquid, Snack, ConsumedFoodItem } from './logic/food';
+import type { Kcal, Ml, Gram } from './logic/needs';
 
 export type GoToPageAction = {
   type: 'GO_TO_PAGE',
@@ -27,6 +28,13 @@ export type GoToPageAction = {
   navBarSubTitle?: string,
   liquid?: Liquid,
   snack?: Snack,
+}
+
+export type RegisterNeedsAction = {
+  type: 'REGISTER_NEEDS',
+  energy: Kcal,
+  liquid: Ml,
+  protein: Gram,
 }
 
 export type RegisterFoodAction = {
@@ -71,6 +79,7 @@ export type Action = GoToPageAction
                    | IncreaseAmountAction
                    | DecreaseAmountAction
                    | SelectAmountAction
+                   | RegisterNeedsAction
                    | RegisterFoodAction
                    | EditFoodAction
                    | RemoveFoodAction
@@ -88,12 +97,16 @@ export type PageName = 'RegisterNeeds'
                      | 'TodaysIntake'
 ;
 
-export function registerNeeds(): GoToPageAction {
+export function showRegisterNeedsPage(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterNeeds' }
 }
 
-export function registerPatient(): GoToPageAction {
+export function showRegisterPatientPage(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterPatient' }
+}
+
+export function registerNeeds(energy: Kcal, liquid: Ml, protein: Gram): RegisterNeedsAction {
+  return { type: 'REGISTER_NEEDS', energy: energy, liquid: liquid, protein: protein };
 }
 
 export function registerFood(food: ConsumedFoodItem): RegisterFoodAction {
