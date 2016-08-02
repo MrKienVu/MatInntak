@@ -40,9 +40,10 @@ import {
   editFood,
   removeFood,
 } from '../../actions';
+import { accumulateNutrition } from '../../logic/needs';
 
 import type { Color } from '../../style'
-import type { ConsumedFoodItem, DailyConsumption } from '../FoodRegistration/foodItems';
+import type { ConsumedFoodItem, DailyConsumption } from '../../logic/food';
 
 function upperCaseFirst(string: string) {
   return string[0].toUpperCase() + string.slice(1);
@@ -66,6 +67,8 @@ const TodaysIntakePage = ({
   showRegisterSnackPage,
   editFood,
   removeFood,
+  needs,
+  todaysNutrition,
 }) => (
   <View style={{flex: 1}}>
     <NavigationBar currentPage="Dagens inntak"
@@ -73,7 +76,9 @@ const TodaysIntakePage = ({
                    goBack={goBack}
                    showFrontPage={showFrontPage} />
     <ScrollView style={{flex: 1}}>
-    <TodaysIntake style={{marginTop: 30, marginBottom: 20}}/>
+    <TodaysIntake todaysNutrition={todaysNutrition}
+                  needs={needs}
+                  style={{marginTop: 30, marginBottom: 20}}/>
       <MealDrawerChest consumedFood={consumedFood}
                        showRegisterLiquidPage={showRegisterLiquidPage}
                        showRegisterSnackPage={showRegisterSnackPage}
@@ -110,6 +115,16 @@ const ConnectedPage = connect(
       consumedMeals: state.consumption.consumedMeals,
       consumedSnacks: state.consumption.consumedSnacks,
     },
+    needs: {
+      energy: state.nutrition.energy,
+      liquid: state.nutrition.liquid,
+      protein: state.nutrition.protein,
+    },
+    todaysNutrition: {
+      energy: accumulateNutrition(state.consumption, 'energy'),
+      liquid: accumulateNutrition(state.consumption, 'liquid'),
+      protein: accumulateNutrition(state.consumption, 'protein'),
+    },
   }),
   (dispatch) => ({
     goBack: () => dispatch(showRegisterFoodPage()),
@@ -121,17 +136,26 @@ const ConnectedPage = connect(
   }),
 )(TodaysIntakePage);
 
-const TodaysIntake = ({style}) => (
+export function computeNeedsPercentage(current: number, need: number): number {
+  const percentage = current / need;
+  return percentage >= 1 ? 1 : percentage;
+}
+
+const TodaysIntake = ({todaysNutrition, needs, style}) => (
   <View style={{flexDirection:'column',
                 alignItems: 'center',
                 ...style,
                }}>
     <IntakeIndicator indicators={[
-                        {color: colors.redOrange, progress: 1},
-                        {color: colors.deepBlue, progress: 0.75},
-                        {color: colors.lightGreen, progress: 0.25},
-                     ]}/>
-    <NutritientStatuses style={{marginTop: 20}} />
+      {color: colors.redOrange, progress: computeNeedsPercentage(
+        todaysNutrition.energy, needs.energy)},
+      {color: colors.deepBlue, progress: computeNeedsPercentage(
+        todaysNutrition.liquid, needs.liquid)},
+      {color: colors.lightGreen, progress: computeNeedsPercentage(
+        todaysNutrition.protein, needs.protein)},
+    ]}/>
+    <NutritientStatuses nutrition={todaysNutrition}
+                        style={{marginTop: 20}} />
   </View>
 );
 
@@ -148,12 +172,12 @@ const IntakeIndicatorCircle = ({color, progress}) => (
                   percentageStyle={{color:colors.black, fontSize: 40, fontWeight: '600'}} />
 );
 
-const NutritientStatuses = ({style}) => (
+const NutritientStatuses = ({nutrition, style}) => (
   <View style={{flexDirection:'row', ...style}}>
     {
-      [{name: 'Energi', value: 651, unit: 'kcal', color: colors.redOrange},
-       {name: 'Væske', value: 200, unit: 'ml', color: colors.deepBlue},
-       {name: 'Protein', value: 20, unit: 'g', color: colors.lightGreen}].map(nutritient =>
+      [{name: 'Energi', value: nutrition.energy, unit: 'kcal', color: colors.redOrange},
+       {name: 'Væske', value: nutrition.liquid, unit: 'ml', color: colors.deepBlue},
+       {name: 'Protein', value: nutrition.protein, unit: 'g', color: colors.lightGreen}].map(nutritient =>
          (<View style={{flex: 1, flexDirection: 'column'}} key={nutritient.name}>
            <OrdinaryText style={{textAlign: 'center'}}>{nutritient.name}</OrdinaryText>
            <OrdinaryText style={{textAlign: 'center',
@@ -285,7 +309,7 @@ class MealDrawer extends Component {
             <DrawerItem dummy={true} showMargin={false} /> :
           this.props.items.map((item, index) =>
             <DrawerItem firstLine={`${item.consumed.name} (kl. ${formatTime(item.time)})`}
-                        secondLine={`${item.amount} g - ${item.energy} kcal`}
+                        secondLine={`${item.amount} g (${item.energy} kcal, ${item.liquid} ml væske, ${item.protein} g proteiner)`}
                         editAction={() => this.props.editAction(item.id)}
                         removeAction={() => this.props.removeAction(item.id)}
                         showMargin={index !== this.props.items.length - 1}

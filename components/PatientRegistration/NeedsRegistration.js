@@ -25,9 +25,6 @@ import {
 } from 'react-native';
 import {
   computeBMI,
-  computeFluid,
-  computeKcal,
-  computeProtein,
 } from '../../logic/needs';
 import type {
   BMI,
@@ -45,18 +42,10 @@ import {
   Section,
 } from './common'
 import { fontSize } from '../../style'
-
-function roundTwoDecimals(decimal:number) {
-  return Math.round(100 * decimal) / 100;
-}
-
-function positiveComputedValue(value:?number, compute: (input:number) => number): ?number {
-  return value != null ? positiveValue(compute(value)): null;
-}
-
-function positiveValue(value:number): ?number {
-  return value > 0 ? value: null;
-}
+import {
+  roundTwoDecimals,
+  positiveValue,
+} from '../../logic/needs';
 
 const Calculation = (props: {name: string, value: ?any}) => (
   <View>
@@ -74,8 +63,9 @@ const Calculation = (props: {name: string, value: ?any}) => (
 const Anthropometry = (props: {
   height: ?Meter,
   weight: ?Kilograms,
-  setWeight: (weight:Kilograms) => void,
-  setHeight: (height:Meter) => void,
+  setWeight: (weight: Kilograms) => void,
+  setHeight: (height: Meter) => void,
+  calculateNeeds: (weight: Kilograms) => void,
 }) => {
   const bmi: ?BMI = props.weight && props.height &&
     positiveValue(roundTwoDecimals(computeBMI(props.weight, props.height)));
@@ -85,12 +75,17 @@ const Anthropometry = (props: {
       <View style={{flexDirection: 'row'}}>
         <View style={{flex: 1}}>
           <Question name="Høyde">
-            <InputField label="Høyde" onChange={(value) => props.setHeight(value)} small={true} numeric={true} />
+            <InputField label="Høyde" onChange={(value) => { props.setHeight(value) }}
+                        small={true} numeric={true}
+            />
           </Question>
         </View>
         <View style={{flex: 1}}>
         <Question name="Vekt">
-          <InputField label="Vekt" onChange={(value) => props.setWeight(value)} small={true} numeric={true} />
+          <InputField label="Vekt" onChange={(weight) => {
+            props.setWeight(weight)
+            props.calculateNeeds(weight)
+          }} small={true} numeric={true} />
         </Question>
         </View>
         <View style={{flex: 1}}>
@@ -101,17 +96,16 @@ const Anthropometry = (props: {
   );
 };
 
-const Needs = (props: { weight: ?Kilograms} ) => {
-  const energyNeed: ?Kcal = positiveComputedValue(props.weight, computeKcal);
-  const proteinNeed: ?Gram = positiveComputedValue(props.weight, computeProtein);
-  const fluidNeed: ?Ml = positiveComputedValue(props.weight, computeFluid);
-
+const Needs = (props: {
+  energy: ?Kcal,
+  fluid: ?Ml,
+  protein: ?Gram,
+}) => {
   const needs = [
-    ["Energi", energyNeed],
-    ["Protein", proteinNeed],
-    ["Væske", fluidNeed],
+    ["Energi", props.energy],
+    ["Protein", props.protein],
+    ["Væske", props.fluid],
   ];
-
   return (
     <Section>
     <Header text="Behov" />
@@ -131,14 +125,22 @@ const NeedsRegistration = (props: {
   weight: ?Kilograms,
   setWeight: (weight:Kilograms) => void,
   setHeight: (height:Meter) => void,
+  calculateNeeds: (weight: Kilograms) => void,
+  energyNeed: ?Kcal,
+  fluidNeed: ?Ml,
+  proteinNeed: ?Gram,
 }) => {
   return (
     <View>
-      <Anthropometry weight={props.weight} height={props.height}
+      <Anthropometry weight={props.weight}
+                     height={props.height}
                      setWeight={props.setWeight}
-                     setHeight={props.setHeight} />
+                     setHeight={props.setHeight}
+                     calculateNeeds={props.calculateNeeds} />
       <Divider />
-      <Needs weight={props.weight} />
+      <Needs energy={props.energyNeed}
+             fluid={props.fluidNeed}
+             protein={props.proteinNeed} />
     </View>
   );
 };

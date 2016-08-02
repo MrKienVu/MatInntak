@@ -18,72 +18,29 @@
  *
  */
 
-import {
-  computeGramByAmount,
-  computeKcalByAmount,
-} from '../../logic/food';
-import type { Gram, Kcal } from '../../logic/needs';
-import uuid from 'react-native-uuid';
+import type { Liquid, Snack } from '../../logic/food';
 
-export type FoodCategory = 'Dinner' | 'Liquid' | 'Meal' | 'Snack';
-
-export type DailyConsumption = {
-  consumedDinner: Array<ConsumedFoodItem>,
-  consumedLiquids: Array<ConsumedFoodItem>,
-  consumedMeals: Array<ConsumedFoodItem>,
-  consumedSnacks: Array<ConsumedFoodItem>,
-}
-
-export type ConsumedFoodItem = {
-  id: Symbol,
-  category: FoodCategory,
-  consumed: FoodItem,
-  amount: Gram,
-  energy: Kcal,
-  time: Date,
-};
-
-export function constructConsumedFoodItem(category: FoodCategory,
-                          foodItem: FoodItem, amount: number): ConsumedFoodItem {
-  return {
-    id: uuid(),
-    category: category,
-    consumed: foodItem,
-    amount: computeGramByAmount(foodItem.weight, amount),
-    energy: computeKcalByAmount(foodItem.energy, amount),
-    time: new Date(),
-  };
-}
-
-export type FoodItem = Dinner | Liquid | Meal | Snack;
-
-export type Dinner = {name: string, energy: Kcal, weight: Gram, icon: string};
-export type Liquid = {name: string, energy: Kcal, weight: Gram, icon: string, hot: boolean};
-export type Meal   = {name: string, energy: Kcal, weight: Gram, icon: string};
-export type Snack  = {name: string, energy: Kcal, weight: Gram, icon: string};
-
-const gramPerDl = 100;
 export const liquids: Array<Liquid> = [
-  { name: 'Kaffe', energy: 100, weight: gramPerDl, icon: 'opacity', hot: true },
-  { name: 'Te', energy: 100, weight: gramPerDl, icon: 'opacity', hot: true },
-  { name: 'Melk', energy: 100, weight: gramPerDl, icon: 'opacity', hot: false },
-  { name: 'Juice', energy: 100, weight: gramPerDl, icon: 'opacity', hot: false },
-  { name: 'Saft', energy: 100, weight: gramPerDl, icon: 'opacity', hot: false },
-  { name: 'Water', energy: 0, weight: gramPerDl, icon: 'opacity', hot: false },
-  { name: 'Brus', energy: 100, weight: gramPerDl, icon: 'opacity', hot: false },
+  { name: 'Kaffe', energy: 50, liquid: 100, protein: 0, weight: 100, icon: 'opacity', hot: true },
+  { name: 'Te', energy: 50, liquid: 100, protein: 0, weight: 100, icon: 'opacity', hot: true },
+  { name: 'Melk', energy: 50, liquid: 100, protein: 2, weight: 103, icon: 'opacity', hot: false },
+  { name: 'Juice', energy: 50, liquid: 100, protein: 0, weight: 100, icon: 'opacity', hot: false },
+  { name: 'Saft', energy: 50, liquid: 100, protein: 0, weight: 100, icon: 'opacity', hot: false },
+  { name: 'Water', energy: 0, liquid: 100, protein: 0, weight: 100, icon: 'opacity', hot: false },
+  { name: 'Brus', energy: 50, liquid: 100, protein: 0, weight: 100, icon: 'opacity', hot: false },
 ];
 
 export const snacks: Array<Snack> = [
-  { name: 'Bolle', energy: 100, weight: 100, icon: 'opacity'},
-  { name: 'Kake', energy: 100, weight: 50, icon: 'opacity'},
-  { name: 'Kjeks', energy: 100, weight: 50, icon: 'opacity'},
-  { name: 'Smurt lefse', energy: 100, weight: 50, icon: 'opacity'},
-  { name: 'Fruktskål', energy: 100, weight: 50, icon: 'opacity'},
-  { name: 'Banan', energy: 100, weight: 50, icon: 'opacity'},
-  { name: 'Eple', energy: 100, weight: 50, icon: 'opacity'},
-  { name: 'Appelsin', energy: 100, weight: 50, icon: 'opacity'},
-  { name: 'Clementin', energy: 100, weight: 50, icon: 'opacity'},
-  { name: 'Pære', energy: 100, weight: 50, icon: 'opacity'},
-  { name: 'Druer', energy: 100, weight: 50, icon: 'opacity'},
-  { name: 'Melon', energy: 100, weight: 50, icon: 'opacity'},
+  { name: 'Bolle', energy: 50, liquid: 10, protein: 2, weight: 100, icon: 'opacity'},
+  { name: 'Kake', energy: 50, liquid: 10, protein: 5, weight: 50, icon: 'opacity'},
+  { name: 'Kjeks', energy: 50, liquid: 0, protein: 2, weight: 50, icon: 'opacity'},
+  { name: 'Smurt lefse', energy: 50, liquid: 10, protein: 3, weight: 50, icon: 'opacity'},
+  { name: 'Fruktskål', energy: 50, liquid: 10, protein: 0, weight: 50, icon: 'opacity'},
+  { name: 'Banan', energy: 50, liquid: 10, protein: 0, weight: 50, icon: 'opacity'},
+  { name: 'Eple', energy: 50, liquid: 50, protein: 0, weight: 50, icon: 'opacity'},
+  { name: 'Appelsin', energy: 50, liquid: 80, protein: 0, weight: 50, icon: 'opacity'},
+  { name: 'Clementin', energy: 50, liquid: 80, protein: 0, weight: 50, icon: 'opacity'},
+  { name: 'Pære', energy: 50, liquid: 50, protein: 0, weight: 50, icon: 'opacity'},
+  { name: 'Druer', energy: 50, liquid: 60, protein: 0, weight: 50, icon: 'opacity'},
+  { name: 'Melon', energy: 50, liquid: 90, protein: 0, weight: 50, icon: 'opacity'},
 ];

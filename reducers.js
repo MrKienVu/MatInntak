@@ -20,7 +20,8 @@
 
 import { combineReducers } from 'redux';
 import type { Action } from './actions';
-import type { ConsumedFoodItem, DailyConsumption } from './components/FoodRegistration/foodItems';
+import type { ConsumedFoodItem, DailyConsumption } from './logic/food';
+import type { Kcal, Ml, Gram } from './logic/needs';
 
 const initialRouting = { pageStack: ['StartPage'], navBarTitle: '', navBarSubTitle: '' };
 
@@ -53,8 +54,28 @@ const initialConsumption = {
   consumedSnacks: [],
 };
 
-export function needs() {
+export type PasientNeeds = {
+  energy: Kcal,
+  liquid: Ml,
+  protein: Gram,
+}
 
+const initialNutrition = {
+  energy: 2400,
+  liquid: 2400,
+  protein: 80,
+}
+
+export function nutrition(state: PasientNeeds = initialNutrition, action: Action) {
+  if (action.type === 'REGISTER_NEEDS') {
+    return {
+      energy: action.energy,
+      liquid: action.liquid,
+      protein: action.protein,
+    };
+  }
+
+  return state;
 }
 
 export function consumption(state: DailyConsumption = initialConsumption, action: Action) {
@@ -62,8 +83,8 @@ export function consumption(state: DailyConsumption = initialConsumption, action
     switch (action.food.category) {
       case 'Dinner': return {...state, consumedDinners: addConsumedItem(action.food, state.consumedDinner) };
       case 'Liquid': return {...state, consumedLiquids: addConsumedItem(action.food, state.consumedLiquids) };
-      case 'Meal': return {...state, consumedMeals: addConsumedItem(action.food, state.consumedMeals) };
-      case 'Snack': return {...state, consumedSnacks: addConsumedItem(action.food, state.consumedSnacks) };
+      case 'Meal':   return {...state, consumedMeals: addConsumedItem(action.food, state.consumedMeals) };
+      case 'Snack':  return {...state, consumedSnacks: addConsumedItem(action.food, state.consumedSnacks) };
     }
   }
 
@@ -104,6 +125,6 @@ export function amountSelector(state: any = initialAmount, action: Action) {
   }
 }
 
-const app = combineReducers({routing, consumption, amountSelector});
+const app = combineReducers({routing, nutrition, consumption, amountSelector});
 
 export default app;
