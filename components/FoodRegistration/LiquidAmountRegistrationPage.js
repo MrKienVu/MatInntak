@@ -33,6 +33,7 @@ import {
   showRegisterFoodPage,
   showTodaysIntakePage,
   registerFood,
+  editFood,
 } from '../../actions';
 
 import { SpecifyAmount } from './SpecifyAmount';
@@ -87,6 +88,7 @@ class LiquidAmountRegistrationPage extends Component {
     decreaseAmount: () => void,
     increaseAmount: () => void,
     liquid: Liquid,
+    item: ConsumedFoodItem,
     navBarTitle: string,
     navBarSubTitle: string,
     showRegisterFoodPage: () => void,
@@ -102,7 +104,7 @@ class LiquidAmountRegistrationPage extends Component {
   enableSpecify = () => { this.setState({specify: true}) };
   disableSpecify = () => { this.setState({specify: false}) };
   selectAmount = (amount: number) => { this.props.selectAmount(amount); };
-  registerLiquid = () => { this.props.registerLiquid(this.props.liquid, this.props.amount) };
+  registerLiquid = () => { this.props.registerLiquid(this.props.liquid, this.props.amount, this.props.item) };
   render() {
     return (
       <View style={{
@@ -168,6 +170,7 @@ const ConnectedPage = connect(
     navBarSubTitle: state.routing.navBarSubTitle,
     amount: state.amountSelector.value,
     liquid: state.routing.liquid,
+    item: state.routing.item,
     amountStep: selectStep(state.routing.liquid),
   }),
   (dispatch) => ({
@@ -178,9 +181,9 @@ const ConnectedPage = connect(
     selectAmount: (amount: number) => {
       dispatch(selectAmount(amount));
     },
-    registerLiquid: (liquid: Liquid, amount: number) => {
-      console.log("Registered liquid:", liquid.name, amount);
-      dispatch(registerFood(constructConsumedFoodItem('Liquid', liquid, amount)));
+    registerLiquid: (liquid: Liquid, amount: number, item?: ConsumedFoodItem) => {
+      item ? dispatch(editFood(item, amount)) :
+             dispatch(registerFood(constructConsumedFoodItem('Liquid', liquid, amount)));
       dispatch(showTodaysIntakePage());
     },
   }),

@@ -30,6 +30,7 @@ export type GoToPageAction = {
   liquid?: Liquid,
   snack?: Snack,
   dish?: Dish,
+  item?: ConsumedFoodItem,
 }
 
 export type RegisterNeedsAction = {
@@ -46,7 +47,8 @@ export type RegisterFoodAction = {
 
 export type EditFoodAction = {
   type: 'EDIT_FOOD',
-  id: string,
+  food: ConsumedFoodItem,
+  amount: Gram,
 }
 
 export type RemoveFoodAction = {
@@ -120,8 +122,8 @@ export function registerFood(food: ConsumedFoodItem): RegisterFoodAction {
   return { type: 'REGISTER_FOOD', food: food };
 }
 
-export function editFood(id: string): EditFoodAction {
-  return { type: 'EDIT_FOOD', id: id };
+export function editFood(item: ConsumedFoodItem, amount: Gram): EditFoodAction {
+  return { type: 'EDIT_FOOD', item: item, amount: amount };
 }
 
 export function removeFood(id: string): RemoveFoodAction {
@@ -177,13 +179,14 @@ export function showMealAmountPage(meal: Meal): GoToPageAction {
   }
 }
 
-export function showLiquidAmountPage(liquid: Liquid): GoToPageAction {
+export function showLiquidAmountPage(liquid: Liquid, item?: ConsumedFoodItem): GoToPageAction {
   return {
     type: 'GO_TO_PAGE',
     name: 'RegisterLiquidAmount',
     navBarTitle: liquid.name,
     navBarSubTitle: 'Drikke',
     liquid: liquid,
+    item: item,
   }
 }
 

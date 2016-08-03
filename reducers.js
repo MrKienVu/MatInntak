@@ -19,6 +19,8 @@
  */
 
 import { combineReducers } from 'redux';
+import { constructConsumedFoodItem } from './logic/food';
+
 import type { Action } from './actions';
 import type { ConsumedFoodItem, DailyConsumption } from './logic/food';
 import type { Kcal, Ml, Gram } from './logic/needs';
@@ -31,10 +33,7 @@ function routing(state = initialRouting, action: Action) {
       pageStack: [...state.pageStack, action.name],
       navBarTitle: action.navBarTitle || '',
       navBarSubTitle: action.navBarSubTitle || '',
-      liquid: action.liquid || null,
-      snack: action.snack || null,
-      meal: action.meal || null,
-     };
+    };
   }
 
   if (action.type === 'GO_TO_PREVIOUS_PAGE') {
@@ -93,12 +92,27 @@ export function consumption(state: DailyConsumption = initialConsumption, action
     return removeConsumedItem(action.id, state);
   }
 
+  if (action.type === 'EDIT_FOOD') {
+    return editConsumedItem(action.item, action.amount, state);
+  }
+
   return state;
 }
 
 function addConsumedItem(item: any, alreadyConsumed: Array<ConsumedFoodItem>) {
   alreadyConsumed.push(item);
   return alreadyConsumed;
+}
+
+function editConsumedItem(item: ConsumedFoodItem, newAmount: Gram, dailyConsumption: DailyConsumption): DailyConsumption {
+  item = constructConsumedFoodItem(item.category, item.consumed, newAmount, item.time, item.id);
+  dailyConsumption = removeConsumedItem(item.id, dailyConsumption);
+  switch (item.category) {
+    case 'Dinner': return {...dailyConsumption, consumedDinners: addConsumedItem(item, dailyConsumption.consumedDinner) };
+    case 'Liquid': return {...dailyConsumption, consumedLiquids: addConsumedItem(item, dailyConsumption.consumedLiquids) };
+    case 'Meal':   return {...dailyConsumption, consumedMeals: addConsumedItem(item, dailyConsumption.consumedMeals) };
+    case 'Snack':  return {...dailyConsumption, consumedSnacks: addConsumedItem(item, dailyConsumption.consumedSnacks) };
+  }
 }
 
 function removeConsumedItem(id: string, dailyConsumption: DailyConsumption): DailyConsumption {

@@ -21,10 +21,11 @@
 import React, { Component } from 'react';
 import Swiper from 'react-native-swiper';
 import {
+  Alert,
   Image,
   ScrollView,
   Text,
-  TouchableOpacity,
+  LayoutAnimation,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
@@ -39,7 +40,8 @@ import {
   showRegisterLiquidPage,
   showRegisterMealPage,
   showRegisterSnackPage,
-  editFood,
+  showLiquidAmountPage,
+  selectAmount,
   removeFood,
 } from '../../actions';
 import { accumulateNutrition } from '../../logic/needs';
@@ -139,7 +141,10 @@ const ConnectedPage = connect(
     showRegisterLiquidPage: () => dispatch(showRegisterLiquidPage()),
     showRegisterMealPage: () => dispatch(showRegisterMealPage()),
     showRegisterSnackPage: () => dispatch(showRegisterSnackPage()),
-    editFood: (id: string) => dispatch(editFood(id)),
+    editFood: (item: ConsumedFoodItem) => {
+      dispatch(selectAmount(item.amount / item.consumed.weight));
+      dispatch(showLiquidAmountPage(item.consumed, item));
+    },
     removeFood: (id: string) => dispatch(removeFood(id)),
   }),
 )(TodaysIntakePage);
@@ -286,6 +291,13 @@ const DrawerHeading = ({clickAction, addAction, open, color, title}: {
   </View>
 );
 
+const MinimalSpring = {
+    duration: 500,
+    update: {
+      type: LayoutAnimation.Types.spring,
+      springDamping: 1,
+    },
+  };
 
 class MealDrawer extends Component {
   props: {
@@ -301,26 +313,29 @@ class MealDrawer extends Component {
     super();
     this.state = {open: false};
   }
-  open = () => { this.setState({open: true}) };
+  open = () => { this.setState({open: true}); };
   close = () => { this.setState({open: false}) };
-  clickAction = () => { this.state.open ? this.close() : this.open()};
+  clickAction = () => {
+    this.state.open ? this.close() : this.open()
+  };
+  componentWillUpdate() {
+    LayoutAnimation.configureNext(MinimalSpring);
+  }
   render() {
     return (
       <View style={{marginBottom: 2, backgroundColor: colors.divider}} >
-        <TouchableOpacity activeOpacity={0.8}>
-          <DrawerHeading clickAction={this.clickAction}
-                         addAction={this.props.addAction}
-                         open={this.state.open}
-                         title={this.props.title}
-                         color={this.props.openColor} />
-        </TouchableOpacity>
+        <DrawerHeading clickAction={this.clickAction}
+                       addAction={this.props.addAction}
+                       open={this.state.open}
+                       title={this.props.title}
+                       color={this.props.openColor} />
         { this.state.open && (
           this.props.items.length === 0 ?
             <DrawerItem dummy={true} showMargin={false} /> :
           this.props.items.map((item, index) =>
             <DrawerItem firstLine={`${item.consumed.name} (kl. ${formatTime(item.time)})`}
                         secondLine={`${item.amount} g (${item.energy} kcal, ${item.liquid} ml væske, ${item.protein} g proteiner)`}
-                        editAction={() => this.props.editAction(item.id)}
+                        editAction={() => this.props.editAction(item)}
                         removeAction={() => this.props.removeAction(item.id)}
                         showMargin={index !== this.props.items.length - 1}
                         key={item.time}/>))}
@@ -390,10 +405,15 @@ const DrawerItem = ({dummy, firstLine, secondLine, editAction, removeAction, sho
       <AppIcon style={{marginRight: 15}}
                normal={require('../../img/icon_edit.png')}
                pressed={require('../../img/icon_edit_active.png')}
-               onPress={editAction}/>
+               onPress={editAction} />
       <AppIcon normal={require('../../img/icon_delete.png')}
                pressed={require('../../img/icon_delete_active.png')}
-               onPress={removeAction}/>
+               onPress={() => Alert.alert(
+                 `Slett ${firstLine.toLowerCase()}`,
+                 `Er du sikker på at du vil slette denne varen?`, [
+                   {text: 'Avbryt'},
+                   {text: 'Slett', onPress: removeAction},
+                 ])} />
     </View>}
   </View>
 );

@@ -53,16 +53,21 @@ export type Liquid = {name: string, energy: Kcal, liquid: Ml, protein: Gram, wei
 export type Meal   = {name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon: string};
 export type Snack  = {name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon: string};
 
-export function constructConsumedFoodItem(category: FoodCategory,
-                          foodItem: FoodItem, amount: number): ConsumedFoodItem {
+export function constructConsumedFoodItem(
+  category: FoodCategory,
+  foodItem: FoodItem,
+  amount: number,
+  time?: Date,
+  id?: string,
+): ConsumedFoodItem {
   return {
-    id: uuid(),
+    id: id || uuid(),
     category: category,
     consumed: foodItem,
     amount: computeGramByAmount(foodItem.weight, amount),
     energy: computeKcalByAmount(foodItem.energy, amount),
     liquid: computeMlByAmount(foodItem.liquid, amount),
     protein: computeGramByAmount(foodItem.protein, amount),
-    time: new Date(),
+    time: time || new Date(),
   };
 }
