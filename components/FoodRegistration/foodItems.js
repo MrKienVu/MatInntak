@@ -18,7 +18,8 @@
  *
  */
 
-import type { Liquid, Snack, Dish, Dinner } from '../../logic/food';
+import type { Liquid, Meal, Dinner, Dish, Snack } from '../../logic/food';
+
 
 export const liquids: Array<Liquid> = [
   { name: 'Kaffe', energy: 50, liquid: 100, protein: 0, weight: 100, icon: 'opacity', hot: true },
@@ -28,6 +29,14 @@ export const liquids: Array<Liquid> = [
   { name: 'Saft', energy: 50, liquid: 100, protein: 0, weight: 100, icon: 'opacity', hot: false },
   { name: 'Water', energy: 0, liquid: 100, protein: 0, weight: 100, icon: 'opacity', hot: false },
   { name: 'Brus', energy: 50, liquid: 100, protein: 0, weight: 100, icon: 'opacity', hot: false },
+];
+
+export const meals: Array<Meal> = [
+  { name: 'BrødProdukter', energy: 50, liquid: 10, protein: 2, weight: 100, icon: 'opacity'},
+  { name: 'Frokostblanding og grøt', energy: 50, liquid: 10, protein: 2, weight: 100, icon: 'opacity'},
+  { name: 'Suppe', energy: 50, liquid: 10, protein: 2, weight: 100, icon: 'opacity'},
+  { name: 'Pålegg', energy: 50, liquid: 10, protein: 2, weight: 100, icon: 'opacity'},
+  { name: 'Yoghurt', energy: 50, liquid: 10, protein: 2, weight: 100, icon: 'opacity'},
 ];
 
 export const snacks: Array<Snack> = [

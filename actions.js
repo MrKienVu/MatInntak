@@ -18,7 +18,7 @@
  *
  */
 
-import type { Dish, Liquid, Snack, ConsumedFoodItem } from './logic/food';
+import type { Dish, Liquid, Meal, Snack, ConsumedFoodItem } from './logic/food';
 import type { Kcal, Ml, Gram } from './logic/needs';
 
 
@@ -97,6 +97,8 @@ export type PageName = 'RegisterNeeds'
                      | 'RegisterFood'
                      | 'RegisterLiquid'
                      | 'RegisterLiquidAmount'
+                     | 'RegisterMeal'
+                     | 'RegisterMealAmount'
                      | 'RegisterSnack'
                      | 'RegisterSnackAmount'
                      | 'TodaysIntake'
@@ -160,6 +162,19 @@ export function showRegisterLiquidPage(): GoToPageAction {
 
 export function showRegisterDishPage(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterDish'}
+}
+export function showRegisterMealPage(): GoToPageAction {
+  return { type: 'GO_TO_PAGE', name: 'RegisterMeal' }
+}
+
+export function showMealAmountPage(meal: Meal): GoToPageAction {
+  return {
+    type: 'GO_TO_PAGE',
+    name: 'RegisterMealAmount',
+    navBarTitle: meal.name,
+    navBarSubTitle: 'Frokost, lunsj og kveldsmat',
+    meal: meal,
+  }
 }
 
 export function showLiquidAmountPage(liquid: Liquid): GoToPageAction {

@@ -111,7 +111,7 @@ class DishRegistrationPage extends Component {
                </Text>
           </View>
           <View style={{height: 6, backgroundColor: colors.divider}}/>
-          <SelectableGridLayout items={getDishPortions(this.selectAmount)} />
+          <SelectableGridLayout color={colors.dinner} items={getDishPortions(this.selectAmount)} />
           <View style={{
             marginVertical: 64,
             flexDirection: 'column',

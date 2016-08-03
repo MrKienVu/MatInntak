@@ -142,7 +142,7 @@ const PickAmount = ({amount, amountStep, items, confirmAmount, specifyAction}: {
   specifyAction: () => void,
 }) => (
   <ScrollView>
-  <SelectableGridLayout items={items} defaultItem={getSelectedItemKey(amountStep, amount)} />
+  <SelectableGridLayout color={colors.liquid} items={items} defaultItem={getSelectedItemKey(amountStep, amount)} />
   <View style={{
     marginVertical: 64,
     flexDirection: 'column',

@@ -127,6 +127,7 @@ export class SelectableGridLayout extends Component {
     items: Array<MenuItem>,
     defaultItem?: string,
     small?: boolean,
+    color: string,
   };
   state: { selected: string };
   constructor(props: any) {
@@ -147,6 +148,7 @@ export class SelectableGridLayout extends Component {
         this.props.items.map(item => (
           <GridItem key={item.key}
                     small={this.props.small}
+                    color={this.props.color}
                     selected={item.key === this.state.selected}
                     label={item.name}
                     icon={item.icon}
@@ -158,18 +160,19 @@ export class SelectableGridLayout extends Component {
   }
 }
 
-export const GridItem = ({label, icon, small, selected, action, noFeedback}: {
+export const GridItem = ({label, icon, small, selected, action, noFeedback, color}: {
   action?: () => void,
   icon?: any,
   label?: string,
   noFeedback?: boolean,
   selected?: boolean,
   small?: boolean,
+  color: string,
 }) => (
   <GridView action={action} small={small} selected={selected} noFeedback={noFeedback}>
     <Icon size={72} name={icon ? icon : icons.placeholder} color={colors.darkGrey} />
     <Text style={{
-      color: colors.deepBlue,
+      color: color,
       fontSize: 22,
       marginTop: 20,
     }}>
