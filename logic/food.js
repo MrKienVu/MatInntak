@@ -45,9 +45,10 @@ export type ConsumedFoodItem = {
   time: Date,
 };
 
-export type FoodCategory = 'Dinner' | 'Liquid' | 'Meal' | 'Snack';
-export type FoodItem = Dinner | Liquid | Meal | Snack;
-export type Dinner = {name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon: string};
+export type FoodCategory = 'Dish' | 'Liquid' | 'Meal' | 'Snack';
+export type FoodItem = Dish | Liquid | Meal | Snack;
+export type Dinner = { name: string, icon: string };
+export type Dish = { name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon: string, quantity: number, unit: string, };
 export type Liquid = {name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon: string, hot: boolean};
 export type Meal   = {name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon: string};
 export type Snack  = {name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon: string};

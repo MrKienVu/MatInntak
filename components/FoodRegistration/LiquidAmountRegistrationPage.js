@@ -24,8 +24,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { connect } from 'react-redux';
-
-import NavigationBar from '../NavigationBar'
+import NavigationBar from '../NavigationBar';
 import {
   decreaseAmount,
   increaseAmount,
@@ -180,8 +179,6 @@ const ConnectedPage = connect(
       dispatch(selectAmount(amount));
     },
     registerLiquid: (liquid: Liquid, amount: number) => {
-
-
       console.log("Registered liquid:", liquid.name, amount);
       dispatch(registerFood(constructConsumedFoodItem('Liquid', liquid, amount)));
       dispatch(showTodaysIntakePage());

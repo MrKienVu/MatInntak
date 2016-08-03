@@ -81,7 +81,7 @@ export function nutrition(state: PasientNeeds = initialNutrition, action: Action
 export function consumption(state: DailyConsumption = initialConsumption, action: Action) {
   if (action.type === 'REGISTER_FOOD') {
     switch (action.food.category) {
-      case 'Dinner': return {...state, consumedDinners: addConsumedItem(action.food, state.consumedDinner) };
+      case 'Dish': return {...state, consumedDinners: addConsumedItem(action.food, state.consumedDinner) };
       case 'Liquid': return {...state, consumedLiquids: addConsumedItem(action.food, state.consumedLiquids) };
       case 'Meal':   return {...state, consumedMeals: addConsumedItem(action.food, state.consumedMeals) };
       case 'Snack':  return {...state, consumedSnacks: addConsumedItem(action.food, state.consumedSnacks) };
