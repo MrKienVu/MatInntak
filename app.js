@@ -30,6 +30,8 @@ import NeedsRegistrationPage from './components/PatientRegistration/NeedsRegistr
 import PatientRegistrationPage from './components/PatientRegistration/PatientRegistrationPage';
 import TodaysIntakePage from './components/todaysIntake/TodaysIntakePage';
 import LiquidAmountRegistrationPage from './components/FoodRegistration/LiquidAmountRegistrationPage';
+import MealRegistrationPage from './components/FoodRegistration/MealRegistrationPage';
+import MealAmountRegistrationPage from './components/FoodRegistration/MealAmountRegistrationPage';
 import SnackRegistrationPage from './components/FoodRegistration/SnackRegistrationPage';
 import SnackAmountRegistrationPage from './components/FoodRegistration/SnackAmountRegistrationPage';
 import DishRegistrationPage from './components/FoodRegistration/DishRegistrationPage';
@@ -45,10 +47,12 @@ const pages = {
   'RegisterFood': FoodRegistrationPage,
   'RegisterLiquid': LiquidRegistrationPage,
   'RegisterLiquidAmount': LiquidAmountRegistrationPage,
-  'RegisterSnack': SnackRegistrationPage,
-  'RegisterSnackAmount': SnackAmountRegistrationPage,
+  'RegisterMeal': MealRegistrationPage,
+  'RegisterMealAmount': MealAmountRegistrationPage,
   'RegisterNeeds': NeedsRegistrationPage,
   'RegisterPatient': PatientRegistrationPage,
+  'RegisterSnack': SnackRegistrationPage,
+  'RegisterSnackAmount': SnackAmountRegistrationPage,
   'StartPage': StartPage,
   'RegisterFever': FeverRegistrationPage,
   'TodaysIntake': TodaysIntakePage,

@@ -49,6 +49,7 @@ class SnackRegistrationPage extends Component {
           snacks.map(snack => (
             <GridItem key={snack.name}
                       small={true}
+                      color={colors.snack}
                       label={snack.name}
                       icon={snack.icon}
                       action={() => this.props.showSnackAmountPage(snack)} />

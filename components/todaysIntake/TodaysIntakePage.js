@@ -37,6 +37,7 @@ import {
   showRegisterDishPage,
   showRegisterFoodPage,
   showRegisterLiquidPage,
+  showRegisterMealPage,
   showRegisterSnackPage,
   editFood,
   removeFood,
@@ -66,6 +67,7 @@ const TodaysIntakePage = ({
   consumedFood,
   showRegisterDishPage,
   showRegisterLiquidPage,
+  showRegisterMealPage,
   showRegisterSnackPage,
   editFood,
   removeFood,
@@ -84,6 +86,7 @@ const TodaysIntakePage = ({
       <MealDrawerChest consumedFood={consumedFood}
                        showRegisterDishPage={showRegisterDishPage}
                        showRegisterLiquidPage={showRegisterLiquidPage}
+                       showRegisterMealPage={showRegisterMealPage}
                        showRegisterSnackPage={showRegisterSnackPage}
                        editFood={editFood}
                        removeFood={removeFood}
@@ -134,6 +137,7 @@ const ConnectedPage = connect(
     showFrontPage: () => dispatch(showRegisterFoodPage()),
     showRegisterDishPage: () => dispatch(showRegisterDishPage()),
     showRegisterLiquidPage: () => dispatch(showRegisterLiquidPage()),
+    showRegisterMealPage: () => dispatch(showRegisterMealPage()),
     showRegisterSnackPage: () => dispatch(showRegisterSnackPage()),
     editFood: (id: string) => dispatch(editFood(id)),
     removeFood: (id: string) => dispatch(removeFood(id)),
@@ -200,11 +204,11 @@ type DrawerItems = {
   consumedSnacks: Array<ConsumedFoodItem>,
 };
 
-function constructDrawerItems(drawerItems: DrawerItems, showRegisterDishPage, showRegisterLiquidPage, showRegisterSnackPage):
+function constructDrawerItems(drawerItems: DrawerItems, showRegisterDishPage, showRegisterLiquidPage, showRegisterMealPage, showRegisterSnackPage):
                               Array<{title: string, addAction: () => void, color: Color, items: Array<ConsumedFoodItem>}> {
   return ([{
       title: "Frokost, lunsj og kveldsmat",
-      addAction: showRegisterLiquidPage,
+      addAction: showRegisterMealPage,
       color: colors.meal,
       items: drawerItems.consumedMeals,
     }, {
@@ -226,17 +230,18 @@ function constructDrawerItems(drawerItems: DrawerItems, showRegisterDishPage, sh
   ]);
 }
 
-const MealDrawerChest = ({consumedFood, showRegisterDishPage, showRegisterLiquidPage, showRegisterSnackPage, editFood, removeFood, style}: {
+const MealDrawerChest = ({consumedFood, showRegisterDishPage, showRegisterLiquidPage, showRegisterMealPage, showRegisterSnackPage, editFood, removeFood, style}: {
   consumedFood: DailyConsumption,
   showRegisterDishPage: () => void,
   showRegisterLiquidPage: () => void,
+  showRegisterMealPage:() => void,
   showRegisterSnackPage: () => void,
   editFood: () => void,
   removeFood: () => void,
   style: any,
 }) => (
   <View style={style}>
-    { constructDrawerItems(consumedFood, showRegisterDishPage, showRegisterLiquidPage, showRegisterSnackPage).map(drawer =>
+    { constructDrawerItems(consumedFood, showRegisterDishPage, showRegisterLiquidPage, showRegisterMealPage, showRegisterSnackPage).map(drawer =>
       <MealDrawer
         addAction={drawer.addAction}
         editAction={editFood}

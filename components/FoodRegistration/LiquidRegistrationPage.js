@@ -49,6 +49,7 @@ class LiquidRegistrationPage extends Component {
           liquids.map(liquid => (
             <GridItem key={liquid.name}
                       small={true}
+                      color={colors.liquid}
                       label={liquid.name}
                       icon={liquid.icon}
                       action={() => this.props.showLiquidAmountPage(liquid)} />

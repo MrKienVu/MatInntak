@@ -33,6 +33,7 @@ function routing(state = initialRouting, action: Action) {
       navBarSubTitle: action.navBarSubTitle || '',
       liquid: action.liquid || null,
       snack: action.snack || null,
+      meal: action.meal || null,
      };
   }
 

@@ -24,36 +24,38 @@ import {
   ScrollView,
 } from 'react-native';
 import { connect } from 'react-redux';
-import NavigationBar from '../NavigationBar';
-import { showPreviousPage, showRegisterDishPage } from '../../actions';
+import NavigationBar from '../NavigationBar'
+import { showMealAmountPage, showPreviousPage, showRegisterFoodPage } from '../../actions';
 import { SearchBar, GridLayout, GridItem } from './common';
 import { colors } from '../../style';
-import { dinner } from './foodItems';
+import { meals } from './foodItems';
 
-class DinnerMenuPage extends Component {
+import type { Meal } from '../../logic/food';
+
+class MealRegistrationPage extends Component {
   render() {
     return(
       <View style={{
         backgroundColor: colors.divider,
         flex: 1,
       }}>
-      <NavigationBar currentPage="Middag"
-                     showFrontPage={this.props.showPreviousPage}
-                     goBack={this.props.showPreviousPage}
-                     color={colors.dinner}/>
-      <ScrollView>
-      <SearchBar placeholder="Søk etter matprodukter" color={colors.dinner} />
-        <GridLayout>{
-         dinner.map(dinner => (
-           <GridItem key={dinner.name}
-                     small={true}
-                     color={colors.dinner}
-                     label={dinner.name}
-                     icon={dinner.icon}
-                     action={() => this.props.showRegisterDishPage(dinner)} />
-         ))}
-        </GridLayout>
-      </ScrollView>
+        <NavigationBar currentPage="Frokost, lunsj og kveldsmat"
+                       showFrontPage={this.props.showFrontPage}
+                       goBack={this.props.showPreviousPage}
+                       color={colors.meal}/>
+        <ScrollView>
+          <SearchBar placeholder="Søk etter matprodukter" color={colors.meal} />
+          <GridLayout>{
+            meals.map(meal => (
+              <GridItem key={meal.name}
+                        small={true}
+                        color={colors.meal}
+                        label={meal.name}
+                        icon={meal.icon}
+                        action={() => this.props.showMealAmountPage(meal)} />
+            ))}
+          </GridLayout>
+        </ScrollView>
       </View>
     );
   }
@@ -62,9 +64,10 @@ class DinnerMenuPage extends Component {
 const ConnectedPage = connect(
   () => ({}),
   (dispatch) => ({
+    showMealAmountPage: (meal: Meal) => dispatch(showMealAmountPage(meal)),
     showPreviousPage: () => dispatch(showPreviousPage()),
-    showRegisterDishPage: () => dispatch(showRegisterDishPage()),
+    showFrontPage: () => dispatch(showRegisterFoodPage()),
   }),
-)(DinnerMenuPage);
+)(MealRegistrationPage);
 
 export default ConnectedPage;
