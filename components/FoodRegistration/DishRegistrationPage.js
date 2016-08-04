@@ -33,6 +33,7 @@ import {
   showPreviousPage,
   showRegisterFoodPage,
   showTodaysIntakePage,
+  registerAmount,
 } from '../../actions';
 import { colors, dimens } from '../../style';
 import { icons } from '../../graphics';
@@ -42,7 +43,6 @@ import { constructConsumedFoodItem } from '../../logic/food';
 
 import type { MenuItem } from './common';
 import type { Dish } from '../../logic/food';
-
 
 type Portion = { key: string, icon: string, size: number};
 const portions: Array<Portion> = [
@@ -71,7 +71,7 @@ class DishRegistrationPage extends Component {
     showFrontPage: () => void,
     showDishAmountPage: () => void,
     showPreviousPage: () => void,
-    selectAmount: () => void,
+    selectAmount: (portion: number) => void,
   };
   constructor(props: any) {
     super(props);
@@ -146,10 +146,12 @@ const ConnectedPage = connect(
   (dispatch) => ({
     showFrontPage: () => dispatch(showRegisterFoodPage()),
     showPreviousPage: () => dispatch(showPreviousPage()),
-    showDishAmountPage: () => dispatch(showDishAmountPage(dish)),
+    showDishAmountPage: (dish: Dish) => {
+      dispatch(registerAmount(dish));
+      dispatch(showDishAmountPage(dish.name));
+    },
     selectAmount: (portion: number) => { dispatch(selectAmount(portion)); },
     registerDish: (dish: Dish, amount: number) => {
-      console.log("Registered dish:", dish.name, amount);
       dispatch(registerFood(constructConsumedFoodItem('Dish', dish, amount)));
       dispatch(showTodaysIntakePage());
     },

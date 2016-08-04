@@ -23,30 +23,28 @@
  import { connect } from 'react-redux';
  import NavigationBar from '../NavigationBar'
  import { colors } from '../../style';
- import {
-   decreaseAmount,
-   increaseAmount,
-   showRegisterFoodPage,
-   showPreviousPage,
-   showTodaysIntakePage,
-   registerFood,
- } from '../../actions';
  import { SpecifyAmount } from './SpecifyAmount';
- import { constructConsumedFoodItem } from '../../logic/food';
+ import {
+   amountRegistrationState,
+   amountRegistrationDispatcher,
+} from './amountRegistration';
 
- import type { Snack } from '../../logic/food';
+ import type { Snack, ConsumedFoodItem } from '../../logic/food';
 
 class SnackAmountRegistrationPage extends Component {
   props: ({
-    amount: number,
-    decreaseAmount: () => void,
-    increaseAmount: () => void,
     navBarTitle: string,
     navBarSubTitle: string,
     showRegisterFoodPage: () => void,
-    registerSnack: () => void,
-    snack: Snack,
     showPreviousPage: () => void,
+    item: Snack,
+    consumedItem: ConsumedFoodItem,
+    amount: number,
+    decreaseAmount: () => void,
+    increaseAmount: () => void,
+    registerItem: () => void,
+    editItem: () => void,
+    editing: boolean,
   });
   state: ({
     amountStep: number,
@@ -57,7 +55,11 @@ class SnackAmountRegistrationPage extends Component {
       amountStep: 0.5,
     };
   }
-  registerSnack = () => { this.props.registerSnack(this.props.snack, this.props.amount); };
+  registerItem = () => {
+    this.props.editing ?
+      this.props.editItem(this.props.consumedItem, this.props.amount) :
+      this.props.registerItem(this.props.item, this.props.amount);
+  };
   render() {
     return (
       <View>
@@ -72,7 +74,7 @@ class SnackAmountRegistrationPage extends Component {
                        cancelAction={this.props.showPreviousPage}
                        increaseAmount={this.props.increaseAmount}
                        decreaseAmount={this.props.decreaseAmount}
-                       confirmAction={this.registerSnack}
+                       confirmAction={this.registerItem}
                        text={"Velg antall"} />
       </View>
     );
@@ -80,23 +82,8 @@ class SnackAmountRegistrationPage extends Component {
 }
 
 const ConnectedPage = connect(
-  (state) => ({
-    navBarTitle: state.routing.navBarTitle,
-    navBarSubTitle: state.routing.navBarSubTitle,
-    amount: state.amountSelector.value,
-    snack: state.routing.snack,
-  }),
-  (dispatch) => ({
-    showRegisterFoodPage: () => dispatch(showRegisterFoodPage()),
-    showPreviousPage: () => dispatch(showPreviousPage()),
-    increaseAmount: (amountStep: number) => dispatch(increaseAmount(amountStep)),
-    decreaseAmount: (amountStep: number) => dispatch(decreaseAmount(amountStep)),
-    registerSnack: (snack: Snack, amount: number) => {
-      console.log("Registered snack:", snack.name, amount);
-      dispatch(registerFood(constructConsumedFoodItem('Snack', snack, amount)));
-      dispatch(showTodaysIntakePage());
-    },
-  }),
+  (state) => amountRegistrationState(state),
+  (dispatch) => amountRegistrationDispatcher(dispatch, 'Snack'),
 )(SnackAmountRegistrationPage);
 
 export default ConnectedPage;

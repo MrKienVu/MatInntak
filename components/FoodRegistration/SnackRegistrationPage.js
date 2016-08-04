@@ -25,7 +25,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import NavigationBar from '../NavigationBar'
-import { showPreviousPage, showSnackAmountPage } from '../../actions';
+import { showPreviousPage, showSnackAmountPage, registerAmount } from '../../actions';
 import { SearchBar, GridLayout, GridItem } from './common';
 import { colors } from '../../style';
 import { snacks } from './foodItems';
@@ -65,7 +65,10 @@ const ConnectedPage = connect(
   () => ({}),
   (dispatch) => ({
     showPreviousPage: () => dispatch(showPreviousPage()),
-    showSnackAmountPage: (snack: Snack) => dispatch(showSnackAmountPage(snack)),
+    showSnackAmountPage: (snack: Snack) => {
+      dispatch(registerAmount(snack));
+      dispatch(showSnackAmountPage(snack.name));
+    },
   }),
 )(SnackRegistrationPage);
 

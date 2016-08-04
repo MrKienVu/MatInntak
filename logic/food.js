@@ -19,7 +19,6 @@
  */
 
 import type { Gram, Kcal, Ml } from './needs';
-import uuid from 'react-native-uuid';
 
 import {
   computeGramByAmount,
@@ -35,7 +34,6 @@ export type DailyConsumption = {
 }
 
 export type ConsumedFoodItem = {
-  id: Symbol,
   category: FoodCategory,
   consumed: FoodItem,
   amount: Gram,
@@ -47,21 +45,15 @@ export type ConsumedFoodItem = {
 
 export type FoodCategory = 'Dish' | 'Liquid' | 'Meal' | 'Snack';
 export type FoodItem = Dish | Liquid | Meal | Snack;
-export type Dinner = { name: string, icon: string };
-export type Dish = { name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon: string, quantity: number, unit: string, };
-export type Liquid = {name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon: string, hot: boolean};
-export type Meal   = {name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon: string};
-export type Snack  = {name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon: string};
+export type Dinner = {name: string, icon: string};
+export type Dish = { name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon?: string, quantity: number, unit: string, };
+export type Liquid = {name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon?: string, hot?: boolean};
+export type Meal   = {name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon?: string};
+export type Snack  = {name: string, energy: Kcal, liquid: Ml, protein: Gram, weight: Gram, icon?: string};
 
 export function constructConsumedFoodItem(
-  category: FoodCategory,
-  foodItem: FoodItem,
-  amount: number,
-  time?: Date,
-  id?: string,
-): ConsumedFoodItem {
+    category: FoodCategory, foodItem: FoodItem, amount: number, time?: Date): ConsumedFoodItem {
   return {
-    id: id || uuid(),
     category: category,
     consumed: foodItem,
     amount: computeGramByAmount(foodItem.weight, amount),
