@@ -87,7 +87,10 @@ class LiquidAmountRegistrationPage extends Component {
   }
   enableSpecify = () => { this.setState({specify: true}) };
   disableSpecify = () => { this.setState({specify: false}) };
-  selectAmount = (amount: number) => { this.props.selectAmount(amount); };
+  selectAmount = (amount: number) => {
+    amount === this.props.amount ? this.props.selectAmount(0) :
+                                   this.props.selectAmount(amount);
+  };
   confirmAmount = () => {
     this.props.editing ? this.props.editItem(this.props.consumedItem, this.props.amount) :
                          this.props.registerItem(this.props.item, this.props.amount)
@@ -142,6 +145,7 @@ const PickAmount = ({amount, amountStep, items, confirmAmount, specifyAction}: {
   <Button action={confirmAmount}
           text="Registrer"
           color={colors.deepBlue}
+          disabled={amount === 0}
           style={{fontWeight: 'bold', width: dimens.mediumButton}} />
   <SeparatorText text="eller" />
   <Button text="Angi mengde"

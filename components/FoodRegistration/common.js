@@ -30,28 +30,31 @@ import { colors, fontSize, dimens } from '../../style';
 import type { Color } from '../../style';
 import { icons } from '../../graphics';
 
-export const Button = ({text, color, inverted, action, style}: {
+export const Button = ({text, color, inverted, disabled, action, style}: {
   action?: () => void,
   color: Color,
   inverted?: boolean,
+  disabled?: boolean,
   style?: any,
   text: string,
 }) => (
-  <Text onPress={action} style={{
-    backgroundColor: inverted ? colors.transparent : color,
-    borderColor: color,
-    borderWidth: 2,
-    borderRadius: 8,
-    color: inverted ? color : colors.white,
-    fontSize: fontSize.small,
-    overflow: 'hidden',
-    paddingVertical: 14,
-    textAlign: 'center',
-    width: dimens.smallButton,
-    ...style,
-  }}>
-    {text}
-  </Text>
+  <TouchableOpacity onPress={disabled ? null : action} activeOpacity={0.8}>
+    <Text style={{
+      backgroundColor: inverted ? colors.transparent : (disabled ? colors.disabled : color),
+      borderColor: disabled ? colors.disabled : color,
+      borderWidth: 2,
+      borderRadius: 8,
+      color: inverted ? color : colors.white,
+      fontSize: fontSize.small,
+      overflow: 'hidden',
+      paddingVertical: 14,
+      textAlign: 'center',
+      width: dimens.smallButton,
+      ...style,
+    }}>
+      {text}
+    </Text>
+  </TouchableOpacity>
 );
 
 export const SeparatorText = ({text}: {text: string}) => (
@@ -60,13 +63,14 @@ export const SeparatorText = ({text}: {text: string}) => (
   </Text>
 );
 
-export const BigButton = ({text, color, inverted, action}: {
+export const BigButton = ({text, color, inverted, disabled, action}: {
   action?: () => void,
   color: Color,
   inverted?: boolean,
+  disabled?: boolean,
   text: string,
 }) => (
-  <Button text={text} color={color} inverted={inverted} action={action} style={{
+  <Button text={text} color={color} inverted={inverted} disabled={disabled} action={action} style={{
     width: dimens.bigButton,
     paddingVertical: 20,
     fontWeight: inverted ? 'normal' : 'bold',
@@ -135,12 +139,9 @@ export class SelectableGridLayout extends Component {
     this.state = { selected: this.props.defaultItem || '' }
   }
   selectItem: (item: MenuItem) => void = (item) => {
-    if (item.key === this.state.selected) {
-      this.setState({selected: ''});
-    } else {
-      this.setState({selected: item.key});
-      item.action();
-    }
+    item.action();
+    item.key === this.state.selected ? this.setState({selected: ''}) :
+                                       this.setState({selected: item.key});
   };
   render() {
     return (

@@ -67,7 +67,7 @@ const ConnectedPage = connect(
     showPreviousPage: () => dispatch(showPreviousPage()),
     showFrontPage: () => dispatch(showRegisterFoodPage()),
     showLiquidAmountPage: (liquid: Liquid) => {
-      dispatch(registerAmount(liquid));
+      dispatch(registerAmount(liquid, 0));
       dispatch(showLiquidAmountPage(liquid.name));
     },
   }),

@@ -85,9 +85,9 @@ const TodaysIntakePage = ({
                    goBack={goBack}
                    showFrontPage={showFrontPage} />
     <ScrollView style={{flex: 1}}>
-    <TodaysIntake todaysNutrition={todaysNutrition}
-                  needs={needs}
-                  style={{marginTop: 30, marginBottom: 20}}/>
+      <TodaysIntake todaysNutrition={todaysNutrition}
+                    needs={needs}
+                    style={{marginTop: 30, marginBottom: 20}}/>
       <MealDrawerChest consumedFood={consumedFood}
                        showRegisterDishPage={showRegisterDishPage}
                        showRegisterLiquidPage={showRegisterLiquidPage}
@@ -287,7 +287,7 @@ const DrawerHeading = ({clickAction, addAction, open, color, title}: {
           paddingVertical: 15,
         }}>
           <Icon name={open ? "expand-more" : "chevron-right" } size={40} color={colors.white} />
-          <Text style={{color: colors.white, fontSize: fontSize.small, flex: 1}}>{ title } </Text>
+          <Text style={{color: colors.white, fontSize: fontSize.small, flex: 1}}>{ title }</Text>
         </View>
       </TouchableWithoutFeedback>
       { open &&
@@ -332,7 +332,10 @@ class MealDrawer extends Component {
   }
   render() {
     return (
-      <View style={{marginBottom: 2, backgroundColor: colors.divider}} >
+      <View style={{
+        backgroundColor: this.state.open ? colors.divider : colors.transparent,
+        marginBottom: 2,
+      }} >
         <DrawerHeading clickAction={this.clickAction}
                        addAction={this.props.addAction}
                        open={this.state.open}

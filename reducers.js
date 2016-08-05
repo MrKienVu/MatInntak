@@ -150,7 +150,7 @@ export function amount(state: any = initialAmount, action: Action) {
         ...state,
         editing: false,
         food: action.food,
-        value: 0,
+        value: action.value,
       };
     case 'EDIT_AMOUNT':
       return {

@@ -31,6 +31,7 @@ export type GoToPageAction = {
 export type RegisterAmountAction = {
   type: 'REGISTER_AMOUNT',
   food: FoodItem,
+  value?: number,
 }
 
 export type EditAmountAction = {
@@ -212,10 +213,11 @@ export function showSnackAmountPage(snackName: string): GoToPageAction {
   }
 }
 
-export function registerAmount(food: FoodItem): RegisterAmountAction {
+export function registerAmount(food: FoodItem, value?: number): RegisterAmountAction {
   return {
     type: 'REGISTER_AMOUNT',
     food: food,
+    value: value === 0 ? 0 : 1,
   };
 }
 

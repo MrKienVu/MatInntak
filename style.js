@@ -34,6 +34,7 @@ export const colors = {
   meal: '#1fb078',
   snack: "#519dc7",
 
+  disabled: '#CCCCCC',
   divider: "#ECECEC",
   inputFieldBorder: "#D8D8D8",
   inputFieldBackground:"#F8F8F8",

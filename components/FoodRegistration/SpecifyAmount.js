@@ -83,6 +83,7 @@ export class SpecifyAmount extends Component {
                         color={this.props.color || colors.deepBlue} />
         <BigButton action={this.props.confirmAction}
                    color={this.props.color || colors.deepBlue}
+                   disabled={this.props.amount === 0}
                    text="Bekreft" />
         <BigButton action={this.props.cancelAction}
                    color={this.props.color || colors.deepBlue}
@@ -132,7 +133,7 @@ export const ImageButton = ({image, action, enabled, color, size }: {
   size?: number,
 }) => (
   <TouchableOpacity activeOpacity={enabled ? 0.8 : 1} onPress={enabled ? action : null} style={{ margin: 24 }}>
-    <Icon name={image} size={size || 75} color={enabled ? color : colors.lightGrey} />
+    <Icon name={image} size={size || 75} color={enabled ? color : colors.disabled} />
   </TouchableOpacity>
 );
 
