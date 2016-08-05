@@ -25,7 +25,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import NavigationBar from '../NavigationBar'
-import { showMealAmountPage, showPreviousPage, showRegisterFoodPage } from '../../actions';
+import { showMealAmountPage, showPreviousPage, showRegisterFoodPage, registerAmount } from '../../actions';
 import { SearchBar, GridLayout, GridItem } from './common';
 import { colors } from '../../style';
 import { meals } from './foodItems';
@@ -64,9 +64,12 @@ class MealRegistrationPage extends Component {
 const ConnectedPage = connect(
   () => ({}),
   (dispatch) => ({
-    showMealAmountPage: (meal: Meal) => dispatch(showMealAmountPage(meal)),
     showPreviousPage: () => dispatch(showPreviousPage()),
     showFrontPage: () => dispatch(showRegisterFoodPage()),
+    showMealAmountPage: (meal: Meal) => {
+      dispatch(registerAmount(meal));
+      dispatch(showMealAmountPage(meal.name));
+    },
   }),
 )(MealRegistrationPage);
 

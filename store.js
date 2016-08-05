@@ -22,7 +22,6 @@ import { createStore } from 'redux';
 import devTools from 'remote-redux-devtools';
 import app from './reducers';
 
-
 const configureStore = (initialState) => (
   createStore(
     app,

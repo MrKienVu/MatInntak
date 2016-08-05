@@ -23,28 +23,26 @@
  import { connect } from 'react-redux';
  import NavigationBar from '../NavigationBar'
  import { colors } from '../../style';
- import {
-   decreaseAmount,
-   increaseAmount,
-   showRegisterFoodPage,
-   showPreviousPage,
-   showTodaysIntakePage,
-   registerFood,
- } from '../../actions';
  import { SpecifyAmount } from './SpecifyAmount';
- import { constructConsumedFoodItem } from '../../logic/food';
+ import {
+   amountRegistrationState,
+   amountRegistrationDispatcher,
+} from './amountRegistration';
 
-import type { Meal } from '../../logic/food';
+import type { Meal, ConsumedFoodItem } from '../../logic/food';
 
  class MealAmountRegistrationPage extends Component {
    props: ({
      amount: number,
-     meal: Meal,
+     item: Meal,
+     consumedItem: ConsumedFoodItem,
      decreaseAmount: () => void,
      increaseAmount: () => void,
      navBarSubTitle: string,
      navBarTitle: string,
-     registerMeal: () => void,
+     registerItem: () => void,
+     editItem: () => void,
+     editing: boolean,
      showFrontPage: () => void,
      showPreviousPage: () => void,
    });
@@ -57,7 +55,11 @@ import type { Meal } from '../../logic/food';
        amountStep: 0.5,
      };
    }
-   registerMeal = () => { this.props.registerMeal(this.props.meal, this.props.amount); };
+   registerItem = () => {
+     this.props.editing ?
+       this.props.editItem(this.props.consumedItem, this.props.amount) :
+       this.props.registerItem(this.props.item, this.props.amount);
+   };
    render() {
      return(
        <View>
@@ -72,31 +74,16 @@ import type { Meal } from '../../logic/food';
                       cancelAction={this.props.showPreviousPage}
                       increaseAmount={this.props.increaseAmount}
                       decreaseAmount={this.props.decreaseAmount}
-                      confirmAction={this.registerMeal}
+                      confirmAction={this.registerItem}
                       text={"Velg antall"} />
        </View>
      );
    }
  }
 
- const ConnectedPage = connect(
-   (state) => ({
-     navBarTitle: state.routing.navBarTitle,
-     navBarSubTitle: state.routing.navBarSubTitle,
-     amount: state.amountSelector.value,
-     meal: state.routing.meal,
-   }),
-   (dispatch) => ({
-     showFrontPage: () => dispatch(showRegisterFoodPage()),
-     showPreviousPage: () => dispatch(showPreviousPage()),
-     increaseAmount: (amountStep: number) => dispatch(increaseAmount(amountStep)),
-     decreaseAmount: (amountStep: number) => dispatch(decreaseAmount(amountStep)),
-     registerMeal: (meal: Meal, amount: number) => {
-       console.log("Registered meal:", meal, amount);
-       dispatch(registerFood(constructConsumedFoodItem('Meal', meal, amount)));
-       dispatch(showTodaysIntakePage());
-     },
-   }),
- )(MealAmountRegistrationPage);
+const ConnectedPage = connect(
+  (state) => amountRegistrationState(state),
+  (dispatch) => amountRegistrationDispatcher(dispatch, 'Meal'),
+)(MealAmountRegistrationPage);
 
  export default ConnectedPage;

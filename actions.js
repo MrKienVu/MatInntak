@@ -18,18 +18,24 @@
  *
  */
 
-import type { Dish, Liquid, Meal, Snack, ConsumedFoodItem } from './logic/food';
+import type { FoodItem, ConsumedFoodItem } from './logic/food';
 import type { Kcal, Ml, Gram } from './logic/needs';
-
 
 export type GoToPageAction = {
   type: 'GO_TO_PAGE',
   name: PageName,
   navBarTitle?: string,
   navBarSubTitle?: string,
-  liquid?: Liquid,
-  snack?: Snack,
-  dish?: Dish,
+}
+
+export type RegisterAmountAction = {
+  type: 'REGISTER_AMOUNT',
+  food: FoodItem,
+}
+
+export type EditAmountAction = {
+  type: 'EDIT_AMOUNT',
+  consumedFood: ConsumedFoodItem,
 }
 
 export type RegisterNeedsAction = {
@@ -41,17 +47,18 @@ export type RegisterNeedsAction = {
 
 export type RegisterFoodAction = {
   type: 'REGISTER_FOOD',
-  food: ConsumedFoodItem,
+  consumedFood: ConsumedFoodItem,
 }
 
 export type EditFoodAction = {
   type: 'EDIT_FOOD',
-  id: string,
+  consumedFood: ConsumedFoodItem,
+  newAmount: number,
 }
 
 export type RemoveFoodAction = {
   type: 'REMOVE_FOOD',
-  id: string,
+  consumedFood: ConsumedFoodItem,
 }
 
 export type IncreaseAmountAction = {
@@ -66,7 +73,7 @@ export type DecreaseAmountAction = {
 
 export type SelectAmountAction = {
   type: 'SELECT_AMOUNT',
-  amount: number,
+  value: number,
 }
 
 export type GoToPreviousPageAction = {
@@ -83,6 +90,8 @@ export type Action = GoToPageAction
                    | SelectAmountAction
                    | RegisterNeedsAction
                    | RegisterFoodAction
+                   | RegisterAmountAction
+                   | EditAmountAction
                    | EditFoodAction
                    | RemoveFoodAction
 ;
@@ -116,16 +125,16 @@ export function registerNeeds(energy: Kcal, liquid: Ml, protein: Gram): Register
   return { type: 'REGISTER_NEEDS', energy: energy, liquid: liquid, protein: protein };
 }
 
-export function registerFood(food: ConsumedFoodItem): RegisterFoodAction {
-  return { type: 'REGISTER_FOOD', food: food };
+export function editFood(consumedFood: ConsumedFoodItem, newAmount: number): EditFoodAction {
+  return { type: 'EDIT_FOOD', consumedFood: consumedFood, newAmount: newAmount };
 }
 
-export function editFood(id: string): EditFoodAction {
-  return { type: 'EDIT_FOOD', id: id };
+export function registerFood(consumedFood: ConsumedFoodItem): RegisterFoodAction {
+  return { type: 'REGISTER_FOOD', consumedFood: consumedFood };
 }
 
-export function removeFood(id: string): RemoveFoodAction {
-  return { type: 'REMOVE_FOOD', id: id };
+export function removeFood(consumedFood: ConsumedFoodItem): RemoveFoodAction {
+  return { type: 'REMOVE_FOOD', consumedFood: consumedFood };
 }
 
 export function resetApp(): ResetAppAction {
@@ -152,10 +161,6 @@ export function showDinnerMenuPage(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterDinner' }
 }
 
-export function showDishAmountPage(): GoToPageAction {
-  return { type: 'GO_TO_PAGE', name: 'RegisterDishAmount'}
-}
-
 export function showRegisterLiquidPage(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterLiquid' }
 }
@@ -167,38 +172,58 @@ export function showRegisterMealPage(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterMeal' }
 }
 
-export function showMealAmountPage(meal: Meal): GoToPageAction {
-  return {
-    type: 'GO_TO_PAGE',
-    name: 'RegisterMealAmount',
-    navBarTitle: meal.name,
-    navBarSubTitle: 'Frokost, lunsj og kveldsmat',
-    meal: meal,
-  }
-}
-
-export function showLiquidAmountPage(liquid: Liquid): GoToPageAction {
-  return {
-    type: 'GO_TO_PAGE',
-    name: 'RegisterLiquidAmount',
-    navBarTitle: liquid.name,
-    navBarSubTitle: 'Drikke',
-    liquid: liquid,
-  }
-}
-
 export function showRegisterSnackPage(): GoToPageAction {
   return { type: 'GO_TO_PAGE', name: 'RegisterSnack'}
 }
 
-export function showSnackAmountPage(snack: Snack): GoToPageAction {
+export function showMealAmountPage(mealName: string): GoToPageAction {
+  return {
+    type: 'GO_TO_PAGE',
+    name: 'RegisterMealAmount',
+    navBarTitle: mealName,
+    navBarSubTitle: 'Frokost, lunsj og kveldsmat',
+  }
+}
+
+export function showDishAmountPage(dishName: string): GoToPageAction {
+  return {
+    type: 'GO_TO_PAGE',
+    name: 'RegisterDishAmount',
+    navBarTitle: dishName,
+    navBarSubTitle: 'Middag',
+  };
+}
+
+export function showLiquidAmountPage(liquidName: string): GoToPageAction {
+  return {
+    type: 'GO_TO_PAGE',
+    name: 'RegisterLiquidAmount',
+    navBarTitle: liquidName,
+    navBarSubTitle: 'Drikke',
+  }
+}
+
+export function showSnackAmountPage(snackName: string): GoToPageAction {
   return {
     type: 'GO_TO_PAGE',
     name: 'RegisterSnackAmount',
-    navBarTitle: snack.name,
+    navBarTitle: snackName,
     navBarSubTitle: 'Mellommåltid',
-    snack: snack,
   }
+}
+
+export function registerAmount(food: FoodItem): RegisterAmountAction {
+  return {
+    type: 'REGISTER_AMOUNT',
+    food: food,
+  };
+}
+
+export function editAmount(consumedFood: ConsumedFoodItem): EditAmountAction {
+  return {
+    type: 'EDIT_AMOUNT',
+    consumedFood: consumedFood,
+  };
 }
 
 export function increaseAmount(step: number): IncreaseAmountAction {
@@ -209,6 +234,6 @@ export function decreaseAmount(step: number): DecreaseAmountAction {
   return { type: 'DECREASE_AMOUNT', step: step }
 }
 
-export function selectAmount(amount: number): SelectAmountAction {
-  return { type: 'SELECT_AMOUNT', amount: amount }
+export function selectAmount(value: number): SelectAmountAction {
+  return { type: 'SELECT_AMOUNT', value: value }
 }

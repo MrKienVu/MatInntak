@@ -21,10 +21,11 @@
 import React, { Component } from 'react';
 import Swiper from 'react-native-swiper';
 import {
+  Alert,
   Image,
   ScrollView,
   Text,
-  TouchableOpacity,
+  LayoutAnimation,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
@@ -39,7 +40,11 @@ import {
   showRegisterLiquidPage,
   showRegisterMealPage,
   showRegisterSnackPage,
-  editFood,
+  showDishAmountPage,
+  showLiquidAmountPage,
+  showMealAmountPage,
+  showSnackAmountPage,
+  editAmount,
   removeFood,
 } from '../../actions';
 import { accumulateNutrition } from '../../logic/needs';
@@ -122,9 +127,9 @@ const ConnectedPage = connect(
       consumedSnacks: state.consumption.consumedSnacks,
     },
     needs: {
-      energy: state.nutrition.energy,
-      liquid: state.nutrition.liquid,
-      protein: state.nutrition.protein,
+      energy: state.patient.energy,
+      liquid: state.patient.liquid,
+      protein: state.patient.protein,
     },
     todaysNutrition: {
       energy: accumulateNutrition(state.consumption, 'energy'),
@@ -139,8 +144,17 @@ const ConnectedPage = connect(
     showRegisterLiquidPage: () => dispatch(showRegisterLiquidPage()),
     showRegisterMealPage: () => dispatch(showRegisterMealPage()),
     showRegisterSnackPage: () => dispatch(showRegisterSnackPage()),
-    editFood: (id: string) => dispatch(editFood(id)),
-    removeFood: (id: string) => dispatch(removeFood(id)),
+    removeFood: (food: ConsumedFoodItem) => dispatch(removeFood(food)),
+    editFood: (item: ConsumedFoodItem) => {
+      dispatch(editAmount(item));
+      console.log("BEEP, BEEP! Category is ", item.category);
+      switch (item.category) {
+        case 'Dish': dispatch(showDishAmountPage(item.consumed.name)); break;
+        case 'Meal': dispatch(showMealAmountPage(item.consumed.name)); break;
+        case 'Liquid': dispatch(showLiquidAmountPage(item.consumed.name)); break;
+        case 'Snack': dispatch(showSnackAmountPage(item.consumed.name)); break;
+      }
+    },
   }),
 )(TodaysIntakePage);
 
@@ -286,6 +300,13 @@ const DrawerHeading = ({clickAction, addAction, open, color, title}: {
   </View>
 );
 
+const MinimalSpring = {
+    duration: 500,
+    update: {
+      type: LayoutAnimation.Types.spring,
+      springDamping: 1,
+    },
+  };
 
 class MealDrawer extends Component {
   props: {
@@ -301,27 +322,33 @@ class MealDrawer extends Component {
     super();
     this.state = {open: false};
   }
-  open = () => { this.setState({open: true}) };
+  open = () => { this.setState({open: true}); };
   close = () => { this.setState({open: false}) };
-  clickAction = () => { this.state.open ? this.close() : this.open()};
+  clickAction = () => {
+    this.state.open ? this.close() : this.open()
+  };
+  componentWillUpdate() {
+    LayoutAnimation.configureNext(MinimalSpring);
+  }
   render() {
     return (
       <View style={{marginBottom: 2, backgroundColor: colors.divider}} >
-        <TouchableOpacity activeOpacity={0.8}>
-          <DrawerHeading clickAction={this.clickAction}
-                         addAction={this.props.addAction}
-                         open={this.state.open}
-                         title={this.props.title}
-                         color={this.props.openColor} />
-        </TouchableOpacity>
+        <DrawerHeading clickAction={this.clickAction}
+                       addAction={this.props.addAction}
+                       open={this.state.open}
+                       title={this.props.title}
+                       color={this.props.openColor} />
         { this.state.open && (
           this.props.items.length === 0 ?
-            <DrawerItem dummy={true} showMargin={false} /> :
+            <DrawerItem firstLine={'Ingen elementer registrert.'}
+                        secondLine={'Trykk på plusstegnet for å registrere mat eller drikke.'}
+                        dummy={true}
+                        showMargin={false} /> :
           this.props.items.map((item, index) =>
             <DrawerItem firstLine={`${item.consumed.name} (kl. ${formatTime(item.time)})`}
                         secondLine={`${item.amount} g (${item.energy} kcal, ${item.liquid} ml væske, ${item.protein} g proteiner)`}
-                        editAction={() => this.props.editAction(item.id)}
-                        removeAction={() => this.props.removeAction(item.id)}
+                        editAction={() => this.props.editAction(item)}
+                        removeAction={() => this.props.removeAction(item)}
                         showMargin={index !== this.props.items.length - 1}
                         key={item.time}/>))}
       </View>
@@ -365,9 +392,9 @@ class AppIcon extends Component {
   }
 }
 
-const DrawerItem = ({dummy, firstLine, secondLine, editAction, removeAction, showMargin}: {
+const DrawerItem = ({firstLine, secondLine, editAction, removeAction, showMargin, dummy}: {
   dummy?: boolean,
-  firstLine?: string,
+  firstLine: string,
   secondLine?: string,
   editAction?: () => void,
   removeAction?: () => void,
@@ -379,10 +406,10 @@ const DrawerItem = ({dummy, firstLine, secondLine, editAction, removeAction, sho
                 flexDirection: 'row', height: 80}}>
     <View style={{flex:1}}>
       <OrdinaryText style={{color: dummy ? colors.grey : colors.black}}>
-        { dummy ? 'Ingen elementer registrert.' : firstLine }
+        { firstLine }
       </OrdinaryText>
       <OrdinaryText style={{color: dummy ? colors.grey : colors.black}}>
-        { dummy ? 'Trykk på plusstegnet for å registrere mat eller drikke.' : secondLine }
+        { secondLine }
       </OrdinaryText>
     </View>
     { !dummy &&
@@ -390,10 +417,15 @@ const DrawerItem = ({dummy, firstLine, secondLine, editAction, removeAction, sho
       <AppIcon style={{marginRight: 15}}
                normal={require('../../img/icon_edit.png')}
                pressed={require('../../img/icon_edit_active.png')}
-               onPress={editAction}/>
+               onPress={editAction} />
       <AppIcon normal={require('../../img/icon_delete.png')}
                pressed={require('../../img/icon_delete_active.png')}
-               onPress={removeAction}/>
+               onPress={() => Alert.alert(
+                 `Slett ${firstLine.toLowerCase()}`,
+                 `Er du sikker på at du vil slette denne varen?`, [
+                   {text: 'Avbryt'},
+                   {text: 'Slett', onPress: removeAction},
+                 ])} />
     </View>}
   </View>
 );

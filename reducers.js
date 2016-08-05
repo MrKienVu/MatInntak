@@ -19,6 +19,9 @@
  */
 
 import { combineReducers } from 'redux';
+import { constructConsumedFoodItem } from './logic/food';
+import _ from 'lodash';
+
 import type { Action } from './actions';
 import type { ConsumedFoodItem, DailyConsumption } from './logic/food';
 import type { Kcal, Ml, Gram } from './logic/needs';
@@ -31,10 +34,7 @@ function routing(state = initialRouting, action: Action) {
       pageStack: [...state.pageStack, action.name],
       navBarTitle: action.navBarTitle || '',
       navBarSubTitle: action.navBarSubTitle || '',
-      liquid: action.liquid || null,
-      snack: action.snack || null,
-      meal: action.meal || null,
-     };
+    };
   }
 
   if (action.type === 'GO_TO_PREVIOUS_PAGE') {
@@ -48,28 +48,22 @@ function routing(state = initialRouting, action: Action) {
   return state;
 }
 
-const initialConsumption = {
-  consumedDinner: [],
-  consumedLiquids: [],
-  consumedMeals: [],
-  consumedSnacks: [],
-};
-
-export type PasientNeeds = {
+export type Pasient = {
   energy: Kcal,
   liquid: Ml,
   protein: Gram,
 }
 
-const initialNutrition = {
+const initialPatient = {
   energy: 2400,
   liquid: 2400,
   protein: 80,
 }
 
-export function nutrition(state: PasientNeeds = initialNutrition, action: Action) {
+export function patient(state: Pasient = initialPatient, action: Action) {
   if (action.type === 'REGISTER_NEEDS') {
     return {
+      ...state,
       energy: action.energy,
       liquid: action.liquid,
       protein: action.protein,
@@ -79,18 +73,29 @@ export function nutrition(state: PasientNeeds = initialNutrition, action: Action
   return state;
 }
 
+const initialConsumption = {
+  consumedDinner: [],
+  consumedLiquids: [],
+  consumedMeals: [],
+  consumedSnacks: [],
+}
+
 export function consumption(state: DailyConsumption = initialConsumption, action: Action) {
   if (action.type === 'REGISTER_FOOD') {
-    switch (action.food.category) {
-      case 'Dish': return {...state, consumedDinners: addConsumedItem(action.food, state.consumedDinner) };
-      case 'Liquid': return {...state, consumedLiquids: addConsumedItem(action.food, state.consumedLiquids) };
-      case 'Meal':   return {...state, consumedMeals: addConsumedItem(action.food, state.consumedMeals) };
-      case 'Snack':  return {...state, consumedSnacks: addConsumedItem(action.food, state.consumedSnacks) };
+    switch (action.consumedFood.category) {
+      case 'Dish': return {...state, consumedDinners: addConsumedItem(action.consumedFood, state.consumedDinner) };
+      case 'Liquid': return {...state, consumedLiquids: addConsumedItem(action.consumedFood, state.consumedLiquids) };
+      case 'Meal':   return {...state, consumedMeals: addConsumedItem(action.consumedFood, state.consumedMeals) };
+      case 'Snack':  return {...state, consumedSnacks: addConsumedItem(action.consumedFood, state.consumedSnacks) };
     }
   }
 
   if (action.type === 'REMOVE_FOOD') {
-    return removeConsumedItem(action.id, state);
+    return removeConsumedItem(action.consumedFood, state);
+  }
+
+  if (action.type === 'EDIT_FOOD') {
+    return editConsumedItem(action.consumedFood, action.newAmount, state);
   }
 
   return state;
@@ -101,8 +106,28 @@ function addConsumedItem(item: any, alreadyConsumed: Array<ConsumedFoodItem>) {
   return alreadyConsumed;
 }
 
-function removeConsumedItem(id: string, dailyConsumption: DailyConsumption): DailyConsumption {
-  const doesNotMatch = (item) => {return id !== item.id};
+function editConsumedItem(
+  consumedFood: ConsumedFoodItem,
+  newAmount: number,
+  state: DailyConsumption,
+): DailyConsumption {
+  state = removeConsumedItem(consumedFood, state);
+  consumedFood = constructConsumedFoodItem(consumedFood.category, consumedFood.consumed, newAmount, consumedFood.time);
+  switch (consumedFood.category) {
+    case 'Dinner': return {...state, consumedDinners: addConsumedItem(consumedFood, state.consumedDinner) };
+    case 'Liquid': return {...state, consumedLiquids: addConsumedItem(consumedFood, state.consumedLiquids) };
+    case 'Meal':   return {...state, consumedMeals: addConsumedItem(consumedFood, state.consumedMeals) };
+    case 'Snack':  return {...state, consumedSnacks: addConsumedItem(consumedFood, state.consumedSnacks) };
+  }
+
+  return state;
+}
+
+function removeConsumedItem(consumedItem: ConsumedFoodItem, dailyConsumption: DailyConsumption): DailyConsumption {
+  const doesNotMatch = (item) => {
+    console.log("Comparing", item, "with", consumedItem);
+    return !_.isEqual(item, consumedItem)
+  };
   return {
     consumedDinner: dailyConsumption.consumedDinner.filter(doesNotMatch),
     consumedLiquids: dailyConsumption.consumedLiquids.filter(doesNotMatch),
@@ -111,21 +136,36 @@ function removeConsumedItem(id: string, dailyConsumption: DailyConsumption): Dai
   };
 }
 
-const initialAmount = { value: 0.0 };
+const initialAmount = {
+  food: null,
+  consumedFood: null,
+  editing: false,
+  value: 0.0,
+}
 
-export function amountSelector(state: any = initialAmount, action: Action) {
+export function amount(state: any = initialAmount, action: Action) {
   switch (action.type) {
-    case 'INCREASE_AMOUNT':
-      return { value: state.value + action.step };
-    case 'DECREASE_AMOUNT':
-      return { value: state.value - action.step };
-    case 'SELECT_AMOUNT':
-      return { value: action.amount };
-    default:
-      return state;
+    case 'REGISTER_AMOUNT':
+      return {
+        ...state,
+        editing: false,
+        food: action.food,
+        value: 0,
+      };
+    case 'EDIT_AMOUNT':
+      return {
+        ...state,
+        editing: true,
+        consumedFood: action.consumedFood,
+        value: action.consumedFood.amount / action.consumedFood.consumed.weight,
+      };
+    case 'SELECT_AMOUNT': return {...state, value: action.value };
+    case 'INCREASE_AMOUNT': return {...state, value: state.value + action.step };
+    case 'DECREASE_AMOUNT': return {...state, value: state.value - action.step };
+    default: return state;
   }
 }
 
-const app = combineReducers({routing, nutrition, consumption, amountSelector});
+const app = combineReducers({routing, patient, consumption, amount});
 
 export default app;

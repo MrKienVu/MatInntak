@@ -25,7 +25,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import NavigationBar from '../NavigationBar'
-import { showPreviousPage, showLiquidAmountPage } from '../../actions';
+import { showPreviousPage, showRegisterFoodPage, showLiquidAmountPage, registerAmount } from '../../actions';
 import { SearchBar, GridLayout, GridItem } from './common';
 import { colors } from '../../style';
 import { liquids } from './foodItems';
@@ -40,7 +40,7 @@ class LiquidRegistrationPage extends Component {
         flex: 1,
       }}>
         <NavigationBar currentPage="Drikke"
-                       showFrontPage={this.props.showPreviousPage}
+                       showFrontPage={this.props.showFrontPage}
                        goBack={this.props.showPreviousPage}
                        color={colors.deepBlue}/>
         <ScrollView>
@@ -65,7 +65,11 @@ const ConnectedPage = connect(
   () => ({}),
   (dispatch) => ({
     showPreviousPage: () => dispatch(showPreviousPage()),
-    showLiquidAmountPage: (liquid: Liquid) => dispatch(showLiquidAmountPage(liquid)),
+    showFrontPage: () => dispatch(showRegisterFoodPage()),
+    showLiquidAmountPage: (liquid: Liquid) => {
+      dispatch(registerAmount(liquid));
+      dispatch(showLiquidAmountPage(liquid.name));
+    },
   }),
 )(LiquidRegistrationPage);
 
